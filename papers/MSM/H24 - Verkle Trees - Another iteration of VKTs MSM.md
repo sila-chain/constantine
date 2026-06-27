@@ -303,7 +303,7 @@ MSMComparison/MSM_length_all_basis_(256)-16               2.45ms ± 0%    1.37ms
 
 For MSMs of 16 non-zero scalars up to 256, we got a speedup between 20% and 44%, which is very good, using only 144MiB more memory. This has 0 compromises in any other case (which was one of the constraints of this exploration).
 
-Let's look at the above benchmark comparisons in a [Rock5B](https://ameridroid.com/products/rock5-model-b) (very low-hardware setup, maybe already discarded already for an Sila node post-4844):
+Let's look at the above benchmark comparisons in a [Rock5B](https://ameridroid.com/products/rock5-model-b) (very low-hardware setup, maybe already discarded already for a Sila node post-4844):
 ```
 name                                                   old time/op    new time/op    delta
 MSMComparison/MSM_in_the_basis[0:5]/msmLength=1-8        27.1µs ± 2%    27.4µs ± 3%     ~     (p=0.247 n=10+10)

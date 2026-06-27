@@ -33,7 +33,7 @@ import
 # Processing is done in 2 steps
 # - Message scheduler:
 #   Takes the input 16 DWORDs and
-#   computes 48 new DWORDs. Tosilaer with the original 16 DWORDs, these
+#   computes 48 new DWORDs. Together with the original 16 DWORDs, these
 #   form a vector of 64 DWORDs that is the input to the second step.
 #   This can be vectorized.
 # - 64 SHA rounds:
