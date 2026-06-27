@@ -4600,291 +4600,291 @@ unsafe extern "C" {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_kzg_context_struct {
+pub struct ctt_sila_kzg_context_struct {
     _unused: [u8; 0],
 }
-pub type ctt_eth_kzg_context = ctt_eth_kzg_context_struct;
+pub type ctt_sila_kzg_context = ctt_sila_kzg_context_struct;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_kzg_commitment {
+pub struct ctt_sila_kzg_commitment {
     raw: [byte; 48usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_kzg_commitment"][::core::mem::size_of::<ctt_eth_kzg_commitment>() - 48usize];
-    ["Alignment of ctt_eth_kzg_commitment"]
-        [::core::mem::align_of::<ctt_eth_kzg_commitment>() - 1usize];
-    ["Offset of field: ctt_eth_kzg_commitment::raw"]
-        [::core::mem::offset_of!(ctt_eth_kzg_commitment, raw) - 0usize];
+    ["Size of ctt_sila_kzg_commitment"][::core::mem::size_of::<ctt_sila_kzg_commitment>() - 48usize];
+    ["Alignment of ctt_sila_kzg_commitment"]
+        [::core::mem::align_of::<ctt_sila_kzg_commitment>() - 1usize];
+    ["Offset of field: ctt_sila_kzg_commitment::raw"]
+        [::core::mem::offset_of!(ctt_sila_kzg_commitment, raw) - 0usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_kzg_proof {
+pub struct ctt_sila_kzg_proof {
     raw: [byte; 48usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_kzg_proof"][::core::mem::size_of::<ctt_eth_kzg_proof>() - 48usize];
-    ["Alignment of ctt_eth_kzg_proof"][::core::mem::align_of::<ctt_eth_kzg_proof>() - 1usize];
-    ["Offset of field: ctt_eth_kzg_proof::raw"]
-        [::core::mem::offset_of!(ctt_eth_kzg_proof, raw) - 0usize];
+    ["Size of ctt_sila_kzg_proof"][::core::mem::size_of::<ctt_sila_kzg_proof>() - 48usize];
+    ["Alignment of ctt_sila_kzg_proof"][::core::mem::align_of::<ctt_sila_kzg_proof>() - 1usize];
+    ["Offset of field: ctt_sila_kzg_proof::raw"]
+        [::core::mem::offset_of!(ctt_sila_kzg_proof, raw) - 0usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_kzg_blob {
+pub struct ctt_sila_kzg_blob {
     raw: [byte; 131072usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_kzg_blob"][::core::mem::size_of::<ctt_eth_kzg_blob>() - 131072usize];
-    ["Alignment of ctt_eth_kzg_blob"][::core::mem::align_of::<ctt_eth_kzg_blob>() - 1usize];
-    ["Offset of field: ctt_eth_kzg_blob::raw"]
-        [::core::mem::offset_of!(ctt_eth_kzg_blob, raw) - 0usize];
+    ["Size of ctt_sila_kzg_blob"][::core::mem::size_of::<ctt_sila_kzg_blob>() - 131072usize];
+    ["Alignment of ctt_sila_kzg_blob"][::core::mem::align_of::<ctt_sila_kzg_blob>() - 1usize];
+    ["Offset of field: ctt_sila_kzg_blob::raw"]
+        [::core::mem::offset_of!(ctt_sila_kzg_blob, raw) - 0usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_kzg_opening_challenge {
+pub struct ctt_sila_kzg_opening_challenge {
     raw: [byte; 32usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_kzg_opening_challenge"]
-        [::core::mem::size_of::<ctt_eth_kzg_opening_challenge>() - 32usize];
-    ["Alignment of ctt_eth_kzg_opening_challenge"]
-        [::core::mem::align_of::<ctt_eth_kzg_opening_challenge>() - 1usize];
-    ["Offset of field: ctt_eth_kzg_opening_challenge::raw"]
-        [::core::mem::offset_of!(ctt_eth_kzg_opening_challenge, raw) - 0usize];
+    ["Size of ctt_sila_kzg_opening_challenge"]
+        [::core::mem::size_of::<ctt_sila_kzg_opening_challenge>() - 32usize];
+    ["Alignment of ctt_sila_kzg_opening_challenge"]
+        [::core::mem::align_of::<ctt_sila_kzg_opening_challenge>() - 1usize];
+    ["Offset of field: ctt_sila_kzg_opening_challenge::raw"]
+        [::core::mem::offset_of!(ctt_sila_kzg_opening_challenge, raw) - 0usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_kzg_eval_at_challenge {
+pub struct ctt_sila_kzg_eval_at_challenge {
     raw: [byte; 32usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_kzg_eval_at_challenge"]
-        [::core::mem::size_of::<ctt_eth_kzg_eval_at_challenge>() - 32usize];
-    ["Alignment of ctt_eth_kzg_eval_at_challenge"]
-        [::core::mem::align_of::<ctt_eth_kzg_eval_at_challenge>() - 1usize];
-    ["Offset of field: ctt_eth_kzg_eval_at_challenge::raw"]
-        [::core::mem::offset_of!(ctt_eth_kzg_eval_at_challenge, raw) - 0usize];
+    ["Size of ctt_sila_kzg_eval_at_challenge"]
+        [::core::mem::size_of::<ctt_sila_kzg_eval_at_challenge>() - 32usize];
+    ["Alignment of ctt_sila_kzg_eval_at_challenge"]
+        [::core::mem::align_of::<ctt_sila_kzg_eval_at_challenge>() - 1usize];
+    ["Offset of field: ctt_sila_kzg_eval_at_challenge::raw"]
+        [::core::mem::offset_of!(ctt_sila_kzg_eval_at_challenge, raw) - 0usize];
 };
 #[repr(u8)]
 #[derive(Copy, Clone, Hash, PartialEq, Eq, Debug)]
-pub enum ctt_eth_kzg_status {
-    cttEthKzg_Success = 0,
-    cttEthKzg_VerificationFailure = 1,
-    cttEthKzg_InputsLengthsMismatch = 2,
-    cttEthKzg_ScalarZero = 3,
-    cttEthKzg_ScalarLargerThanCurveOrder = 4,
-    cttEthKzg_EccInvalidEncoding = 5,
-    cttEthKzg_EccCoordinateGreaterThanOrEqualModulus = 6,
-    cttEthKzg_EccPointNotOnCurve = 7,
-    cttEthKzg_EccPointNotInSubgroup = 8,
-    cttEthKzg_CellIndicesNotAscending = 9,
+pub enum ctt_sila_kzg_status {
+    cttSilaKzg_Success = 0,
+    cttSilaKzg_VerificationFailure = 1,
+    cttSilaKzg_InputsLengthsMismatch = 2,
+    cttSilaKzg_ScalarZero = 3,
+    cttSilaKzg_ScalarLargerThanCurveOrder = 4,
+    cttSilaKzg_EccInvalidEncoding = 5,
+    cttSilaKzg_EccCoordinateGreaterThanOrEqualModulus = 6,
+    cttSilaKzg_EccPointNotOnCurve = 7,
+    cttSilaKzg_EccPointNotInSubgroup = 8,
+    cttSilaKzg_CellIndicesNotAscending = 9,
 }
 #[repr(u8)]
 #[derive(Copy, Clone, Hash, PartialEq, Eq, Debug)]
-pub enum ctt_eth_trusted_setup_status {
-    cttEthTS_Success = 0,
-    cttEthTS_MissingOrInaccessibleFile = 1,
-    cttEthTS_InvalidFile = 2,
+pub enum ctt_sila_trusted_setup_status {
+    cttSilaTS_Success = 0,
+    cttSilaTS_MissingOrInaccessibleFile = 1,
+    cttSilaTS_InvalidFile = 2,
 }
 #[repr(u8)]
 #[derive(Copy, Clone, Hash, PartialEq, Eq, Debug)]
-pub enum ctt_eth_trusted_setup_format {
-    cttEthTSFormat_ckzg4844 = 0,
+pub enum ctt_sila_trusted_setup_format {
+    cttSilaTSFormat_ckzg4844 = 0,
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Compute a commitment to the `blob`.\n  The commitment can be verified without needing the full `blob`\n\n  Mathematical description\n    commitment = [p(τ)]₁\n\n    The blob data is used as a polynomial,\n    the polynomial is evaluated at powers of tau τ, a trusted setup.\n\n    Verification can be done by verifying the relation:\n      proof.(τ - z) = p(τ)-p(z)\n    which doesn't require the full blob but only evaluations of it\n    - at τ, p(τ) is the commitment\n    - and at the verification opening challenge z.\n\n    with proof = [(p(τ) - p(z)) / (τ-z)]₁"]
-    pub fn ctt_eth_kzg_blob_to_kzg_commitment(
-        ctx: *const ctt_eth_kzg_context,
-        dst: *mut ctt_eth_kzg_commitment,
-        blob: *const ctt_eth_kzg_blob,
-    ) -> ctt_eth_kzg_status;
+    pub fn ctt_sila_kzg_blob_to_kzg_commitment(
+        ctx: *const ctt_sila_kzg_context,
+        dst: *mut ctt_sila_kzg_commitment,
+        blob: *const ctt_sila_kzg_blob,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Generate:\n  - A proof of correct evaluation.\n  - y = p(z), the evaluation of p at the opening challenge z, with p being the Blob interpreted as a polynomial.\n\n  Mathematical description\n    [proof]₁ = [(p(τ) - p(z)) / (τ-z)]₁, with p(τ) being the commitment, i.e. the evaluation of p at the powers of τ\n    The notation [a]₁ corresponds to the scalar multiplication of a by the generator of 𝔾1\n\n    Verification can be done by verifying the relation:\n      proof.(τ - z) = p(τ)-p(z)\n    which doesn't require the full blob but only evaluations of it\n    - at τ, p(τ) is the commitment\n    - and at the verification opening challenge z."]
-    pub fn ctt_eth_kzg_compute_kzg_proof(
-        ctx: *const ctt_eth_kzg_context,
-        proof: *mut ctt_eth_kzg_proof,
-        y: *mut ctt_eth_kzg_eval_at_challenge,
-        blob: *const ctt_eth_kzg_blob,
-        z: *const ctt_eth_kzg_opening_challenge,
-    ) -> ctt_eth_kzg_status;
+    pub fn ctt_sila_kzg_compute_kzg_proof(
+        ctx: *const ctt_sila_kzg_context,
+        proof: *mut ctt_sila_kzg_proof,
+        y: *mut ctt_sila_kzg_eval_at_challenge,
+        blob: *const ctt_sila_kzg_blob,
+        z: *const ctt_sila_kzg_opening_challenge,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Verify KZG proof\n  that p(z) == y where\n    - z is a random opening_challenge\n    - y is the evaluation of the \"KZG polynomial\" p at z\n    - commitment is p(τ), the evaluation of p at the trusted setup τ,\n    - [proof]₁ = [(p(τ) - p(z)) / (τ-z)]₁, ensure that p(z) evaluation was correct\n      without needing access to the polynomial p itself."]
-    pub fn ctt_eth_kzg_verify_kzg_proof(
-        ctx: *const ctt_eth_kzg_context,
-        commitment: *const ctt_eth_kzg_commitment,
-        z: *const ctt_eth_kzg_opening_challenge,
-        y: *const ctt_eth_kzg_eval_at_challenge,
-        proof: *const ctt_eth_kzg_proof,
-    ) -> ctt_eth_kzg_status;
+    pub fn ctt_sila_kzg_verify_kzg_proof(
+        ctx: *const ctt_sila_kzg_context,
+        commitment: *const ctt_sila_kzg_commitment,
+        z: *const ctt_sila_kzg_opening_challenge,
+        y: *const ctt_sila_kzg_eval_at_challenge,
+        proof: *const ctt_sila_kzg_proof,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Given a blob, return the KZG proof that is used to verify it against the commitment.\n  This method does not verify that the commitment is correct with respect to `blob`."]
-    pub fn ctt_eth_kzg_compute_blob_kzg_proof(
-        ctx: *const ctt_eth_kzg_context,
-        proof: *mut ctt_eth_kzg_proof,
-        blob: *const ctt_eth_kzg_blob,
-        commitment: *const ctt_eth_kzg_commitment,
-    ) -> ctt_eth_kzg_status;
+    pub fn ctt_sila_kzg_compute_blob_kzg_proof(
+        ctx: *const ctt_sila_kzg_context,
+        proof: *mut ctt_sila_kzg_proof,
+        blob: *const ctt_sila_kzg_blob,
+        commitment: *const ctt_sila_kzg_commitment,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Given a blob and a KZG proof, verify that the blob data corresponds to the provided commitment."]
-    pub fn ctt_eth_kzg_verify_blob_kzg_proof(
-        ctx: *const ctt_eth_kzg_context,
-        blob: *const ctt_eth_kzg_blob,
-        commitment: *const ctt_eth_kzg_commitment,
-        proof: *const ctt_eth_kzg_proof,
-    ) -> ctt_eth_kzg_status;
+    pub fn ctt_sila_kzg_verify_blob_kzg_proof(
+        ctx: *const ctt_sila_kzg_context,
+        blob: *const ctt_sila_kzg_blob,
+        commitment: *const ctt_sila_kzg_commitment,
+        proof: *const ctt_sila_kzg_proof,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Verify `n` (blob, commitment, proof) sets efficiently\n\n  `n` is the number of verifications set\n  - if n is negative, this procedure returns verification failure\n  - if n is zero, this procedure returns verification success\n\n  `secure_random_bytes` random bytes must come from a cryptographically secure RNG\n  or computed through the Fiat-Shamir heuristic.\n  It serves as a random number\n  that is not in the control of a potential attacker to prevent potential\n  rogue commitments attacks due to homomorphic properties of pairings,\n  i.e. commitments that are linear combination of others and sum would be zero."]
-    pub fn ctt_eth_kzg_verify_blob_kzg_proof_batch(
-        ctx: *const ctt_eth_kzg_context,
-        blobs: *const ctt_eth_kzg_blob,
-        commitments: *const ctt_eth_kzg_commitment,
-        proofs: *const ctt_eth_kzg_proof,
+    pub fn ctt_sila_kzg_verify_blob_kzg_proof_batch(
+        ctx: *const ctt_sila_kzg_context,
+        blobs: *const ctt_sila_kzg_blob,
+        commitments: *const ctt_sila_kzg_commitment,
+        proofs: *const ctt_sila_kzg_proof,
         n: usize,
         secure_random_bytes: *const byte,
-    ) -> ctt_eth_kzg_status;
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Create a new KZG context from trusted setup file.\n  Loads SRS, computes polyphase decomposition as raw affine points,\n  and sets the context to kNoPrecompute mode (~1.8 MiB)."]
-    pub fn ctt_eth_kzg_context_new(
-        ctx: *mut *mut ctt_eth_kzg_context,
+    pub fn ctt_sila_kzg_context_new(
+        ctx: *mut *mut ctt_sila_kzg_context,
         filepath: *const ::core::ffi::c_char,
-        format: ctt_eth_trusted_setup_format,
-    ) -> ctt_eth_trusted_setup_status;
+        format: ctt_sila_trusted_setup_format,
+    ) -> ctt_sila_trusted_setup_status;
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = " Create a new KZG context with precomputed MSM tables.\n  Same as ctt_eth_kzg_context_new but also builds PrecomputedMSM lookup\n  tables for FK20 proofs (PeerDAS).\n\n  @param t  base groups (stride between precomputed layers)\n  @param b  bits per window (window size = 2^b)\n\n  SPEED / MEMORY TRADEOFF (PeerDAS, compute_cells_and_kzg_proofs = 128 MSMs per blob):\n  - no precompute, 1.8 MiB total:        7.083 ops/s   ~141 ms/blob\n  - t= 64, b= 6, ~   32.2 MiB total:     8.724 ops/s   ~115 ms/blob\n  - t= 64, b= 8, ~   96.0 MiB total:     9.518 ops/s   ~105 ms/blob\n  - t= 64, b=10, ~  312.0 MiB total:    10.547 ops/s    ~95 ms/blob\n  - t= 64, b=12, ~ 1056.0 MiB total:    11.629 ops/s    ~86 ms/blob\n  - t=128, b= 6, ~   16.5 MiB total:     8.783 ops/s   ~114 ms/blob\n  - t=128, b= 8, ~   48.0 MiB total:     9.965 ops/s   ~100 ms/blob\n  - t=128, b=10, ~  156.0 MiB total:    10.561 ops/s    ~95 ms/blob\n  - t=128, b=12, ~  528.0 MiB total:    11.505 ops/s    ~87 ms/blob\n  - t=256, b= 6, ~    8.2 MiB total:     8.641 ops/s   ~116 ms/blob\n  - t=256, b= 8, ~   24.0 MiB total:    10.244 ops/s    ~98 ms/blob\n  - t=256, b=10, ~   84.0 MiB total:    10.281 ops/s    ~97 ms/blob\n  - t=256, b=12, ~  288.0 MiB total:    10.868 ops/s    ~92 ms/blob\n\n  CPU: Intel i7-265K\n  Larger b = faster per MSM but exponentially more memory (2^b entries).\n  Larger t = fewer doublings but more precomputed layers.\n  Recommended (t=256, b=8): ~98 ms/blob proving, ~24 MiB total memory."]
-    pub fn ctt_eth_kzg_context_new_with_precompute(
-        ctx: *mut *mut ctt_eth_kzg_context,
+    #[doc = " Create a new KZG context with precomputed MSM tables.\n  Same as ctt_sila_kzg_context_new but also builds PrecomputedMSM lookup\n  tables for FK20 proofs (PeerDAS).\n\n  @param t  base groups (stride between precomputed layers)\n  @param b  bits per window (window size = 2^b)\n\n  SPEED / MEMORY TRADEOFF (PeerDAS, compute_cells_and_kzg_proofs = 128 MSMs per blob):\n  - no precompute, 1.8 MiB total:        7.083 ops/s   ~141 ms/blob\n  - t= 64, b= 6, ~   32.2 MiB total:     8.724 ops/s   ~115 ms/blob\n  - t= 64, b= 8, ~   96.0 MiB total:     9.518 ops/s   ~105 ms/blob\n  - t= 64, b=10, ~  312.0 MiB total:    10.547 ops/s    ~95 ms/blob\n  - t= 64, b=12, ~ 1056.0 MiB total:    11.629 ops/s    ~86 ms/blob\n  - t=128, b= 6, ~   16.5 MiB total:     8.783 ops/s   ~114 ms/blob\n  - t=128, b= 8, ~   48.0 MiB total:     9.965 ops/s   ~100 ms/blob\n  - t=128, b=10, ~  156.0 MiB total:    10.561 ops/s    ~95 ms/blob\n  - t=128, b=12, ~  528.0 MiB total:    11.505 ops/s    ~87 ms/blob\n  - t=256, b= 6, ~    8.2 MiB total:     8.641 ops/s   ~116 ms/blob\n  - t=256, b= 8, ~   24.0 MiB total:    10.244 ops/s    ~98 ms/blob\n  - t=256, b=10, ~   84.0 MiB total:    10.281 ops/s    ~97 ms/blob\n  - t=256, b=12, ~  288.0 MiB total:    10.868 ops/s    ~92 ms/blob\n\n  CPU: Intel i7-265K\n  Larger b = faster per MSM but exponentially more memory (2^b entries).\n  Larger t = fewer doublings but more precomputed layers.\n  Recommended (t=256, b=8): ~98 ms/blob proving, ~24 MiB total memory."]
+    pub fn ctt_sila_kzg_context_new_with_precompute(
+        ctx: *mut *mut ctt_sila_kzg_context,
         filepath: *const ::core::ffi::c_char,
-        format: ctt_eth_trusted_setup_format,
+        format: ctt_sila_trusted_setup_format,
         t: ::core::ffi::c_int,
         b: ::core::ffi::c_int,
-    ) -> ctt_eth_trusted_setup_status;
+    ) -> ctt_sila_trusted_setup_status;
 }
 unsafe extern "C" {
     #[doc = " Destroy a KZG context"]
-    pub fn ctt_eth_kzg_context_delete(ctx: *mut ctt_eth_kzg_context);
+    pub fn ctt_sila_kzg_context_delete(ctx: *mut ctt_sila_kzg_context);
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Compute a commitment to the `blob`.\n  The commitment can be verified without needing the full `blob`\n\n  Mathematical description\n    commitment = [p(τ)]₁\n\n    The blob data is used as a polynomial,\n    the polynomial is evaluated at powers of tau τ, a trusted setup.\n\n    Verification can be done by verifying the relation:\n      proof.(τ - z) = p(τ)-p(z)\n    which doesn't require the full blob but only evaluations of it\n    - at τ, p(τ) is the commitment\n    - and at the verification opening_challenge z.\n\n    with proof = [(p(τ) - p(z)) / (τ-z)]₁"]
-    pub fn ctt_eth_kzg_blob_to_kzg_commitment_parallel(
+    pub fn ctt_sila_kzg_blob_to_kzg_commitment_parallel(
         tp: *const ctt_threadpool,
-        ctx: *const ctt_eth_kzg_context,
-        dst: *mut ctt_eth_kzg_commitment,
-        blob: *const ctt_eth_kzg_blob,
-    ) -> ctt_eth_kzg_status;
+        ctx: *const ctt_sila_kzg_context,
+        dst: *mut ctt_sila_kzg_commitment,
+        blob: *const ctt_sila_kzg_blob,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Generate:\n  - A proof of correct evaluation.\n  - y = p(z), the evaluation of p at the opening_challenge z, with p being the Blob interpreted as a polynomial.\n\n  Mathematical description\n    [proof]₁ = [(p(τ) - p(z)) / (τ-z)]₁, with p(τ) being the commitment, i.e. the evaluation of p at the powers of τ\n    The notation [a]₁ corresponds to the scalar multiplication of a by the generator of 𝔾1\n\n    Verification can be done by verifying the relation:\n      proof.(τ - z) = p(τ)-p(z)\n    which doesn't require the full blob but only evaluations of it\n    - at τ, p(τ) is the commitment\n    - and at the verification opening_challenge z."]
-    pub fn ctt_eth_kzg_compute_kzg_proof_parallel(
+    pub fn ctt_sila_kzg_compute_kzg_proof_parallel(
         tp: *const ctt_threadpool,
-        ctx: *const ctt_eth_kzg_context,
-        proof: *mut ctt_eth_kzg_proof,
-        y: *mut ctt_eth_kzg_eval_at_challenge,
-        blob: *const ctt_eth_kzg_blob,
-        z: *const ctt_eth_kzg_opening_challenge,
-    ) -> ctt_eth_kzg_status;
+        ctx: *const ctt_sila_kzg_context,
+        proof: *mut ctt_sila_kzg_proof,
+        y: *mut ctt_sila_kzg_eval_at_challenge,
+        blob: *const ctt_sila_kzg_blob,
+        z: *const ctt_sila_kzg_opening_challenge,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Given a blob, return the KZG proof that is used to verify it against the commitment.\n  This method does not verify that the commitment is correct with respect to `blob`."]
-    pub fn ctt_eth_kzg_compute_blob_kzg_proof_parallel(
+    pub fn ctt_sila_kzg_compute_blob_kzg_proof_parallel(
         tp: *const ctt_threadpool,
-        ctx: *const ctt_eth_kzg_context,
-        proof: *mut ctt_eth_kzg_proof,
-        blob: *const ctt_eth_kzg_blob,
-        commitment: *const ctt_eth_kzg_commitment,
-    ) -> ctt_eth_kzg_status;
+        ctx: *const ctt_sila_kzg_context,
+        proof: *mut ctt_sila_kzg_proof,
+        blob: *const ctt_sila_kzg_blob,
+        commitment: *const ctt_sila_kzg_commitment,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Given a blob and a KZG proof, verify that the blob data corresponds to the provided commitment."]
-    pub fn ctt_eth_kzg_verify_blob_kzg_proof_parallel(
+    pub fn ctt_sila_kzg_verify_blob_kzg_proof_parallel(
         tp: *const ctt_threadpool,
-        ctx: *const ctt_eth_kzg_context,
-        blob: *const ctt_eth_kzg_blob,
-        commitment: *const ctt_eth_kzg_commitment,
-        proof: *const ctt_eth_kzg_proof,
-    ) -> ctt_eth_kzg_status;
+        ctx: *const ctt_sila_kzg_context,
+        blob: *const ctt_sila_kzg_blob,
+        commitment: *const ctt_sila_kzg_commitment,
+        proof: *const ctt_sila_kzg_proof,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Verify `n` (blob, commitment, proof) sets efficiently\n\n  `n` is the number of verifications set\n  - if n is negative, this procedure returns verification failure\n  - if n is zero, this procedure returns verification success\n\n  `secure_random_bytes` random bytes must come from a cryptographically secure RNG\n  or computed through the Fiat-Shamir heuristic.\n  It serves as a random number\n  that is not in the control of a potential attacker to prevent potential\n  rogue commitments attacks due to homomorphic properties of pairings,\n  i.e. commitments that are linear combination of others and sum would be zero."]
-    pub fn ctt_eth_kzg_verify_blob_kzg_proof_batch_parallel(
+    pub fn ctt_sila_kzg_verify_blob_kzg_proof_batch_parallel(
         tp: *const ctt_threadpool,
-        ctx: *const ctt_eth_kzg_context,
-        blobs: *const ctt_eth_kzg_blob,
-        commitments: *const ctt_eth_kzg_commitment,
-        proofs: *const ctt_eth_kzg_proof,
+        ctx: *const ctt_sila_kzg_context,
+        blobs: *const ctt_sila_kzg_blob,
+        commitments: *const ctt_sila_kzg_commitment,
+        proofs: *const ctt_sila_kzg_proof,
         n: usize,
         secure_random_bytes: *const byte,
-    ) -> ctt_eth_kzg_status;
+    ) -> ctt_sila_kzg_status;
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_kzg_cell {
+pub struct ctt_sila_kzg_cell {
     raw: [byte; 2048usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_kzg_cell"][::core::mem::size_of::<ctt_eth_kzg_cell>() - 2048usize];
-    ["Alignment of ctt_eth_kzg_cell"][::core::mem::align_of::<ctt_eth_kzg_cell>() - 1usize];
-    ["Offset of field: ctt_eth_kzg_cell::raw"]
-        [::core::mem::offset_of!(ctt_eth_kzg_cell, raw) - 0usize];
+    ["Size of ctt_sila_kzg_cell"][::core::mem::size_of::<ctt_sila_kzg_cell>() - 2048usize];
+    ["Alignment of ctt_sila_kzg_cell"][::core::mem::align_of::<ctt_sila_kzg_cell>() - 1usize];
+    ["Offset of field: ctt_sila_kzg_cell::raw"]
+        [::core::mem::offset_of!(ctt_sila_kzg_cell, raw) - 0usize];
 };
 unsafe extern "C" {
     #[must_use]
-    #[doc = " Compute all cells and KZG proofs for an extended blob using the FK20 algorithm.\n\n  @param ctx        KZG context (trusted setup)\n  @param cells      Output: array of 128 cells (caller-allocated)\n  @param proofs     Output: array of 128 KZG proofs (caller-allocated)\n  @param blob       Input: the blob to compute cells/proofs for\n  @return           cttEthKzg_Success on success, error status otherwise"]
-    pub fn ctt_eth_kzg_compute_cells_and_kzg_proofs(
-        ctx: *const ctt_eth_kzg_context,
-        cells: *mut ctt_eth_kzg_cell,
-        proofs: *mut ctt_eth_kzg_proof,
-        blob: *const ctt_eth_kzg_blob,
-    ) -> ctt_eth_kzg_status;
+    #[doc = " Compute all cells and KZG proofs for an extended blob using the FK20 algorithm.\n\n  @param ctx        KZG context (trusted setup)\n  @param cells      Output: array of 128 cells (caller-allocated)\n  @param proofs     Output: array of 128 KZG proofs (caller-allocated)\n  @param blob       Input: the blob to compute cells/proofs for\n  @return           cttSilaKzg_Success on success, error status otherwise"]
+    pub fn ctt_sila_kzg_compute_cells_and_kzg_proofs(
+        ctx: *const ctt_sila_kzg_context,
+        cells: *mut ctt_sila_kzg_cell,
+        proofs: *mut ctt_sila_kzg_proof,
+        blob: *const ctt_sila_kzg_blob,
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = " Verify a batch of cell KZG proofs against their commitments.\n\n  @param ctx                KZG context (trusted setup)\n  @param commitments        Array of commitments (one per cell, may contain duplicates)\n  @param cell_indices       Array of cell indices (one per cell)\n  @param cells              Array of cells to verify\n  @param proofs             Array of KZG proofs to verify\n  @param num_cells          Number of cells in the batch\n  @param secure_random_bytes 32 bytes of cryptographically secure random data\n                             (or Fiat-Shamir derived) to prevent rogue commitment attacks\n  @return                   cttEthKzg_Success if all proofs valid,\n                            cttEthKzg_VerificationFailure if any proof invalid,\n                            other error status for invalid inputs"]
-    pub fn ctt_eth_kzg_verify_cell_kzg_proof_batch(
-        ctx: *const ctt_eth_kzg_context,
-        commitments: *const ctt_eth_kzg_commitment,
+    #[doc = " Verify a batch of cell KZG proofs against their commitments.\n\n  @param ctx                KZG context (trusted setup)\n  @param commitments        Array of commitments (one per cell, may contain duplicates)\n  @param cell_indices       Array of cell indices (one per cell)\n  @param cells              Array of cells to verify\n  @param proofs             Array of KZG proofs to verify\n  @param num_cells          Number of cells in the batch\n  @param secure_random_bytes 32 bytes of cryptographically secure random data\n                             (or Fiat-Shamir derived) to prevent rogue commitment attacks\n  @return                   cttSilaKzg_Success if all proofs valid,\n                            cttSilaKzg_VerificationFailure if any proof invalid,\n                            other error status for invalid inputs"]
+    pub fn ctt_sila_kzg_verify_cell_kzg_proof_batch(
+        ctx: *const ctt_sila_kzg_context,
+        commitments: *const ctt_sila_kzg_commitment,
         cell_indices: *const u64,
-        cells: *const ctt_eth_kzg_cell,
-        proofs: *const ctt_eth_kzg_proof,
+        cells: *const ctt_sila_kzg_cell,
+        proofs: *const ctt_sila_kzg_proof,
         num_cells: usize,
         secure_random_bytes: *const byte,
-    ) -> ctt_eth_kzg_status;
+    ) -> ctt_sila_kzg_status;
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = " Recover all cells and KZG proofs from a subset of available cells.\n\n  Requires at least 64 out of 128 cells (≥50% of the extended blob).\n\n  @param ctx              KZG context (trusted setup)\n  @param recovered_cells  Output: array of 128 recovered cells (caller-allocated)\n  @param recovered_proofs Output: array of 128 recovered KZG proofs (caller-allocated)\n  @param cell_indices     Array of indices for the provided cells (sorted, unique)\n  @param cells            Array of available cells\n  @param num_cells        Number of available cells (must be in [64, 128])\n  @note Precondition: The caller must ensure that `cells` and `cell_indices`\n        arrays are allocated with at least `num_cells` elements, and that\n        `recovered_proofs` and `recovered_cells` are allocated with exactly\n        CELLS_PER_EXT_BLOB (128) elements each.\n        The `cell_indices` array must be sorted in strictly ascending order\n        with values in [0, CELLS_PER_EXT_BLOB).\n  @return                 cttEthKzg_Success on success, error status otherwise"]
-    pub fn ctt_eth_kzg_recover_cells_and_kzg_proofs(
-        ctx: *const ctt_eth_kzg_context,
-        recovered_cells: *mut ctt_eth_kzg_cell,
-        recovered_proofs: *mut ctt_eth_kzg_proof,
+    #[doc = " Recover all cells and KZG proofs from a subset of available cells.\n\n  Requires at least 64 out of 128 cells (≥50% of the extended blob).\n\n  @param ctx              KZG context (trusted setup)\n  @param recovered_cells  Output: array of 128 recovered cells (caller-allocated)\n  @param recovered_proofs Output: array of 128 recovered KZG proofs (caller-allocated)\n  @param cell_indices     Array of indices for the provided cells (sorted, unique)\n  @param cells            Array of available cells\n  @param num_cells        Number of available cells (must be in [64, 128])\n  @note Precondition: The caller must ensure that `cells` and `cell_indices`\n        arrays are allocated with at least `num_cells` elements, and that\n        `recovered_proofs` and `recovered_cells` are allocated with exactly\n        CELLS_PER_EXT_BLOB (128) elements each.\n        The `cell_indices` array must be sorted in strictly ascending order\n        with values in [0, CELLS_PER_EXT_BLOB).\n  @return                 cttSilaKzg_Success on success, error status otherwise"]
+    pub fn ctt_sila_kzg_recover_cells_and_kzg_proofs(
+        ctx: *const ctt_sila_kzg_context,
+        recovered_cells: *mut ctt_sila_kzg_cell,
+        recovered_proofs: *mut ctt_sila_kzg_proof,
         cell_indices: *const u64,
-        cells: *const ctt_eth_kzg_cell,
+        cells: *const ctt_sila_kzg_cell,
         num_cells: usize,
-    ) -> ctt_eth_kzg_status;
+    ) -> ctt_sila_kzg_status;
 }
 #[repr(u8)]
 #[derive(Copy, Clone, Hash, PartialEq, Eq, Debug)]
@@ -5058,9 +5058,9 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  EIP-4844 Blobs KZG point evaluation\n\n  Name: POINT_EVALUATION\n\n  Verify `p(z) = y` given commitment that corresponds to the polynomial `p(x)` and a KZG proof.\n\n  Input:\n  - versioned_hash | z | y | commitment | proof |\n  - The length MUST be 192 bytes with the following breakdown:\n    - 32 bytes, SHA256 versioned hash of the commitment VERSIONED_HASH_VERSION_KZG + sha256(commitment)[1:]\n      currently VERSIONED_HASH_VERSION_KZG is hardcoded at 0x01.\n    - 32 bytes, z a polynomial opening challenge\n    - 32 bytes, y the evaluation of the polynomial `p` at the challenge\n    - 48 bytes, C a commitment to the polynomial `p`\n    - 48 bytes, a succinct proof that allows verifying p(z) = y withut the full polynomial\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - On success, returns:\n      - 32 bytes, the number of field elements per EIP-4844 blobs, encoded in big-endian\n      - 32 bytes, the 255-bit BLS12-381 scalar field modulus (i.e. curve order r), encoded in big endian\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_VerificationFailure\n\n  Spec https://eips.ethereum.org/EIPS/eip-4844"]
+    #[doc = "  SIP-4844 Blobs KZG point evaluation\n\n  Name: POINT_EVALUATION\n\n  Verify `p(z) = y` given commitment that corresponds to the polynomial `p(x)` and a KZG proof.\n\n  Input:\n  - versioned_hash | z | y | commitment | proof |\n  - The length MUST be 192 bytes with the following breakdown:\n    - 32 bytes, SHA256 versioned hash of the commitment VERSIONED_HASH_VERSION_KZG + sha256(commitment)[1:]\n      currently VERSIONED_HASH_VERSION_KZG is hardcoded at 0x01.\n    - 32 bytes, z a polynomial opening challenge\n    - 32 bytes, y the evaluation of the polynomial `p` at the challenge\n    - 48 bytes, C a commitment to the polynomial `p`\n    - 48 bytes, a succinct proof that allows verifying p(z) = y withut the full polynomial\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - On success, returns:\n      - 32 bytes, the number of field elements per SIP-4844 blobs, encoded in big-endian\n      - 32 bytes, the 255-bit BLS12-381 scalar field modulus (i.e. curve order r), encoded in big endian\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_VerificationFailure\n\n  Spec https://eips.ethereum.org/EIPS/eip-4844"]
     pub fn ctt_eth_evm_kzg_point_evaluation(
-        ctx: *const ctt_eth_kzg_context,
+        ctx: *const ctt_sila_kzg_context,
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,

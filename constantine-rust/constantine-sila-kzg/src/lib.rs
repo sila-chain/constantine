@@ -16,25 +16,25 @@ use std::{ffi::CString, path::Path};
 // ------------------------------------------------------------
 
 #[derive(Debug)]
-pub struct EthKzgContext<'tp> {
-    pub ctx: *const ctt_eth_kzg_context,
+pub struct SilaKzgContext<'tp> {
+    pub ctx: *const ctt_sila_kzg_context,
     threadpool: Option<&'tp Threadpool>,
 }
 
-pub struct EthKzgContextBuilder<'tp> {
-    ctx: Option<*const ctt_eth_kzg_context>,
+pub struct SilaKzgContextBuilder<'tp> {
+    ctx: Option<*const ctt_sila_kzg_context>,
     threadpool: Option<&'tp Threadpool>,
 }
 
-impl<'tp> Drop for EthKzgContext<'tp> {
+impl<'tp> Drop for SilaKzgContext<'tp> {
     #[inline(always)]
     fn drop(&mut self) {
-        unsafe { ctt_eth_kzg_context_delete(self.ctx as *mut ctt_eth_kzg_context) }
+        unsafe { ctt_sila_kzg_context_delete(self.ctx as *mut ctt_sila_kzg_context) }
     }
 }
 
-impl<'tp> EthKzgContextBuilder<'tp> {
-    pub fn load_trusted_setup(self, file_path: &Path) -> Result<Self, ctt_eth_trusted_setup_status> {
+impl<'tp> SilaKzgContextBuilder<'tp> {
+    pub fn load_trusted_setup(self, file_path: &Path) -> Result<Self, ctt_sila_trusted_setup_status> {
         // The joy of OS Paths / C Paths:
         // https://users.rust-lang.org/t/easy-way-to-pass-a-path-to-c/51829
         // https://doc.rust-lang.org/std/ffi/index.html#conversions
@@ -53,24 +53,24 @@ impl<'tp> EthKzgContextBuilder<'tp> {
             file_path
                 .as_os_str()
                 .to_str()
-                .ok_or(ctt_eth_trusted_setup_status::cttEthTS_MissingOrInaccessibleFile)?
+                .ok_or(ctt_sila_trusted_setup_status::cttSilaTS_MissingOrInaccessibleFile)?
                 .as_bytes()
         };
 
         let c_path = CString::new(raw_path)
-            .map_err(|_| ctt_eth_trusted_setup_status::cttEthTS_MissingOrInaccessibleFile)?;
+            .map_err(|_| ctt_sila_trusted_setup_status::cttSilaTS_MissingOrInaccessibleFile)?;
 
-        let mut ctx: *mut ctt_eth_kzg_context = std::ptr::null_mut();
-        let ctx_ptr: *mut *mut ctt_eth_kzg_context = &mut ctx;
+        let mut ctx: *mut ctt_sila_kzg_context = std::ptr::null_mut();
+        let ctx_ptr: *mut *mut ctt_sila_kzg_context = &mut ctx;
         let status = unsafe {
-            ctt_eth_kzg_context_new(
+            ctt_sila_kzg_context_new(
                 ctx_ptr,
                 c_path.as_ptr(),
-                ctt_eth_trusted_setup_format::cttEthTSFormat_ckzg4844,
+                ctt_sila_trusted_setup_format::cttSilaTSFormat_ckzg4844,
             )
         };
         match status {
-            ctt_eth_trusted_setup_status::cttEthTS_Success => Ok(Self { ctx: Some(ctx), threadpool: self.threadpool }),
+            ctt_sila_trusted_setup_status::cttSilaTS_Success => Ok(Self { ctx: Some(ctx), threadpool: self.threadpool }),
             _ => Err(status),
         }
     }
@@ -99,7 +99,7 @@ impl<'tp> EthKzgContextBuilder<'tp> {
     /// Larger b = faster per MSM but exponentially more memory (2^b entries).
     /// Larger t = fewer doublings but more precomputed layers.
     /// Recommended (t=256, b=8): ~98 ms/blob proving, ~24 MiB total memory.
-    pub fn load_trusted_setup_with_precompute(self, file_path: &Path, t: i32, b: i32) -> Result<Self, ctt_eth_trusted_setup_status> {
+    pub fn load_trusted_setup_with_precompute(self, file_path: &Path, t: i32, b: i32) -> Result<Self, ctt_sila_trusted_setup_status> {
         #[cfg(unix)]
         let raw_path = {
             use std::os::unix::prelude::OsStrExt;
@@ -111,26 +111,26 @@ impl<'tp> EthKzgContextBuilder<'tp> {
             file_path
                 .as_os_str()
                 .to_str()
-                .ok_or(ctt_eth_trusted_setup_status::cttEthTS_MissingOrInaccessibleFile)?
+                .ok_or(ctt_sila_trusted_setup_status::cttSilaTS_MissingOrInaccessibleFile)?
                 .as_bytes()
         };
 
         let c_path = CString::new(raw_path)
-            .map_err(|_| ctt_eth_trusted_setup_status::cttEthTS_MissingOrInaccessibleFile)?;
+            .map_err(|_| ctt_sila_trusted_setup_status::cttSilaTS_MissingOrInaccessibleFile)?;
 
-        let mut ctx: *mut ctt_eth_kzg_context = std::ptr::null_mut();
-        let ctx_ptr: *mut *mut ctt_eth_kzg_context = &mut ctx;
+        let mut ctx: *mut ctt_sila_kzg_context = std::ptr::null_mut();
+        let ctx_ptr: *mut *mut ctt_sila_kzg_context = &mut ctx;
         let status = unsafe {
-            ctt_eth_kzg_context_new_with_precompute(
+            ctt_sila_kzg_context_new_with_precompute(
                 ctx_ptr,
                 c_path.as_ptr(),
-                ctt_eth_trusted_setup_format::cttEthTSFormat_ckzg4844,
+                ctt_sila_trusted_setup_format::cttSilaTSFormat_ckzg4844,
                 t,
                 b,
             )
         };
         match status {
-            ctt_eth_trusted_setup_status::cttEthTS_Success => Ok(Self { ctx: Some(ctx), threadpool: self.threadpool }),
+            ctt_sila_trusted_setup_status::cttSilaTS_Success => Ok(Self { ctx: Some(ctx), threadpool: self.threadpool }),
             _ => Err(status),
         }
     }
@@ -142,9 +142,9 @@ impl<'tp> EthKzgContextBuilder<'tp> {
         Self { ctx, threadpool: Some(tp)}
     }
 
-    pub fn build(self) -> Result<EthKzgContext<'tp>, ctt_eth_trusted_setup_status> {
-        let ctx = self.ctx.ok_or(ctt_eth_trusted_setup_status::cttEthTS_MissingOrInaccessibleFile)?;
-        Ok(EthKzgContext{
+    pub fn build(self) -> Result<SilaKzgContext<'tp>, ctt_sila_trusted_setup_status> {
+        let ctx = self.ctx.ok_or(ctt_sila_trusted_setup_status::cttSilaTS_MissingOrInaccessibleFile)?;
+        Ok(SilaKzgContext{
             ctx,
             threadpool: self.threadpool,
         })
@@ -152,12 +152,12 @@ impl<'tp> EthKzgContextBuilder<'tp> {
 
 }
 
-impl<'tp> EthKzgContext<'tp> {
-    pub fn builder() -> EthKzgContextBuilder<'tp> {
-        EthKzgContextBuilder{ctx: None, threadpool: None}
+impl<'tp> SilaKzgContext<'tp> {
+    pub fn builder() -> SilaKzgContextBuilder<'tp> {
+        SilaKzgContextBuilder{ctx: None, threadpool: None}
     }
 
-    pub fn load_trusted_setup(file_path: &Path) -> Result<Self, ctt_eth_trusted_setup_status> {
+    pub fn load_trusted_setup(file_path: &Path) -> Result<Self, ctt_sila_trusted_setup_status> {
         Ok(Self::builder()
             .load_trusted_setup(file_path)?
             .build()
@@ -168,16 +168,16 @@ impl<'tp> EthKzgContext<'tp> {
     pub fn blob_to_kzg_commitment(
         &self,
         blob: &[u8; 4096 * 32],
-    ) -> Result<[u8; 48], ctt_eth_kzg_status> {
+    ) -> Result<[u8; 48], ctt_sila_kzg_status> {
         let mut result: MaybeUninit<[u8; 48]> = MaybeUninit::uninit();
         unsafe {
-            let status = ctt_eth_kzg_blob_to_kzg_commitment(
+            let status = ctt_sila_kzg_blob_to_kzg_commitment(
                 self.ctx,
-                result.as_mut_ptr() as *mut ctt_eth_kzg_commitment,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
+                result.as_mut_ptr() as *mut ctt_sila_kzg_commitment,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
             );
             match status {
-                ctt_eth_kzg_status::cttEthKzg_Success => Ok(result.assume_init()),
+                ctt_sila_kzg_status::cttSilaKzg_Success => Ok(result.assume_init()),
                 _ => Err(status),
             }
         }
@@ -188,19 +188,19 @@ impl<'tp> EthKzgContext<'tp> {
         &self,
         blob: &[u8; 4096 * 32],
         z_challenge: &[u8; 32],
-    ) -> Result<([u8; 48], [u8; 32]), ctt_eth_kzg_status> {
+    ) -> Result<([u8; 48], [u8; 32]), ctt_sila_kzg_status> {
         let mut proof = MaybeUninit::<[u8; 48]>::uninit();
         let mut y_eval = MaybeUninit::<[u8; 32]>::uninit();
         unsafe {
-            let status = ctt_eth_kzg_compute_kzg_proof(
+            let status = ctt_sila_kzg_compute_kzg_proof(
                 self.ctx,
-                proof.as_mut_ptr() as *mut ctt_eth_kzg_proof,
-                y_eval.as_mut_ptr() as *mut ctt_eth_kzg_eval_at_challenge,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
-                z_challenge.as_ptr() as *const ctt_eth_kzg_opening_challenge,
+                proof.as_mut_ptr() as *mut ctt_sila_kzg_proof,
+                y_eval.as_mut_ptr() as *mut ctt_sila_kzg_eval_at_challenge,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
+                z_challenge.as_ptr() as *const ctt_sila_kzg_opening_challenge,
             );
             match status {
-                ctt_eth_kzg_status::cttEthKzg_Success => {
+                ctt_sila_kzg_status::cttSilaKzg_Success => {
                     Ok((proof.assume_init(), y_eval.assume_init()))
                 }
                 _ => Err(status),
@@ -215,19 +215,19 @@ impl<'tp> EthKzgContext<'tp> {
         z_challenge: &[u8; 32],
         y_eval_at_challenge: &[u8; 32],
         proof: &[u8; 48],
-    ) -> Result<bool, ctt_eth_kzg_status> {
+    ) -> Result<bool, ctt_sila_kzg_status> {
         let status = unsafe {
-            ctt_eth_kzg_verify_kzg_proof(
+            ctt_sila_kzg_verify_kzg_proof(
                 self.ctx,
-                commitment.as_ptr() as *const ctt_eth_kzg_commitment,
-                z_challenge.as_ptr() as *const ctt_eth_kzg_opening_challenge,
-                y_eval_at_challenge.as_ptr() as *const ctt_eth_kzg_eval_at_challenge,
-                proof.as_ptr() as *const ctt_eth_kzg_proof,
+                commitment.as_ptr() as *const ctt_sila_kzg_commitment,
+                z_challenge.as_ptr() as *const ctt_sila_kzg_opening_challenge,
+                y_eval_at_challenge.as_ptr() as *const ctt_sila_kzg_eval_at_challenge,
+                proof.as_ptr() as *const ctt_sila_kzg_proof,
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => Ok(true),
-            ctt_eth_kzg_status::cttEthKzg_VerificationFailure => Ok(false),
+            ctt_sila_kzg_status::cttSilaKzg_Success => Ok(true),
+            ctt_sila_kzg_status::cttSilaKzg_VerificationFailure => Ok(false),
             _ => Err(status),
         }
     }
@@ -237,17 +237,17 @@ impl<'tp> EthKzgContext<'tp> {
         &self,
         blob: &[u8; 4096 * 32],
         commitment: &[u8; 48],
-    ) -> Result<[u8; 48], ctt_eth_kzg_status> {
+    ) -> Result<[u8; 48], ctt_sila_kzg_status> {
         let mut proof = MaybeUninit::<[u8; 48]>::uninit();
         unsafe {
-            let status = ctt_eth_kzg_compute_blob_kzg_proof(
+            let status = ctt_sila_kzg_compute_blob_kzg_proof(
                 self.ctx,
-                proof.as_mut_ptr() as *mut ctt_eth_kzg_proof,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
-                commitment.as_ptr() as *const ctt_eth_kzg_commitment,
+                proof.as_mut_ptr() as *mut ctt_sila_kzg_proof,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
+                commitment.as_ptr() as *const ctt_sila_kzg_commitment,
             );
             match status {
-                ctt_eth_kzg_status::cttEthKzg_Success => Ok(proof.assume_init()),
+                ctt_sila_kzg_status::cttSilaKzg_Success => Ok(proof.assume_init()),
                 _ => Err(status),
             }
         }
@@ -259,18 +259,18 @@ impl<'tp> EthKzgContext<'tp> {
         blob: &[u8; 4096 * 32],
         commitment: &[u8; 48],
         proof: &[u8; 48],
-    ) -> Result<bool, ctt_eth_kzg_status> {
+    ) -> Result<bool, ctt_sila_kzg_status> {
         let status = unsafe {
-            ctt_eth_kzg_verify_blob_kzg_proof(
+            ctt_sila_kzg_verify_blob_kzg_proof(
                 self.ctx,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
-                commitment.as_ptr() as *const ctt_eth_kzg_commitment,
-                proof.as_ptr() as *const ctt_eth_kzg_proof,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
+                commitment.as_ptr() as *const ctt_sila_kzg_commitment,
+                proof.as_ptr() as *const ctt_sila_kzg_proof,
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => Ok(true),
-            ctt_eth_kzg_status::cttEthKzg_VerificationFailure => Ok(false),
+            ctt_sila_kzg_status::cttSilaKzg_Success => Ok(true),
+            ctt_sila_kzg_status::cttSilaKzg_VerificationFailure => Ok(false),
             _ => Err(status),
         }
     }
@@ -282,24 +282,24 @@ impl<'tp> EthKzgContext<'tp> {
         commitments: &[[u8; 48]],
         proofs: &[[u8; 48]],
         secure_random_bytes: &[u8; 32],
-    ) -> Result<bool, ctt_eth_kzg_status> {
+    ) -> Result<bool, ctt_sila_kzg_status> {
         if blobs.len() != commitments.len() || blobs.len() != proofs.len() {
-            return Err(ctt_eth_kzg_status::cttEthKzg_InputsLengthsMismatch);
+            return Err(ctt_sila_kzg_status::cttSilaKzg_InputsLengthsMismatch);
         }
 
         let status = unsafe {
-            ctt_eth_kzg_verify_blob_kzg_proof_batch(
+            ctt_sila_kzg_verify_blob_kzg_proof_batch(
                 self.ctx,
-                blobs.as_ptr() as *const ctt_eth_kzg_blob,
-                commitments.as_ptr() as *const ctt_eth_kzg_commitment,
-                proofs.as_ptr() as *const ctt_eth_kzg_proof,
+                blobs.as_ptr() as *const ctt_sila_kzg_blob,
+                commitments.as_ptr() as *const ctt_sila_kzg_commitment,
+                proofs.as_ptr() as *const ctt_sila_kzg_proof,
                 blobs.len(),
                 secure_random_bytes.as_ptr(),
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => Ok(true),
-            ctt_eth_kzg_status::cttEthKzg_VerificationFailure => Ok(false),
+            ctt_sila_kzg_status::cttSilaKzg_Success => Ok(true),
+            ctt_sila_kzg_status::cttSilaKzg_VerificationFailure => Ok(false),
             _ => Err(status),
         }
     }
@@ -311,17 +311,17 @@ impl<'tp> EthKzgContext<'tp> {
     pub fn blob_to_kzg_commitment_parallel(
         &self,
         blob: &[u8; 4096 * 32],
-    ) -> Result<[u8; 48], ctt_eth_kzg_status> {
+    ) -> Result<[u8; 48], ctt_sila_kzg_status> {
         let mut result: MaybeUninit<[u8; 48]> = MaybeUninit::uninit();
         unsafe {
-            let status = ctt_eth_kzg_blob_to_kzg_commitment_parallel(
+            let status = ctt_sila_kzg_blob_to_kzg_commitment_parallel(
                 self.threadpool.expect("Threadpool has been set").get_private_context(),
                 self.ctx,
-                result.as_mut_ptr() as *mut ctt_eth_kzg_commitment,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
+                result.as_mut_ptr() as *mut ctt_sila_kzg_commitment,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
             );
             match status {
-                ctt_eth_kzg_status::cttEthKzg_Success => Ok(result.assume_init()),
+                ctt_sila_kzg_status::cttSilaKzg_Success => Ok(result.assume_init()),
                 _ => Err(status),
             }
         }
@@ -332,20 +332,20 @@ impl<'tp> EthKzgContext<'tp> {
         &self,
         blob: &[u8; 4096 * 32],
         z_challenge: &[u8; 32],
-    ) -> Result<([u8; 48], [u8; 32]), ctt_eth_kzg_status> {
+    ) -> Result<([u8; 48], [u8; 32]), ctt_sila_kzg_status> {
         let mut proof = MaybeUninit::<[u8; 48]>::uninit();
         let mut y_eval = MaybeUninit::<[u8; 32]>::uninit();
         unsafe {
-            let status = ctt_eth_kzg_compute_kzg_proof_parallel(
+            let status = ctt_sila_kzg_compute_kzg_proof_parallel(
                 self.threadpool.expect("Threadpool has been set").get_private_context(),
                 self.ctx,
-                proof.as_mut_ptr() as *mut ctt_eth_kzg_proof,
-                y_eval.as_mut_ptr() as *mut ctt_eth_kzg_eval_at_challenge,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
-                z_challenge.as_ptr() as *const ctt_eth_kzg_opening_challenge,
+                proof.as_mut_ptr() as *mut ctt_sila_kzg_proof,
+                y_eval.as_mut_ptr() as *mut ctt_sila_kzg_eval_at_challenge,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
+                z_challenge.as_ptr() as *const ctt_sila_kzg_opening_challenge,
             );
             match status {
-                ctt_eth_kzg_status::cttEthKzg_Success => {
+                ctt_sila_kzg_status::cttSilaKzg_Success => {
                     Ok((proof.assume_init(), y_eval.assume_init()))
                 }
                 _ => Err(status),
@@ -358,18 +358,18 @@ impl<'tp> EthKzgContext<'tp> {
         &self,
         blob: &[u8; 4096 * 32],
         commitment: &[u8; 48],
-    ) -> Result<[u8; 48], ctt_eth_kzg_status> {
+    ) -> Result<[u8; 48], ctt_sila_kzg_status> {
         let mut proof = MaybeUninit::<[u8; 48]>::uninit();
         unsafe {
-            let status = ctt_eth_kzg_compute_blob_kzg_proof_parallel(
+            let status = ctt_sila_kzg_compute_blob_kzg_proof_parallel(
                 self.threadpool.expect("Threadpool has been set").get_private_context(),
                 self.ctx,
-                proof.as_mut_ptr() as *mut ctt_eth_kzg_proof,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
-                commitment.as_ptr() as *const ctt_eth_kzg_commitment,
+                proof.as_mut_ptr() as *mut ctt_sila_kzg_proof,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
+                commitment.as_ptr() as *const ctt_sila_kzg_commitment,
             );
             match status {
-                ctt_eth_kzg_status::cttEthKzg_Success => Ok(proof.assume_init()),
+                ctt_sila_kzg_status::cttSilaKzg_Success => Ok(proof.assume_init()),
                 _ => Err(status),
             }
         }
@@ -381,19 +381,19 @@ impl<'tp> EthKzgContext<'tp> {
         blob: &[u8; 4096 * 32],
         commitment: &[u8; 48],
         proof: &[u8; 48],
-    ) -> Result<bool, ctt_eth_kzg_status> {
+    ) -> Result<bool, ctt_sila_kzg_status> {
         let status = unsafe {
-            ctt_eth_kzg_verify_blob_kzg_proof_parallel(
+            ctt_sila_kzg_verify_blob_kzg_proof_parallel(
                 self.threadpool.expect("Threadpool has been set").get_private_context(),
                 self.ctx,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
-                commitment.as_ptr() as *const ctt_eth_kzg_commitment,
-                proof.as_ptr() as *const ctt_eth_kzg_proof,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
+                commitment.as_ptr() as *const ctt_sila_kzg_commitment,
+                proof.as_ptr() as *const ctt_sila_kzg_proof,
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => Ok(true),
-            ctt_eth_kzg_status::cttEthKzg_VerificationFailure => Ok(false),
+            ctt_sila_kzg_status::cttSilaKzg_Success => Ok(true),
+            ctt_sila_kzg_status::cttSilaKzg_VerificationFailure => Ok(false),
             _ => Err(status),
         }
     }
@@ -405,51 +405,51 @@ impl<'tp> EthKzgContext<'tp> {
         commitments: &[[u8; 48]],
         proofs: &[[u8; 48]],
         secure_random_bytes: &[u8; 32],
-    ) -> Result<bool, ctt_eth_kzg_status> {
+    ) -> Result<bool, ctt_sila_kzg_status> {
         if blobs.len() != commitments.len() || blobs.len() != proofs.len() {
-            return Err(ctt_eth_kzg_status::cttEthKzg_InputsLengthsMismatch);
+            return Err(ctt_sila_kzg_status::cttSilaKzg_InputsLengthsMismatch);
         }
 
         let status = unsafe {
-            ctt_eth_kzg_verify_blob_kzg_proof_batch_parallel(
+            ctt_sila_kzg_verify_blob_kzg_proof_batch_parallel(
                 self.threadpool.expect("Threadpool has been set").get_private_context(),
                 self.ctx,
-                blobs.as_ptr() as *const ctt_eth_kzg_blob,
-                commitments.as_ptr() as *const ctt_eth_kzg_commitment,
-                proofs.as_ptr() as *const ctt_eth_kzg_proof,
+                blobs.as_ptr() as *const ctt_sila_kzg_blob,
+                commitments.as_ptr() as *const ctt_sila_kzg_commitment,
+                proofs.as_ptr() as *const ctt_sila_kzg_proof,
                 blobs.len(),
                 secure_random_bytes.as_ptr(),
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => Ok(true),
-            ctt_eth_kzg_status::cttEthKzg_VerificationFailure => Ok(false),
+            ctt_sila_kzg_status::cttSilaKzg_Success => Ok(true),
+            ctt_sila_kzg_status::cttSilaKzg_VerificationFailure => Ok(false),
             _ => Err(status),
         }
     }
 }
 
-// PeerDAS (EIP-7594)
+// PeerDAS (SIP-7594)
 // ------------------------------------------------------------
 
-impl<'tp> EthKzgContext<'tp> {
+impl<'tp> SilaKzgContext<'tp> {
     pub fn compute_cells_and_kzg_proofs(
         &self,
         blob: &[u8; 131_072],
-    ) -> Result<(Box<[u8; 262_144]>, Box<[u8; 6_144]>), ctt_eth_kzg_status> {
+    ) -> Result<(Box<[u8; 262_144]>, Box<[u8; 6_144]>), ctt_sila_kzg_status> {
         use std::mem::ManuallyDrop;
         let mut cells = ManuallyDrop::new(Box::<[u8; 262_144]>::new_uninit());
         let mut proofs = ManuallyDrop::new(Box::<[u8; 6_144]>::new_uninit());
         let status = unsafe {
-            ctt_eth_kzg_compute_cells_and_kzg_proofs(
+            ctt_sila_kzg_compute_cells_and_kzg_proofs(
                 self.ctx,
-                cells.as_mut_ptr() as *mut ctt_eth_kzg_cell,
-                proofs.as_mut_ptr() as *mut ctt_eth_kzg_proof,
-                blob.as_ptr() as *const ctt_eth_kzg_blob,
+                cells.as_mut_ptr() as *mut ctt_sila_kzg_cell,
+                proofs.as_mut_ptr() as *mut ctt_sila_kzg_proof,
+                blob.as_ptr() as *const ctt_sila_kzg_blob,
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => {
+            ctt_sila_kzg_status::cttSilaKzg_Success => {
                 Ok(unsafe { (ManuallyDrop::into_inner(cells).assume_init(),
                             ManuallyDrop::into_inner(proofs).assume_init()) })
             }
@@ -470,25 +470,25 @@ impl<'tp> EthKzgContext<'tp> {
         cells: &[[u8; 2048]],
         proofs: &[[u8; 48]],
         secure_random_bytes: &[u8; 32],
-    ) -> Result<bool, ctt_eth_kzg_status> {
+    ) -> Result<bool, ctt_sila_kzg_status> {
         let n = commitments.len();
         if n != cell_indices.len() || n != cells.len() || n != proofs.len() {
-            return Err(ctt_eth_kzg_status::cttEthKzg_InputsLengthsMismatch);
+            return Err(ctt_sila_kzg_status::cttSilaKzg_InputsLengthsMismatch);
         }
         let status = unsafe {
-            ctt_eth_kzg_verify_cell_kzg_proof_batch(
+            ctt_sila_kzg_verify_cell_kzg_proof_batch(
                 self.ctx,
-                commitments.as_ptr() as *const ctt_eth_kzg_commitment,
+                commitments.as_ptr() as *const ctt_sila_kzg_commitment,
                 cell_indices.as_ptr(),
-                cells.as_ptr() as *const ctt_eth_kzg_cell,
-                proofs.as_ptr() as *const ctt_eth_kzg_proof,
+                cells.as_ptr() as *const ctt_sila_kzg_cell,
+                proofs.as_ptr() as *const ctt_sila_kzg_proof,
                 n,
                 secure_random_bytes.as_ptr(),
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => Ok(true),
-            ctt_eth_kzg_status::cttEthKzg_VerificationFailure => Ok(false),
+            ctt_sila_kzg_status::cttSilaKzg_Success => Ok(true),
+            ctt_sila_kzg_status::cttSilaKzg_VerificationFailure => Ok(false),
             _ => Err(status),
         }
     }
@@ -497,25 +497,25 @@ impl<'tp> EthKzgContext<'tp> {
         &self,
         cells: &[[u8; 2048]],
         cell_indices: &[u64],
-    ) -> Result<(Box<[u8; 262_144]>, Box<[u8; 6_144]>), ctt_eth_kzg_status> {
+    ) -> Result<(Box<[u8; 262_144]>, Box<[u8; 6_144]>), ctt_sila_kzg_status> {
         if cells.len() != cell_indices.len() {
-            return Err(ctt_eth_kzg_status::cttEthKzg_InputsLengthsMismatch);
+            return Err(ctt_sila_kzg_status::cttSilaKzg_InputsLengthsMismatch);
         }
         use std::mem::ManuallyDrop;
         let mut recovered_cells = ManuallyDrop::new(Box::<[u8; 262_144]>::new_uninit());
         let mut recovered_proofs = ManuallyDrop::new(Box::<[u8; 6_144]>::new_uninit());
         let status = unsafe {
-            ctt_eth_kzg_recover_cells_and_kzg_proofs(
+            ctt_sila_kzg_recover_cells_and_kzg_proofs(
                 self.ctx,
-                recovered_cells.as_mut_ptr() as *mut ctt_eth_kzg_cell,
-                recovered_proofs.as_mut_ptr() as *mut ctt_eth_kzg_proof,
+                recovered_cells.as_mut_ptr() as *mut ctt_sila_kzg_cell,
+                recovered_proofs.as_mut_ptr() as *mut ctt_sila_kzg_proof,
                 cell_indices.as_ptr(),
-                cells.as_ptr() as *const ctt_eth_kzg_cell,
+                cells.as_ptr() as *const ctt_sila_kzg_cell,
                 cells.len(),
             )
         };
         match status {
-            ctt_eth_kzg_status::cttEthKzg_Success => {
+            ctt_sila_kzg_status::cttSilaKzg_Success => {
                 Ok(unsafe { (ManuallyDrop::into_inner(recovered_cells).assume_init(),
                             ManuallyDrop::into_inner(recovered_proofs).assume_init()) })
             }

@@ -7,7 +7,7 @@
 //! at your option. This file may not be copied, modified, or distributed except according to those terms.
 
 use constantine_core::{csprngs, hardware, Threadpool};
-use constantine_ethereum_kzg::EthKzgContext;
+use constantine_sila_kzg::SilaKzgContext;
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -19,13 +19,13 @@ use serde_yaml;
 
 #[test]
 fn t_smoke_load_trusted_setup() {
-    let _ctx = EthKzgContext::load_trusted_setup(Path::new(
+    let _ctx = SilaKzgContext::load_trusted_setup(Path::new(
         "../../constantine/commitments_setups/trusted_setup_ethereum_kzg4844_reference.dat",
     ))
     .expect("Trusted setup should be loaded without error.");
 }
 
-// Official Ethereum test vectors
+// Official Sila test vectors
 // -----------------------------------------------------------
 
 // Rust does not support concatenating
@@ -81,7 +81,7 @@ fn t_blob_to_kzg_commitment() {
         output: OptBytes<48>,
     }
 
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let test_files: Vec<PathBuf> = glob(BLOB_TO_KZG_COMMITMENT_TESTS)
@@ -139,7 +139,7 @@ fn t_compute_kzg_proof() {
         output: Option<(OptBytes<48>, OptBytes<32>)>,
     }
 
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let test_files: Vec<PathBuf> = glob(COMPUTE_KZG_PROOF_TESTS)
@@ -202,7 +202,7 @@ fn t_verify_kzg_proof() {
         output: Option<bool>,
     }
 
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let test_files: Vec<PathBuf> = glob(VERIFY_KZG_PROOF_TESTS)
@@ -268,7 +268,7 @@ fn t_compute_blob_kzg_proof() {
         output: OptBytes<48>,
     }
 
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let test_files: Vec<PathBuf> = glob(COMPUTE_BLOB_KZG_PROOF_TESTS)
@@ -330,7 +330,7 @@ fn t_verify_blob_kzg_proof() {
         output: Option<bool>,
     }
 
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let test_files: Vec<PathBuf> = glob(VERIFY_BLOB_KZG_PROOF_TESTS)
@@ -397,7 +397,7 @@ fn t_verify_blob_kzg_proof_batch() {
         output: Option<bool>,
     }
 
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let mut secure_random_bytes = [0u8; 32];
@@ -481,12 +481,12 @@ fn t_blob_to_kzg_commitment_parallel() {
     }
 
     let tp = Threadpool::new(hardware::get_num_threads_os());
-    let ctx = EthKzgContext::builder()
+    let ctx = SilaKzgContext::builder()
                 .load_trusted_setup(Path::new(SRS_PATH))
                 .expect("Trusted setup loaded successfully")
                 .set_threadpool(&tp)
                 .build()
-                .expect("EthKzgContext initialized successfully");
+                .expect("SilaKzgContext initialized successfully");
 
     let test_files: Vec<PathBuf> = glob(BLOB_TO_KZG_COMMITMENT_TESTS)
         .unwrap()
@@ -544,12 +544,12 @@ fn t_compute_kzg_proof_parallel() {
     }
 
     let tp = Threadpool::new(hardware::get_num_threads_os());
-    let ctx = EthKzgContext::builder()
+    let ctx = SilaKzgContext::builder()
                 .load_trusted_setup(Path::new(SRS_PATH))
                 .expect("Trusted setup loaded successfully")
                 .set_threadpool(&tp)
                 .build()
-                .expect("EthKzgContext initialized successfully");
+                .expect("SilaKzgContext initialized successfully");
 
     let test_files: Vec<PathBuf> = glob(COMPUTE_KZG_PROOF_TESTS)
         .unwrap()
@@ -609,12 +609,12 @@ fn t_compute_blob_kzg_proof_parallel() {
     }
 
     let tp = Threadpool::new(hardware::get_num_threads_os());
-    let ctx = EthKzgContext::builder()
+    let ctx = SilaKzgContext::builder()
                 .load_trusted_setup(Path::new(SRS_PATH))
                 .expect("Trusted setup loaded successfully")
                 .set_threadpool(&tp)
                 .build()
-                .expect("EthKzgContext initialized successfully");
+                .expect("SilaKzgContext initialized successfully");
 
     let test_files: Vec<PathBuf> = glob(COMPUTE_BLOB_KZG_PROOF_TESTS)
         .unwrap()
@@ -676,12 +676,12 @@ fn t_verify_blob_kzg_proof_parallel() {
     }
 
     let tp = Threadpool::new(hardware::get_num_threads_os());
-    let ctx = EthKzgContext::builder()
+    let ctx = SilaKzgContext::builder()
                 .load_trusted_setup(Path::new(SRS_PATH))
                 .expect("Trusted setup loaded successfully")
                 .set_threadpool(&tp)
                 .build()
-                .expect("EthKzgContext initialized successfully");
+                .expect("SilaKzgContext initialized successfully");
 
     let test_files: Vec<PathBuf> = glob(VERIFY_BLOB_KZG_PROOF_TESTS)
         .unwrap()
@@ -748,12 +748,12 @@ fn t_verify_blob_kzg_proof_batch_parallel() {
     }
 
     let tp = Threadpool::new(hardware::get_num_threads_os());
-    let ctx = EthKzgContext::builder()
+    let ctx = SilaKzgContext::builder()
                 .load_trusted_setup(Path::new(SRS_PATH))
                 .expect("Trusted setup loaded successfully")
                 .set_threadpool(&tp)
                 .build()
-                .expect("EthKzgContext initialized successfully");
+                .expect("SilaKzgContext initialized successfully");
 
     let mut secure_random_bytes = [0u8; 32];
     csprngs::sysrand(secure_random_bytes.as_mut_slice());

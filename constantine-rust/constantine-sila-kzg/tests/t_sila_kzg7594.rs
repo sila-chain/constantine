@@ -7,8 +7,8 @@
 //! at your option. This file may not be copied, modified, or distributed except according to those terms.
 
 use constantine_core::csprngs;
-use constantine_ethereum_kzg::EthKzgContext;
-use constantine_sys::ctt_eth_kzg_status;
+use constantine_sila_kzg::SilaKzgContext;
+use constantine_sys::ctt_sila_kzg_status;
 
 use std::fs;
 use std::path::Path;
@@ -89,12 +89,12 @@ fn t_compute_cells_and_kzg_proofs() {
     for (label, ctx) in [
         (
             "no-precompute",
-            EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+            SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
                 .expect("Trusted setup should be loaded without error."),
         ),
         (
             "precompute (t=256, b=8)",
-            EthKzgContext::builder()
+            SilaKzgContext::builder()
                 .load_trusted_setup_with_precompute(Path::new(SRS_PATH), 256, 8)
                 .expect("Trusted setup with precompute should be loaded without error.")
                 .build()
@@ -187,7 +187,7 @@ fn t_verify_cell_kzg_proof_batch() {
         output: Option<bool>,
     }
 
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let mut secure_random_bytes = [0u8; 32];
@@ -321,12 +321,12 @@ fn t_recover_cells_and_kzg_proofs() {
     for (label, ctx) in [
         (
             "no-precompute",
-            EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+            SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
                 .expect("Trusted setup should be loaded without error."),
         ),
         (
             "precompute (t=256, b=8)",
-            EthKzgContext::builder()
+            SilaKzgContext::builder()
                 .load_trusted_setup_with_precompute(Path::new(SRS_PATH), 256, 8)
                 .expect("Trusted setup with precompute should be loaded without error.")
                 .build()
@@ -427,8 +427,8 @@ fn t_recover_cells_and_kzg_proofs() {
 fn t_verify_cell_kzg_proof_batch_length_mismatch() {
     // FIX-5 (COV-B-003): Directly test the Rust-level length mismatch error.
     // Test vectors with mismatched lengths are filtered by the harness,
-    // so the Rust-level Err(cttEthKzg_InputsLengthsMismatch) was never hit.
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    // so the Rust-level Err(cttSilaKzg_InputsLengthsMismatch) was never hit.
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let commitments = vec![[0u8; 48]];
@@ -447,7 +447,7 @@ fn t_verify_cell_kzg_proof_batch_length_mismatch() {
 
     assert_eq!(
         result,
-        Err(ctt_eth_kzg_status::cttEthKzg_InputsLengthsMismatch)
+        Err(ctt_sila_kzg_status::cttSilaKzg_InputsLengthsMismatch)
     );
 }
 
@@ -455,7 +455,7 @@ fn t_verify_cell_kzg_proof_batch_length_mismatch() {
 fn t_recover_cells_and_kzg_proofs_length_mismatch() {
     // FIX-5 (COV-B-003): Directly test the Rust-level length mismatch error
     // for recover_cells_and_kzg_proofs.
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     let cells = vec![[0u8; 2048]];
@@ -465,14 +465,14 @@ fn t_recover_cells_and_kzg_proofs_length_mismatch() {
 
     assert_eq!(
         result,
-        Err(ctt_eth_kzg_status::cttEthKzg_InputsLengthsMismatch)
+        Err(ctt_sila_kzg_status::cttSilaKzg_InputsLengthsMismatch)
     );
 }
 
 #[test]
 fn t_recover_cells_and_kzg_proofs_cell_indices_not_ascending() {
     // Verify that non-ascending cell indices are rejected.
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
 
     // 64 cells (minimum for recovery) with descending indices [64, 63, ..., 1]
@@ -483,6 +483,6 @@ fn t_recover_cells_and_kzg_proofs_cell_indices_not_ascending() {
 
     assert_eq!(
         result,
-        Err(ctt_eth_kzg_status::cttEthKzg_CellIndicesNotAscending)
+        Err(ctt_sila_kzg_status::cttSilaKzg_CellIndicesNotAscending)
     );
 }
