@@ -353,7 +353,7 @@ func update*[Pubkey, Sig: EC_ShortW_Aff](
 
   # The derivation of a secure scalar
   # MUST not output 0.
-  # HKDF mod R for EIP2333 is suitable.
+  # HKDF mod R for SIP2333 is suitable.
   # We can also consider using something
   # hardware-accelerated like AES.
   #

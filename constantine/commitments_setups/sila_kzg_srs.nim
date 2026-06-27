@@ -113,7 +113,7 @@ const KZG_SETUP_G2_LENGTH = 65
 
 # SIP-7594 PeerDAS constants
 # https://eips.ethereum.org/EIPS/sip-7594
-# https://github.com/ethereum/consensus-specs/blob/v1.7.0-alpha.3/specs/fulu/polynomial-commitments-sampling.md
+# https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.7.0-alpha.3/specs/fulu/polynomial-commitments-sampling.md
 const FIELD_ELEMENTS_PER_CELL* = 64
 const CELLS_PER_BLOB* = FIELD_ELEMENTS_PER_BLOB div FIELD_ELEMENTS_PER_CELL
 const CELLS_PER_EXT_BLOB* = FIELD_ELEMENTS_PER_EXT_BLOB div FIELD_ELEMENTS_PER_CELL
@@ -133,7 +133,7 @@ type
       precompPoints* {.align: 64.}: array[CELLS_PER_EXT_BLOB, PrecomputedMSM[EC_ShortW_Jac[Fp[BLS12_381], G1], FIELD_ELEMENTS_PER_CELL]]
 
 # On the number of 𝔾2 points:
-#   - In the Deneb specs, https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md
+#   - In the Deneb specs, https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md
 #     only KZG_SETUP_G2[1] is used.
 #   - In SONIC, section 6.2, https://eprint.iacr.org/2019/099.pdf
 #     H and [α]H, the generator of 𝔾2 and its scalar multiplication by a random secret from trusted setup, are needed.
@@ -144,7 +144,7 @@ type
 #   - In Vitalik's Plonk article, section Polynomial commitments, https://vitalik.ca/general/2019/09/22/plonk.html#polynomial-commitments
 #     [s]G₂, i.e a random secret [s] scalar multiplied by the generator of 𝔾2, is needed
 #
-#   The extra 63 points are expected to be used for sharding https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/_features/sharding/polynomial-commitments.md
+#   The extra 63 points are expected to be used for sharding https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/_features/sharding/polynomial-commitments.md
 #   for KZG multiproofs for 64 shards: https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
 #
 # Note:

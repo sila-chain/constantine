@@ -8,13 +8,13 @@
 
 ## ############################################################
 ##
-##              BLS Signatures on for Ethereum
+##              BLS Signatures for Sila
 ##
 ## ############################################################
 ##
 ## This module implements BLS Signatures (Boneh-Lynn-Schacham)
 ## on top of the BLS12-381 curve (Barreto-Lynn-Scott) G2.
-## for the Ethereum blockchain.
+## for the Sila blockchain.
 ##
 ## Ciphersuite:
 ##
@@ -27,19 +27,19 @@
 ## - Hash function: SHA256
 ##
 ## Specs:
-## - https://github.com/ethereum/consensus-specs/blob/v1.2.0/specs/phase0/beacon-chain.md#bls-signatures
-## - https://github.com/ethereum/consensus-specs/blob/v1.2.0/specs/altair/bls.md
+## - https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.2.0/specs/phase0/beacon-chain.md#bls-signatures
+## - https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.2.0/specs/altair/bls.md
 ## - https://www.ietf.org/archive/id/draft-irtf-cfrg-bls-signature-05.html
 ##
 ## Test vectors:
-## - https://github.com/ethereum/bls12-381-tests
+## - https://github.com/sila-chain/Sila-Consensus-Spec-Tests
 ##
-## The Ethereum blockchain uses the proof-of-possession scheme (PoP).
+## The Sila blockchain uses the proof-of-possession scheme (PoP).
 ## Each public key is associated with a deposit proof required to participate
 ## in the blockchain consensus protocol, hence PopProve and PopVerify
 ## as defined in the IETF spec are not needed.
 
-const prefix_ffi = "ctt_eth_bls_"
+const prefix_ffi = "ctt_sila_bls_"
 
 # Dependencies exports for C FFI
 # ------------------------------------------------------------------------------------------------
@@ -98,12 +98,12 @@ type
     ## A BLS12_381 signature for BLS signature schemes with public keys on G1 and signatures on G2
     raw: EC_ShortW_Aff[Fp2[BLS12_381], G2]
 
-  cttEthBlsStatus* = enum
-    cttEthBls_Success
-    cttEthBls_VerificationFailure
-    cttEthBls_InputsLengthsMismatch
-    cttEthBls_ZeroLengthAggregation
-    cttEthBls_PointAtInfinity
+  cttSilaBlsStatus* = enum
+    cttSilaBls_Success
+    cttSilaBls_VerificationFailure
+    cttSilaBls_InputsLengthsMismatch
+    cttSilaBls_ZeroLengthAggregation
+    cttSilaBls_PointAtInfinity
 
   BatchSigAccumulator* {.byref, exportc: prefix_ffi & "batch_sig_accumulator".} = object
     raw: BLSBatchSigAccumulator[Sha256Context, Fp[BLS12_381], Fp2[BLS12_381], Fp12[BLS12_381], EC_ShortW_Jac[Fp2[BLS12_381], G2], 128]
@@ -163,7 +163,7 @@ func serialize_pubkey_compressed*(dst: var array[48, byte], public_key: PublicKe
 func serialize_signature_compressed*(dst: var array[96, byte], signature: Signature): CttCodecEccStatus {.libPrefix: prefix_ffi.} =
   ## Serialize a signature in compressed (Zcash) format
   ##
-  ## Returns cttEthBls_Success if successful
+  ## Returns cttSilaBls_Success if successful
   return dst.serialize_g2_compressed(signature.raw)
 
 func deserialize_seckey*(dst: var SecretKey, src: array[32, byte]): CttCodecScalarStatus {.libPrefix: prefix_ffi.} =
@@ -233,7 +233,7 @@ func sign*(signature: var Signature, secret_key: SecretKey, message: openArray[b
   ##   with the scheme
   coreSign(signature.raw, secretKey.raw, message, sha256, 128, augmentation = "", DomainSeparationTag)
 
-func verify*(public_key: PublicKey, message: openArray[byte], signature: Signature): cttEthBlsStatus {.libPrefix: prefix_ffi, genCharAPI.} =
+func verify*(public_key: PublicKey, message: openArray[byte], signature: Signature): cttSilaBlsStatus {.libPrefix: prefix_ffi, genCharAPI.} =
   ## Check that a signature is valid for a message
   ## under the provided public key.
   ## returns `true` if the signature is valid, `false` otherwise.
@@ -255,12 +255,12 @@ func verify*(public_key: PublicKey, message: openArray[byte], signature: Signatu
 
   # Deal with cases were pubkey or signature were mistakenly zero-init, due to a generic aggregation tentative for example
   if bool(public_key.raw.isNeutral() or signature.raw.isNeutral()):
-    return cttEthBls_PointAtInfinity
+    return cttSilaBls_PointAtInfinity
 
   let verified = coreVerify(public_key.raw, message, signature.raw, sha256, 128, augmentation = "", DomainSeparationTag)
   if verified:
-    return cttEthBls_Success
-  return cttEthBls_VerificationFailure
+    return cttSilaBls_Success
+  return cttSilaBls_VerificationFailure
 
 template unwrap[T: PublicKey|Signature](elems: openArray[T]): auto =
   # Unwrap collection of high-level type into collection of low-level type
@@ -288,7 +288,7 @@ func aggregate_signatures_unstable_api*(aggregate_sig: var Signature, signatures
     return
   aggregate_sig.raw.aggregate(signatures.unwrap())
 
-func fast_aggregate_verify*(pubkeys: openArray[PublicKey], message: openArray[byte], aggregate_sig: Signature): cttEthBlsStatus {.libPrefix: prefix_ffi, genCharAPI.} =
+func fast_aggregate_verify*(pubkeys: openArray[PublicKey], message: openArray[byte], aggregate_sig: Signature): cttSilaBlsStatus {.libPrefix: prefix_ffi, genCharAPI.} =
   ## Check that a signature is valid for a message
   ## under the aggregate of provided public keys.
   ## returns `true` if the signature is valid, `false` otherwise.
@@ -306,29 +306,29 @@ func fast_aggregate_verify*(pubkeys: openArray[PublicKey], message: openArray[by
 
   if pubkeys.len == 0:
     # IETF spec precondition
-    return cttEthBls_ZeroLengthAggregation
+    return cttSilaBls_ZeroLengthAggregation
 
   # Deal with cases were pubkey or signature were mistakenly zero-init, due to a generic aggregation tentative for example
   if aggregate_sig.raw.isNeutral().bool:
-    return cttEthBls_PointAtInfinity
+    return cttSilaBls_PointAtInfinity
 
   for i in 0 ..< pubkeys.len:
     if pubkeys[i].raw.isNeutral().bool:
-      return cttEthBls_PointAtInfinity
+      return cttSilaBls_PointAtInfinity
 
   let verified = fastAggregateVerify(
     pubkeys.unwrap(),
     message, aggregate_sig.raw,
     sha256, 128, DomainSeparationTag)
   if verified:
-    return cttEthBls_Success
-  return cttEthBls_VerificationFailure
+    return cttSilaBls_Success
+  return cttSilaBls_VerificationFailure
 
 # C FFI
 func aggregate_verify*(pubkeys: ptr UncheckedArray[PublicKey],
                        messages: ptr UncheckedArray[View[byte]],
                        len: int,
-                       aggregate_sig: Signature): cttEthBlsStatus {.libPrefix: prefix_ffi.} =
+                       aggregate_sig: Signature): cttSilaBlsStatus {.libPrefix: prefix_ffi.} =
   ## Verify the aggregated signature of multiple (pubkey, message) pairs
   ## returns `true` if the signature is valid, `false` otherwise.
   ##
@@ -349,15 +349,15 @@ func aggregate_verify*(pubkeys: ptr UncheckedArray[PublicKey],
 
   if len == 0:
     # IETF spec precondition
-    return cttEthBls_ZeroLengthAggregation
+    return cttSilaBls_ZeroLengthAggregation
 
   # Deal with cases were pubkey or signature were mistakenly zero-init, due to a generic aggregation tentative for example
   if aggregate_sig.raw.isNeutral().bool:
-    return cttEthBls_PointAtInfinity
+    return cttSilaBls_PointAtInfinity
 
   for i in 0 ..< len:
     if pubkeys[i].raw.isNeutral().bool:
-      return cttEthBls_PointAtInfinity
+      return cttSilaBls_PointAtInfinity
 
   let verified = aggregateVerify(
     pubkeys.toOpenArray(len).unwrap(),
@@ -365,11 +365,11 @@ func aggregate_verify*(pubkeys: ptr UncheckedArray[PublicKey],
     aggregate_sig.raw,
     sha256, 128, DomainSeparationTag)
   if verified:
-    return cttEthBls_Success
-  return cttEthBls_VerificationFailure
+    return cttSilaBls_Success
+  return cttSilaBls_VerificationFailure
 
 # Nim
-func aggregate_verify*[Msg](pubkeys: openArray[PublicKey], messages: openArray[Msg], aggregate_sig: Signature): cttEthBlsStatus =
+func aggregate_verify*[Msg](pubkeys: openArray[PublicKey], messages: openArray[Msg], aggregate_sig: Signature): cttSilaBlsStatus =
   ## Verify the aggregated signature of multiple (pubkey, message) pairs
   ## returns `true` if the signature is valid, `false` otherwise.
   ##
@@ -390,33 +390,33 @@ func aggregate_verify*[Msg](pubkeys: openArray[PublicKey], messages: openArray[M
 
   if pubkeys.len == 0:
     # IETF spec precondition
-    return cttEthBls_ZeroLengthAggregation
+    return cttSilaBls_ZeroLengthAggregation
 
   if pubkeys.len != messages.len:
-    return cttEthBls_InputsLengthsMismatch
+    return cttSilaBls_InputsLengthsMismatch
 
   # Deal with cases were pubkey or signature were mistakenly zero-init, due to a generic aggregation tentative for example
   if aggregate_sig.raw.isNeutral().bool:
-    return cttEthBls_PointAtInfinity
+    return cttSilaBls_PointAtInfinity
 
   for i in 0 ..< pubkeys.len:
     if pubkeys[i].raw.isNeutral().bool:
-      return cttEthBls_PointAtInfinity
+      return cttSilaBls_PointAtInfinity
 
   let verified = aggregateVerify(
     pubkeys.unwrap(),
     messages, aggregate_sig.raw,
     sha256, 128, DomainSeparationTag)
   if verified:
-    return cttEthBls_Success
-  return cttEthBls_VerificationFailure
+    return cttSilaBls_Success
+  return cttSilaBls_VerificationFailure
 
 # C FFI
 func batch_verify*(pubkeys: ptr UncheckedArray[PublicKey],
                    messages: ptr UncheckedArray[View[byte]],
                    signatures: ptr UncheckedArray[Signature],
                    len: int,
-                   secureRandomBytes: array[32, byte]): cttEthBlsStatus {.libPrefix: prefix_ffi.} =
+                   secureRandomBytes: array[32, byte]): cttSilaBlsStatus {.libPrefix: prefix_ffi.} =
   ## Verify that all (pubkey, message, signature) triplets are valid
   ## returns `true` if all signatures are valid, `false` if at least one is invalid.
   ##
@@ -442,16 +442,16 @@ func batch_verify*(pubkeys: ptr UncheckedArray[PublicKey],
 
   if len == 0:
     # IETF spec precondition
-    return cttEthBls_ZeroLengthAggregation
+    return cttSilaBls_ZeroLengthAggregation
 
   # Deal with cases were pubkey or signature were mistakenly zero-init, due to a generic aggregation tentative for example
   for i in 0 ..< len:
     if pubkeys[i].raw.isNeutral().bool:
-      return cttEthBls_PointAtInfinity
+      return cttSilaBls_PointAtInfinity
 
   for i in 0 ..< len:
     if signatures[i].raw.isNeutral().bool:
-      return cttEthBls_PointAtInfinity
+      return cttSilaBls_PointAtInfinity
 
   let verified = batchVerify(
     pubkeys.toOpenArray(len).unwrap(),
@@ -459,11 +459,11 @@ func batch_verify*(pubkeys: ptr UncheckedArray[PublicKey],
     signatures.toOpenArray(len).unwrap(),
     sha256, 128, DomainSeparationTag, secureRandomBytes)
   if verified:
-    return cttEthBls_Success
-  return cttEthBls_VerificationFailure
+    return cttSilaBls_Success
+  return cttSilaBls_VerificationFailure
 
 # Nim
-func batch_verify*[Msg](pubkeys: openArray[PublicKey], messages: openarray[Msg], signatures: openArray[Signature], secureRandomBytes: array[32, byte]): cttEthBlsStatus =
+func batch_verify*[Msg](pubkeys: openArray[PublicKey], messages: openarray[Msg], signatures: openArray[Signature], secureRandomBytes: array[32, byte]): cttSilaBlsStatus =
   ## Verify that all (pubkey, message, signature) triplets are valid
   ## returns `true` if all signatures are valid, `false` if at least one is invalid.
   ##
@@ -489,19 +489,19 @@ func batch_verify*[Msg](pubkeys: openArray[PublicKey], messages: openarray[Msg],
 
   if pubkeys.len == 0:
     # IETF spec precondition
-    return cttEthBls_ZeroLengthAggregation
+    return cttSilaBls_ZeroLengthAggregation
 
   if pubkeys.len != messages.len or  pubkeys.len != signatures.len:
-    return cttEthBls_InputsLengthsMismatch
+    return cttSilaBls_InputsLengthsMismatch
 
   # Deal with cases were pubkey or signature were mistakenly zero-init, due to a generic aggregation tentative for example
   for i in 0 ..< pubkeys.len:
     if pubkeys[i].raw.isNeutral().bool:
-      return cttEthBls_PointAtInfinity
+      return cttSilaBls_PointAtInfinity
 
   for i in 0 ..< signatures.len:
     if signatures[i].raw.isNeutral().bool:
-      return cttEthBls_PointAtInfinity
+      return cttSilaBls_PointAtInfinity
 
   let verified = batchVerify(
     pubkeys.unwrap(),
@@ -509,8 +509,8 @@ func batch_verify*[Msg](pubkeys: openArray[PublicKey], messages: openarray[Msg],
     signatures.unwrap(),
     sha256, 128, DomainSeparationTag, secureRandomBytes)
   if verified:
-    return cttEthBls_Success
-  return cttEthBls_VerificationFailure
+    return cttSilaBls_Success
+  return cttSilaBls_VerificationFailure
 
 func alloc_batch_sig_accumulator*(): ptr BatchSigAccumulator {.libPrefix: prefix_ffi.} =
   ## Allocates using `alloc0` for a `BatchSigAccumulator`

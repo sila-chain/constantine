@@ -540,9 +540,9 @@ Finally, note that all evaluations and Interpolations can be done efficiently us
 
 [D'A23] Francesco D'Amato. From 4844 to Danksharding: a path to scaling Ethereum DA. https://ethresear.ch/t/from-4844-to-danksharding-a-path-to-scaling-ethereum-da/18046, 2023. Accessed: 2024-06-27. (Cited on page 2.)
 
-[Eth24a] Ethereum. Ethereum Consensus Specs - Commit 54093964c95f. https://github.com/ethereum/consensus-specs/commit/54093964c95fbd2e48be5de672e3baae8531a964, 2024. Accessed: 2024-08-09. (Cited on page 1, 2.)
+[Eth24a] Ethereum. Ethereum Consensus Specs - Commit 54093964c95f. https://github.com/sila-chain/Sila-Consensus-Specs/commit/54093964c95fbd2e48be5de672e3baae8531a964, 2024. Accessed: 2024-08-09. (Cited on page 1, 2.)
 
-[Eth24b] Ethereum. Ethereum Consensus Specs - EIP 7594. https://github.com/ethereum/consensus-specs/tree/dev/specs/_features/sip7594, 2024. Accessed: 2024-06-24. (Cited on page 2.)
+[Eth24b] Ethereum. Ethereum Consensus Specs - EIP 7594. https://github.com/sila-chain/Sila-Consensus-Specs/tree/dev/specs/_features/sip7594, 2024. Accessed: 2024-06-24. (Cited on page 2.)
 
 [FK20] Dankrad Feist and Dmitry Khovratovich. Fast amortized Kate proofs. https://github.com/khovratovich/Kate/blob/master/Kate_amortized.pdf, 2020. Accessed: 2024-06-27, Commit f4e5472. (Cited on page 14.)
 

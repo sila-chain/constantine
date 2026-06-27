@@ -7,14 +7,14 @@ include!("bindings64.rs");
 #[cfg(target_pointer_width = "32")]
 include!("bindings32.rs");
 
-impl std::fmt::Display for ctt_eth_bls_status {
+impl std::fmt::Display for ctt_sila_bls_status {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let s = match self {
-            ctt_eth_bls_status::cttEthBls_Success => "cttEthBls_Success",
-            ctt_eth_bls_status::cttEthBls_VerificationFailure => "cttEthBls_VerificationFailure",
-            ctt_eth_bls_status::cttEthBls_InputsLengthsMismatch => "cttEthBls_InputsLengthsMismatch",
-            ctt_eth_bls_status::cttEthBls_ZeroLengthAggregation => "cttEthBls_ZeroLengthAggregation",
-            ctt_eth_bls_status::cttEthBls_PointAtInfinity => "cttEthBls_PointAtInfinity",
+            ctt_sila_bls_status::cttSilaBls_Success => "cttSilaBls_Success",
+            ctt_sila_bls_status::cttSilaBls_VerificationFailure => "cttSilaBls_VerificationFailure",
+            ctt_sila_bls_status::cttSilaBls_InputsLengthsMismatch => "cttSilaBls_InputsLengthsMismatch",
+            ctt_sila_bls_status::cttSilaBls_ZeroLengthAggregation => "cttSilaBls_ZeroLengthAggregation",
+            ctt_sila_bls_status::cttSilaBls_PointAtInfinity => "cttSilaBls_PointAtInfinity",
         };
         write!(f, "{}", s)
     }

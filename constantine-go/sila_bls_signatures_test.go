@@ -21,10 +21,10 @@ import (
 	"github.com/mratsim/constantine/constantine-go/sha256"
 )
 
-// Ethereum BLS Signature tests
+// Sila BLS Signature tests
 // ----------------------------------------------------------
 //
-// Source: https://github.com/ethereum/bls-specs
+// Source: https://github.com/sila-chain/Sila-Consensus-Specs
 
 var (
 	testDirBls                 = "../tests/protocol_blssig_pop_on_bls12381_g2_test_vectors_v0.1.1"
@@ -42,31 +42,31 @@ var (
 // These types correspond to the serialized pub/sec keys / signatures
 // (and test messages / test outputs)
 type (
-	EthBlsPubKeyRaw    Bytes48
-	EthBlsSignatureRaw Bytes96
-	EthBlsSecKeyRaw    Bytes32
-	EthBlsMessage      Bytes32
-	EthBlsTestOutput   Bytes96
+	SilaBlsPubKeyRaw    Bytes48
+	SilaBlsSignatureRaw Bytes96
+	SilaBlsSecKeyRaw    Bytes32
+	SilaBlsMessage      Bytes32
+	SilaBlsTestOutput   Bytes96
 )
 
 // Helpers to convert the strings from the JSON files to bytes
-func (dst *EthBlsPubKeyRaw) UnmarshalText(input []byte) error {
+func (dst *SilaBlsPubKeyRaw) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
 
-func (dst *EthBlsSignatureRaw) UnmarshalText(input []byte) error {
+func (dst *SilaBlsSignatureRaw) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
 
-func (dst *EthBlsSecKeyRaw) UnmarshalText(input []byte) error {
+func (dst *SilaBlsSecKeyRaw) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
 
-func (dst *EthBlsMessage) UnmarshalText(input []byte) error {
+func (dst *SilaBlsMessage) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
 
-func (dst *EthBlsTestOutput) UnmarshalText(input []byte) error {
+func (dst *SilaBlsTestOutput) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
 
@@ -92,9 +92,9 @@ func TestExampleCBlsSig(t *testing.T) {
 	require.True(t, status)
 
 	// try to use batch verify; We just reuse the data from above 3 times
-	pkeys := []EthBlsPubKey{pubKey, pubKey, pubKey}
+	pkeys := []SilaBlsPubKey{pubKey, pubKey, pubKey}
 	msgs := [][]byte{message[:], message[:], message[:]}
-	sigs := []EthBlsSignature{sig, sig, sig}
+	sigs := []SilaBlsSignature{sig, sig, sig}
 	var srb [32]byte // leave zero
 	status, err = BatchVerifySoA(pkeys, msgs, sigs, srb)
 	require.NoError(t, err)
@@ -124,7 +124,7 @@ func TestDeserializeG1(t *testing.T) {
 				t.Fatalf("failed to decode test vector: %v", err)
 			}
 
-			var rawPk EthBlsPubKeyRaw
+			var rawPk SilaBlsPubKeyRaw
 			err = rawPk.UnmarshalText([]byte(test.Input.PubKey))
 			if strings.HasSuffix(testPath, "deserialization_fails_too_few_bytes.json") ||
 				strings.HasSuffix(testPath, "deserialization_fails_too_many_bytes.json") {
@@ -177,7 +177,7 @@ func TestDeserializeG2(t *testing.T) {
 				t.Fatalf("failed to decode test vector: %v", err)
 			}
 
-			var rawSig EthBlsSignatureRaw
+			var rawSig SilaBlsSignatureRaw
 			err = rawSig.UnmarshalText([]byte(test.Input.Signature))
 			if strings.HasSuffix(testPath, "deserialization_fails_too_few_bytes.json") ||
 				strings.HasSuffix(testPath, "deserialization_fails_too_many_bytes.json") {
@@ -231,19 +231,19 @@ func TestSign(t *testing.T) {
 				t.Fatalf("failed to decode test vector: %v", err)
 			}
 
-			var rawSecKey EthBlsSecKeyRaw
+			var rawSecKey SilaBlsSecKeyRaw
 			err = rawSecKey.UnmarshalText([]byte(test.Input.PrivKey))
 			if err != nil {
 				require.Empty(t, test.Output)
 				return
 			}
-			var msg EthBlsMessage
+			var msg SilaBlsMessage
 			err = msg.UnmarshalText([]byte(test.Input.Message))
 			if err != nil {
 				require.Empty(t, test.Output)
 				return
 			}
-			var tOut EthBlsTestOutput
+			var tOut SilaBlsTestOutput
 			err = tOut.UnmarshalText([]byte(test.Output))
 
 			if strings.HasSuffix(testPath, "sign_case_zero_privkey.json") {
@@ -323,13 +323,13 @@ func TestVerify(t *testing.T) {
 				t.Fatalf("failed to decode test vector: %v", err)
 			}
 
-			var rawPk EthBlsPubKeyRaw
+			var rawPk SilaBlsPubKeyRaw
 			err = rawPk.UnmarshalText([]byte(test.Input.PubKey))
 			if err != nil {
 				require.False(t, test.Output)
 				return
 			}
-			var rawSig EthBlsSignatureRaw
+			var rawSig SilaBlsSignatureRaw
 			err = rawSig.UnmarshalText([]byte(test.Input.Signature))
 			if err != nil {
 				require.False(t, test.Output)
@@ -348,7 +348,7 @@ func TestVerify(t *testing.T) {
 				require.Equal(t, false, test.Output)
 				return
 			}
-			var msg EthBlsMessage
+			var msg SilaBlsMessage
 			err = msg.UnmarshalText([]byte(test.Input.Message))
 			if err != nil {
 				require.False(t, test.Output)
@@ -412,9 +412,9 @@ func TestFastAggregateVerify(t *testing.T) {
 				t.Fatalf("failed to decode test vector: %v", err)
 			}
 
-			var rawPks []EthBlsPubKeyRaw
+			var rawPks []SilaBlsPubKeyRaw
 			for _, s := range test.Input.PubKeys {
-				var rawPk EthBlsPubKeyRaw
+				var rawPk SilaBlsPubKeyRaw
 				err = rawPk.UnmarshalText([]byte(s))
 				if err != nil {
 					require.False(t, test.Output)
@@ -422,14 +422,14 @@ func TestFastAggregateVerify(t *testing.T) {
 				}
 				rawPks = append(rawPks, rawPk)
 			}
-			var rawSig EthBlsSignatureRaw
+			var rawSig SilaBlsSignatureRaw
 			err = rawSig.UnmarshalText([]byte(test.Input.Signature))
 			if err != nil {
 				require.False(t, test.Output)
 				return
 			}
 
-			var pks []EthBlsPubKey
+			var pks []SilaBlsPubKey
 			var status bool
 			{ // testChecks
 				for _, rawPk := range rawPks {
@@ -445,7 +445,7 @@ func TestFastAggregateVerify(t *testing.T) {
 					require.Equal(t, status, test.Output)
 					return
 				}
-				var msg EthBlsMessage
+				var msg SilaBlsMessage
 				err = msg.UnmarshalText([]byte(test.Input.Message))
 				if err != nil {
 					require.False(t, test.Output)
@@ -486,9 +486,9 @@ func TestFastAggregateVerify(t *testing.T) {
 //			test := Test{}
 //			err = json.NewDecoder(testFile).Decode(&test)
 //
-//			var rawPks []EthBlsPubKeyRaw
+//			var rawPks []SilaBlsPubKeyRaw
 //			for _, s := range test.Input.PubKeys {
-//				var rawPk EthBlsPubKeyRaw
+//				var rawPk SilaBlsPubKeyRaw
 //				err = rawPk.UnmarshalText([]byte(s))
 //				if err != nil {
 //					require.Nil(t, test.Output)
@@ -496,7 +496,7 @@ func TestFastAggregateVerify(t *testing.T) {
 //				}
 //				rawPks = append(rawPks, rawPk)
 //			}
-//			var rawSig EthBlsSignatureRaw
+//			var rawSig SilaBlsSignatureRaw
 //			err = rawSig.UnmarshalText([]byte(test.Input.Signature))
 //			if err != nil {
 //				require.False(t, test.Output) // tampered signaure test
@@ -505,9 +505,9 @@ func TestFastAggregateVerify(t *testing.T) {
 //
 //			var status bool
 //			{ // testChecks
-//				var pks []EthBlsPubKey
+//				var pks []SilaBlsPubKey
 //				for _, rawPk := range rawPks {
-//					var pk EthBlsPubKey
+//					var pk SilaBlsPubKey
 //					status, err = pk.DeserializeCompressed(rawPk)
 //					if err != nil {
 //						require.Equal(t, status, test.Output)
@@ -515,7 +515,7 @@ func TestFastAggregateVerify(t *testing.T) {
 //					}
 //					pks = append(pks, pk)
 //				}
-//				var sig EthBlsSignature
+//				var sig SilaBlsSignature
 //				status, err = sig.DeserializeCompressed(rawSig)
 //				if err != nil {
 //					require.Equal(t, status, test.Output)
@@ -523,7 +523,7 @@ func TestFastAggregateVerify(t *testing.T) {
 //				}
 //				var msgs [][]byte
 //				for _, rawMsg := range test.Input.Messages {
-//					var msg EthBlsMessage
+//					var msg SilaBlsMessage
 //					err = msg.UnmarshalText([]byte(rawMsg))
 //					if err != nil {
 //						require.Nil(t, test.Output)
@@ -572,9 +572,9 @@ func TestBatchVerify(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to decode test vector: %v", err)
 		}
-			var rawPks []EthBlsPubKeyRaw
+			var rawPks []SilaBlsPubKeyRaw
 			for _, s := range test.Input.PubKeys {
-				var rawPk EthBlsPubKeyRaw
+				var rawPk SilaBlsPubKeyRaw
 				err = rawPk.UnmarshalText([]byte(s))
 				if err != nil {
 					require.False(t, test.Output)
@@ -582,9 +582,9 @@ func TestBatchVerify(t *testing.T) {
 				}
 				rawPks = append(rawPks, rawPk)
 			}
-			var rawSigs []EthBlsSignatureRaw
+			var rawSigs []SilaBlsSignatureRaw
 			for _, s := range test.Input.Signatures {
-				var rawSig EthBlsSignatureRaw
+				var rawSig SilaBlsSignatureRaw
 				err = rawSig.UnmarshalText([]byte(s))
 				if err != nil {
 					require.False(t, test.Output)
@@ -595,7 +595,7 @@ func TestBatchVerify(t *testing.T) {
 
 			var status bool
 			{ // testChecks
-				var pks []EthBlsPubKey
+				var pks []SilaBlsPubKey
 				for _, rawPk := range rawPks {
 					pk, err := DeserializePubKeyCompressed(Bytes48(rawPk))
 					if err != nil {
@@ -604,7 +604,7 @@ func TestBatchVerify(t *testing.T) {
 					}
 					pks = append(pks, pk)
 				}
-				var sigs []EthBlsSignature
+				var sigs []SilaBlsSignature
 				for _, rawSig := range rawSigs {
 					sig, err := DeserializeSignatureCompressed(Bytes96(rawSig))
 					if err != nil {
@@ -615,7 +615,7 @@ func TestBatchVerify(t *testing.T) {
 				}
 				var msgs [][]byte
 				for _, rawMsg := range test.Input.Messages {
-					var msg EthBlsMessage
+					var msg SilaBlsMessage
 					err = msg.UnmarshalText([]byte(rawMsg))
 					if err != nil {
 					require.False(t, test.Output)

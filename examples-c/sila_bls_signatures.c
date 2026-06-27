@@ -15,15 +15,15 @@
 
 int main(){
   // Protocol and deserialization statuses
-  ctt_eth_bls_status      bls_status;
+  ctt_sila_bls_status      bls_status;
   ctt_codec_scalar_status scalar_status;
   ctt_codec_ecc_status    ecc_status;
 
   // Declare an example insecure non-cryptographically random non-secret key. DO NOT USE IN PRODUCTION.
   byte raw_seckey[32] = "Security pb becomes key mgmt pb!";
-  ctt_eth_bls_seckey seckey;
+  ctt_sila_bls_seckey seckey;
 
-  scalar_status = ctt_eth_bls_deserialize_seckey(&seckey, raw_seckey);
+  scalar_status = ctt_sila_bls_deserialize_seckey(&seckey, raw_seckey);
   if (scalar_status != cttCodecScalar_Success) {
     printf(
       "Secret key deserialization failure: status %d - %s\n",
@@ -34,19 +34,19 @@ int main(){
   }
 
   // Derive the matching public key
-  ctt_eth_bls_pubkey pubkey;
-  ctt_eth_bls_derive_pubkey(&pubkey, &seckey);
+  ctt_sila_bls_pubkey pubkey;
+  ctt_sila_bls_derive_pubkey(&pubkey, &seckey);
 
   // Sign a message
   byte message[32];
-  ctt_eth_bls_signature sig;
+  ctt_sila_bls_signature sig;
   ctt_sha256_hash(message, (const byte*)"Mr F was here", 13, /* clear_memory = */ 0);
-  ctt_eth_bls_sign(&sig, &seckey, message, 32);
+  ctt_sila_bls_sign(&sig, &seckey, message, 32);
 
   // Verify that a signature is valid for a message under the provided public key
-  bls_status = ctt_eth_bls_verify(&pubkey, message, 32, &sig);
-  if (bls_status != cttEthBls_Success) {
-    printf("Signature verification failure: status %d - %s\n", bls_status, ctt_eth_bls_status_to_string(bls_status));
+  bls_status = ctt_sila_bls_verify(&pubkey, message, 32, &sig);
+  if (bls_status != cttSilaBls_Success) {
+    printf("Signature verification failure: status %d - %s\n", bls_status, ctt_sila_bls_status_to_string(bls_status));
     exit(1);
   }
   printf("Example BLS signature/verification protocol completed successfully\n");
@@ -57,13 +57,13 @@ int main(){
   // ------------------------------
 
   // try to use batch verify; We just reuse the data from above 3 times
-  const ctt_eth_bls_pubkey pkeys[3] = { pubkey, pubkey, pubkey };
+  const ctt_sila_bls_pubkey pkeys[3] = { pubkey, pubkey, pubkey };
   ctt_span messages[3] = { // already hashed message, reuse 3 times
       { message, 32 },
       { message, 32 },
       { message, 32 }
   };
-  const ctt_eth_bls_signature sigs[3] = { sig, sig, sig };
+  const ctt_sila_bls_signature sigs[3] = { sig, sig, sig };
 
   // Use constantine's `sysrand` to fill the secure random bytes
   byte srb[32];
@@ -72,9 +72,9 @@ int main(){
       exit(1);
   }
 
-  bls_status = ctt_eth_bls_batch_verify(pkeys, messages, sigs, 3, srb);
-  if (bls_status != cttEthBls_Success) {
-    printf("Batch verification failure: status %d - %s\n", bls_status, ctt_eth_bls_status_to_string(bls_status));
+  bls_status = ctt_sila_bls_batch_verify(pkeys, messages, sigs, 3, srb);
+  if (bls_status != cttSilaBls_Success) {
+    printf("Batch verification failure: status %d - %s\n", bls_status, ctt_sila_bls_status_to_string(bls_status));
     exit(1);
   }
 
@@ -88,9 +88,9 @@ int main(){
 
   struct ctt_threadpool* tp = ctt_threadpool_new(4);
   printf("Constantine: Threadpool init successful.\n");
-  bls_status = ctt_eth_bls_batch_verify_parallel(tp, pkeys, messages, sigs, 3, srb);
-  if (bls_status != cttEthBls_Success) {
-    printf("Batch verification failure: status %d - %s\n", bls_status, ctt_eth_bls_status_to_string(bls_status));
+  bls_status = ctt_sila_bls_batch_verify_parallel(tp, pkeys, messages, sigs, 3, srb);
+  if (bls_status != cttSilaBls_Success) {
+    printf("Batch verification failure: status %d - %s\n", bls_status, ctt_sila_bls_status_to_string(bls_status));
     exit(1);
   }
   printf("Example parallel BLS batch verification completed successfully\n");

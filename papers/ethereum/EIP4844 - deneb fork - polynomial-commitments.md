@@ -72,8 +72,8 @@ cryptographic normalization before invoking any internal functions.
 
 | Name                                                                                                                                                  | SSZ equivalent                                     | Description                                                                   |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [`BLSFieldElement`](https://github.com/ethereum/consensus-specs/blob/36a5719b78523c057065515c8f8fcaeba75d065b/pysetup/spec_builders/deneb.py#L18-L19) | `uint256`                                          | <!-- predefined-type --> A value in the finite field defined by `BLS_MODULUS` |
-| [`Polynomial`](https://github.com/ethereum/consensus-specs/blob/36a5719b78523c057065515c8f8fcaeba75d065b/pysetup/spec_builders/deneb.py#L22-L28)      | `Vector[BLSFieldElement, FIELD_ELEMENTS_PER_BLOB]` | <!-- predefined-type --> A polynomial in evaluation form                      |
+| [`BLSFieldElement`](https://github.com/sila-chain/Sila-Consensus-Specs/blob/36a5719b78523c057065515c8f8fcaeba75d065b/pysetup/spec_builders/deneb.py#L18-L19) | `uint256`                                          | <!-- predefined-type --> A value in the finite field defined by `BLS_MODULUS` |
+| [`Polynomial`](https://github.com/sila-chain/Sila-Consensus-Specs/blob/36a5719b78523c057065515c8f8fcaeba75d065b/pysetup/spec_builders/deneb.py#L22-L28)      | `Vector[BLSFieldElement, FIELD_ELEMENTS_PER_BLOB]` | <!-- predefined-type --> A polynomial in evaluation form                      |
 
 ## Constants
 

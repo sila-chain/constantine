@@ -33,7 +33,7 @@ Constantine implements the full BLS signatures used in CL clients.
 Batch verification is also parallelized.
 
 Specs:
-- https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#bls-signatures
+- https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0/specs/phase0/beacon-chain.md#bls-signatures
 - https://www.ietf.org/archive/id/draft-irtf-cfrg-bls-signature-05.html
 
 #### Performance
@@ -53,7 +53,7 @@ Constantine implements the full Sila KZG API in Nim, C, Rust, Go for CL clients.
 It is also fully parallelized.
 
 Specs:
-- https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/polynomial-commitments.md
+- https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0/specs/deneb/polynomial-commitments.md
 
 #### Performance
 

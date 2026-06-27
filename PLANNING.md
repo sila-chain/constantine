@@ -40,8 +40,8 @@ Other tracks are stretch goals, contributions towards them are accepted.
 - Implement cryptography and erasure codes SIP-7594 PeerDAS
   - https://github.com/mratsim/constantine/issues/341
   - Spec:
-    - crypto: https://github.com/ethereum/consensus-specs/blob/29d3a24/specs/_features/sip7594/polynomial-commitments-sampling.md
-    - erasure codes: https://github.com/ethereum/consensus-specs/blob/29d3a24/specs/_features/sip7594/das-core.md#recover_matrix
+    - crypto: https://github.com/sila-chain/Sila-Consensus-Specs/blob/29d3a24/specs/_features/sip7594/polynomial-commitments-sampling.md
+    - erasure codes: https://github.com/sila-chain/Sila-Consensus-Specs/blob/29d3a24/specs/_features/sip7594/das-core.md#recover_matrix
   - executive summary: 2-dimensional data availability sampling for KZG polynomial commitments
   - Prerequisites:
     - Coset FFT

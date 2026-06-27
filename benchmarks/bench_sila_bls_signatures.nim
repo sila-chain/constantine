@@ -9,8 +9,8 @@
 import
   # Internals
   constantine/[
-    ethereum_bls_signatures_parallel,
-    ethereum_eip2333_bls12381_key_derivation],
+    sila_bls_signatures_parallel,
+    sila_sip2333_bls12381_key_derivation],
   constantine/math/arithmetic,
   constantine/threadpool/threadpool,
   # Std
@@ -37,7 +37,7 @@ template bench(op: string, curve: string, iters: int, body: untyped): untyped =
 proc demoKeyGen(): tuple[seckey: SecretKey, pubkey: PublicKey] =
   # Don't do this at home, this is for benchmarking purposes
   # The RNG is NOT cryptographically secure
-  # The API for keygen is not ready in ethereum_bls_signatures
+  # The API for keygen is not ready in sila_bls_signatures
   let ikm = rng.random_byte_seq(32)
   doAssert cast[ptr BigInt[255]](result.seckey.addr)[].derive_master_secretKey(ikm)
   result.pubkey.derive_pubkey(result.seckey)
@@ -160,7 +160,7 @@ proc benchVerifyMulti*(numSigs, iters: int) =
   bench("BLS verif of " & $numSigs & " msgs by " & $numSigs & " pubkeys", "BLS12_381", iters):
     for i in 0 ..< triplets.len:
       let ok = triplets[i].pubkey.verify(triplets[i].msg, triplets[i].sig)
-      doAssert ok == cttEthBls_Success
+      doAssert ok == cttSilaBls_Success
 
 proc benchVerifyBatched*(numSigs, iters: int) =
   ## Verification of N pubkeys signing for N messages
@@ -186,7 +186,7 @@ proc benchVerifyBatched*(numSigs, iters: int) =
 
   bench("BLS serial batch verify of " & $numSigs & " msgs by "& $numSigs & " pubkeys (with blinding)", "BLS12_381", iters):
     let ok = batch_verify(pubkeys, messages, signatures, secureBlindingBytes)
-    doAssert ok == cttEthBls_Success
+    doAssert ok == cttSilaBls_Success
 
 proc benchVerifyBatchedParallel*(numSigs, iters: int) =
   ## Verification of N pubkeys signing for N messages
@@ -221,7 +221,7 @@ proc benchVerifyBatchedParallel*(numSigs, iters: int) =
 
   bench("BLS parallel batch verify (" & $tp.numThreads & " threads) of " & $numSigs & " msgs by "& $numSigs & " pubkeys (with blinding)", "BLS12_381", iters):
     let ok = tp.batch_verify_parallel(pubkeys, messages, signatures, secureBlindingBytes)
-    doAssert ok == cttEthBls_Success, "invalid status: " & $ok
+    doAssert ok == cttSilaBls_Success, "invalid status: " & $ok
 
   tp.shutdown()
 

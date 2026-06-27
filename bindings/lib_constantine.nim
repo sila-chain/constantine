@@ -20,8 +20,8 @@ import
   ./lib_curves,
   constantine/csprngs,
   # Protocols
-  constantine/ethereum_bls_signatures,
-  constantine/ethereum_bls_signatures_parallel,
+  constantine/sila_bls_signatures,
+  constantine/sila_bls_signatures_parallel,
   constantine/commitments_setups/sila_kzg_srs,
   constantine/sila_sip4844_kzg,
   constantine/sila_sip4844_kzg_parallel,

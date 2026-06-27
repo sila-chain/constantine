@@ -67,7 +67,7 @@ Constantine supports the following protocols in its public API.
 
 |                                                                        |           Nim           |         C          | Rust               |         Go         |
 |------------------------------------------------------------------------|:-----------------------:|:------------------:|--------------------|:------------------:|
-| Ethereum BLS signatures                                                |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Sila BLS signatures                                                |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Sila KZG commitments for SIP-4844                                  |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ethereum IPA commitments for Verkle Tries                              | :building_construction: |   :see_no_evil:    | :see_no_evil:      |   :see_no_evil:    |
 | Ethereum Virtual Machine BN254 Precompiles ECADD, ECMUL, ECPAIRING     |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -248,10 +248,10 @@ and modify Constantine's [`build.rs`](https://github.com/mratsim/constantine/blo
 
 5. Libraries location
     - The librariess are put in `./lib/` folder
-    - The headers are in [./include/](./include) for example [Ethereum BLS signatures](./include/constantine/protocols/ethereum_bls_signatures.h)
+    - The headers are in [./include/](./include) for example [Sila BLS signatures](./include/constantine/protocols/sila_bls_signatures.h)
 
 6. Read the examples in [examples-c](./examples-c):
-   - Using the [Ethereum BLS signatures bindings from C](./examples-c/ethereum_bls_signatures.c)
+   - Using the [Sila BLS signatures bindings from C](./examples-c/sila_bls_signatures.c)
    - Testing Constantine BLS12-381 vs GMP [./examples-c/t_libctt_bls12_381.c](./examples-c/t_libctt_bls12_381.c)
 
 ### From Nim

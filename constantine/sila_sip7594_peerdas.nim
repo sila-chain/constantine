@@ -65,7 +65,7 @@ import ./zoo_exports
 ##
 ## References:
 ## - SIP-7594: https://eips.ethereum.org/EIPS/sip-7594
-## - Spec: https://github.com/ethereum/consensus-specs/blob/v1.4.0-beta.1/specs/fulu/polynomial-commitments-sampling.md
+## - Spec: https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0-beta.1/specs/fulu/polynomial-commitments-sampling.md
 ## - FK20 Paper: https://eprint.iacr.org/2023/033
 
 {.push raises:[].}  # No exceptions for crypto

@@ -439,7 +439,7 @@ func (ctx SilaKzgContext) RecoverCellsAndKzgProofs(
 	return recoveredCells, recoveredProofs, nil
 }
 
-// Ethereum BLS signatures
+// Sila BLS signatures
 // -----------------------------------------------------
 
 func getAddr[T any](arg []T) unsafe.Pointer {
@@ -452,9 +452,9 @@ func getAddr[T any](arg []T) unsafe.Pointer {
 }
 
 type (
-	EthBlsSecKey    C.ctt_eth_bls_seckey
-	EthBlsPubKey    C.ctt_eth_bls_pubkey
-	EthBlsSignature C.ctt_eth_bls_signature
+	SilaBlsSecKey    C.ctt_sila_bls_seckey
+	SilaBlsPubKey    C.ctt_sila_bls_pubkey
+	SilaBlsSignature C.ctt_sila_bls_signature
 )
 
 // Several byte array aliases used for BLS sigs and EVM prec.
@@ -464,13 +464,13 @@ type (
 	Bytes96 [96]byte // compressed, serialized signature
 )
 
-func (pub EthBlsPubKey) IsZero() bool {
-	status := C.ctt_eth_bls_pubkey_is_zero((*C.ctt_eth_bls_pubkey)(&pub))
+func (pub SilaBlsPubKey) IsZero() bool {
+	status := C.ctt_sila_bls_pubkey_is_zero((*C.ctt_sila_bls_pubkey)(&pub))
 	return bool(status)
 }
 
-func DeserializeSecKey(src Bytes32) (sec EthBlsSecKey, err error) {
-	status := C.ctt_eth_bls_deserialize_seckey((*C.ctt_eth_bls_seckey)(&sec),
+func DeserializeSecKey(src Bytes32) (sec SilaBlsSecKey, err error) {
+	status := C.ctt_sila_bls_deserialize_seckey((*C.ctt_sila_bls_seckey)(&sec),
 		(*C.byte)(&src[0]),
 	)
 	if status != C.cttCodecScalar_Success {
@@ -482,47 +482,47 @@ func DeserializeSecKey(src Bytes32) (sec EthBlsSecKey, err error) {
 	return sec, nil
 }
 
-func DerivePubKey(sec EthBlsSecKey) (pub EthBlsPubKey) {
-	C.ctt_eth_bls_derive_pubkey((*C.ctt_eth_bls_pubkey)(&pub), (*C.ctt_eth_bls_seckey)(&sec))
+func DerivePubKey(sec SilaBlsSecKey) (pub SilaBlsPubKey) {
+	C.ctt_sila_bls_derive_pubkey((*C.ctt_sila_bls_pubkey)(&pub), (*C.ctt_sila_bls_seckey)(&sec))
 	return pub
 }
 
-func (pub *EthBlsPubKey) Verify(message []byte, sig EthBlsSignature) (bool, error) {
-	status := C.ctt_eth_bls_verify((*C.ctt_eth_bls_pubkey)(pub),
+func (pub *SilaBlsPubKey) Verify(message []byte, sig SilaBlsSignature) (bool, error) {
+	status := C.ctt_sila_bls_verify((*C.ctt_sila_bls_pubkey)(pub),
 		(*C.byte)(getAddr(message)),
 		(C.size_t)(len(message)),
-		(*C.ctt_eth_bls_signature)(&sig),
+		(*C.ctt_sila_bls_signature)(&sig),
 	)
-	if status != C.cttEthBls_Success {
-		if status == C.cttEthBls_VerificationFailure {
+	if status != C.cttSilaBls_Success {
+		if status == C.cttSilaBls_VerificationFailure {
 			return false, nil
 		}
 
 		err := errors.New(
-			C.GoString(C.ctt_eth_bls_status_to_string(status)),
+			C.GoString(C.ctt_sila_bls_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-func (sig EthBlsSignature) IsZero() bool {
-	status := C.ctt_eth_bls_signature_is_zero((*C.ctt_eth_bls_signature)(&sig))
+func (sig SilaBlsSignature) IsZero() bool {
+	status := C.ctt_sila_bls_signature_is_zero((*C.ctt_sila_bls_signature)(&sig))
 	return bool(status)
 }
 
-func (pub1 EthBlsPubKey) AreEqual(pub2 EthBlsPubKey) bool {
-	status := C.ctt_eth_bls_pubkeys_are_equal((*C.ctt_eth_bls_pubkey)(&pub1), (*C.ctt_eth_bls_pubkey)(&pub2))
+func (pub1 SilaBlsPubKey) AreEqual(pub2 SilaBlsPubKey) bool {
+	status := C.ctt_sila_bls_pubkeys_are_equal((*C.ctt_sila_bls_pubkey)(&pub1), (*C.ctt_sila_bls_pubkey)(&pub2))
 	return bool(status)
 }
 
-func (sig1 EthBlsSignature) AreEqual(sig2 EthBlsSignature) bool {
-	status := C.ctt_eth_bls_signatures_are_equal((*C.ctt_eth_bls_signature)(&sig1), (*C.ctt_eth_bls_signature)(&sig2))
+func (sig1 SilaBlsSignature) AreEqual(sig2 SilaBlsSignature) bool {
+	status := C.ctt_sila_bls_signatures_are_equal((*C.ctt_sila_bls_signature)(&sig1), (*C.ctt_sila_bls_signature)(&sig2))
 	return bool(status)
 }
 
-func (sec *EthBlsSecKey) Validate() (err error) {
-	status := C.ctt_eth_bls_validate_seckey((*C.ctt_eth_bls_seckey)(sec))
+func (sec *SilaBlsSecKey) Validate() (err error) {
+	status := C.ctt_sila_bls_validate_seckey((*C.ctt_sila_bls_seckey)(sec))
 	if status != C.cttCodecScalar_Success {
 		err = errors.New(
 			C.GoString(C.ctt_codec_scalar_status_to_string(status)),
@@ -532,8 +532,8 @@ func (sec *EthBlsSecKey) Validate() (err error) {
 	return nil
 }
 
-func (pub *EthBlsPubKey) Validate() (err error) {
-	status := C.ctt_eth_bls_validate_pubkey((*C.ctt_eth_bls_pubkey)(pub))
+func (pub *SilaBlsPubKey) Validate() (err error) {
+	status := C.ctt_sila_bls_validate_pubkey((*C.ctt_sila_bls_pubkey)(pub))
 	if status != C.cttCodecEcc_Success {
 		err = errors.New(
 			C.GoString(C.ctt_codec_ecc_status_to_string(status)),
@@ -543,8 +543,8 @@ func (pub *EthBlsPubKey) Validate() (err error) {
 	return nil
 }
 
-func (sig *EthBlsSignature) Validate() (err error) {
-	status := C.ctt_eth_bls_validate_signature((*C.ctt_eth_bls_signature)(sig))
+func (sig *SilaBlsSignature) Validate() (err error) {
+	status := C.ctt_sila_bls_validate_signature((*C.ctt_sila_bls_signature)(sig))
 	if status != C.cttCodecEcc_Success {
 		err := errors.New(
 			C.GoString(C.ctt_codec_ecc_status_to_string(status)),
@@ -554,29 +554,16 @@ func (sig *EthBlsSignature) Validate() (err error) {
 	return nil
 }
 
-func (sec *EthBlsSecKey) Serialize() (dst Bytes32, err error) {
-	C.ctt_eth_bls_serialize_seckey((*C.byte)(unsafe.Pointer(&dst)),
-		(*C.ctt_eth_bls_seckey)(sec),
+func (sec *SilaBlsSecKey) Serialize() (dst Bytes32, err error) {
+	C.ctt_sila_bls_serialize_seckey((*C.byte)(unsafe.Pointer(&dst)),
+		(*C.ctt_sila_bls_seckey)(sec),
 	)
 	return dst, nil
 }
 
-func (pub *EthBlsPubKey) SerializeCompressed() (dst Bytes48, err error) {
-	status := C.ctt_eth_bls_serialize_pubkey_compressed((*C.byte)(unsafe.Pointer(&dst)),
-		(*C.ctt_eth_bls_pubkey)(pub),
-	)
-	if status != C.cttCodecEcc_Success {
-		err := errors.New(
-			C.GoString(C.ctt_codec_ecc_status_to_string(status)),
-		)
-		return dst, err
-	}
-	return dst, nil
-}
-
-func (sig *EthBlsSignature) SerializeCompressed() (dst Bytes96, err error) {
-	status := C.ctt_eth_bls_serialize_signature_compressed((*C.byte)(unsafe.Pointer(&dst)),
-		(*C.ctt_eth_bls_signature)(sig),
+func (pub *SilaBlsPubKey) SerializeCompressed() (dst Bytes48, err error) {
+	status := C.ctt_sila_bls_serialize_pubkey_compressed((*C.byte)(unsafe.Pointer(&dst)),
+		(*C.ctt_sila_bls_pubkey)(pub),
 	)
 	if status != C.cttCodecEcc_Success {
 		err := errors.New(
@@ -587,8 +574,21 @@ func (sig *EthBlsSignature) SerializeCompressed() (dst Bytes96, err error) {
 	return dst, nil
 }
 
-func DeserializePubKeyCompressedUnchecked(src Bytes48) (pub EthBlsPubKey, err error) {
-	status := C.ctt_eth_bls_deserialize_pubkey_compressed_unchecked((*C.ctt_eth_bls_pubkey)(&pub),
+func (sig *SilaBlsSignature) SerializeCompressed() (dst Bytes96, err error) {
+	status := C.ctt_sila_bls_serialize_signature_compressed((*C.byte)(unsafe.Pointer(&dst)),
+		(*C.ctt_sila_bls_signature)(sig),
+	)
+	if status != C.cttCodecEcc_Success {
+		err := errors.New(
+			C.GoString(C.ctt_codec_ecc_status_to_string(status)),
+		)
+		return dst, err
+	}
+	return dst, nil
+}
+
+func DeserializePubKeyCompressedUnchecked(src Bytes48) (pub SilaBlsPubKey, err error) {
+	status := C.ctt_sila_bls_deserialize_pubkey_compressed_unchecked((*C.ctt_sila_bls_pubkey)(&pub),
 		(*C.byte)(&src[0]),
 	)
 	if status != C.cttCodecEcc_Success && status != C.cttCodecEcc_PointAtInfinity {
@@ -600,8 +600,8 @@ func DeserializePubKeyCompressedUnchecked(src Bytes48) (pub EthBlsPubKey, err er
 	return pub, nil
 }
 
-func DeserializeSignatureCompressedUnchecked(src Bytes96) (sig EthBlsSignature, err error) {
-	status := C.ctt_eth_bls_deserialize_signature_compressed_unchecked((*C.ctt_eth_bls_signature)(&sig),
+func DeserializeSignatureCompressedUnchecked(src Bytes96) (sig SilaBlsSignature, err error) {
+	status := C.ctt_sila_bls_deserialize_signature_compressed_unchecked((*C.ctt_sila_bls_signature)(&sig),
 		(*C.byte)(&src[0]),
 	)
 	if status != C.cttCodecEcc_Success && status != C.cttCodecEcc_PointAtInfinity {
@@ -613,8 +613,8 @@ func DeserializeSignatureCompressedUnchecked(src Bytes96) (sig EthBlsSignature, 
 	return sig, nil
 }
 
-func DeserializePubKeyCompressed(src Bytes48) (pub EthBlsPubKey, err error) {
-	status := C.ctt_eth_bls_deserialize_pubkey_compressed((*C.ctt_eth_bls_pubkey)(&pub),
+func DeserializePubKeyCompressed(src Bytes48) (pub SilaBlsPubKey, err error) {
+	status := C.ctt_sila_bls_deserialize_pubkey_compressed((*C.ctt_sila_bls_pubkey)(&pub),
 		(*C.byte)(&src[0]),
 	)
 	if status != C.cttCodecEcc_Success && status != C.cttCodecEcc_PointAtInfinity {
@@ -626,8 +626,8 @@ func DeserializePubKeyCompressed(src Bytes48) (pub EthBlsPubKey, err error) {
 	return pub, nil
 }
 
-func DeserializeSignatureCompressed(src Bytes96) (sig EthBlsSignature, err error) {
-	status := C.ctt_eth_bls_deserialize_signature_compressed((*C.ctt_eth_bls_signature)(&sig),
+func DeserializeSignatureCompressed(src Bytes96) (sig SilaBlsSignature, err error) {
+	status := C.ctt_sila_bls_deserialize_signature_compressed((*C.ctt_sila_bls_signature)(&sig),
 		(*C.byte)(&src[0]),
 	)
 	if status != C.cttCodecEcc_Success && status != C.cttCodecEcc_PointAtInfinity {
@@ -639,85 +639,85 @@ func DeserializeSignatureCompressed(src Bytes96) (sig EthBlsSignature, err error
 	return sig, nil
 }
 
-func Sign(sec EthBlsSecKey, message []byte) (sig EthBlsSignature) {
-	C.ctt_eth_bls_sign((*C.ctt_eth_bls_signature)(&sig), (*C.ctt_eth_bls_seckey)(&sec),
+func Sign(sec SilaBlsSecKey, message []byte) (sig SilaBlsSignature) {
+	C.ctt_sila_bls_sign((*C.ctt_sila_bls_signature)(&sig), (*C.ctt_sila_bls_seckey)(&sec),
 		(*C.byte)(getAddr(message)),
 		(C.size_t)(len(message)),
 	)
 	return sig
 }
 
-func FastAggregateVerify(pubkeys []EthBlsPubKey, message []byte, aggregate_sig EthBlsSignature) (bool, error) {
+func FastAggregateVerify(pubkeys []SilaBlsPubKey, message []byte, aggregate_sig SilaBlsSignature) (bool, error) {
 	if len(pubkeys) == 0 {
 		err := errors.New(
 			"No public keys given.",
 		)
 		return false, err
 	}
-	status := C.ctt_eth_bls_fast_aggregate_verify((*C.ctt_eth_bls_pubkey)(getAddr(pubkeys)),
+	status := C.ctt_sila_bls_fast_aggregate_verify((*C.ctt_sila_bls_pubkey)(getAddr(pubkeys)),
 		(C.size_t)(len(pubkeys)),
 		(*C.byte)(getAddr(message)),
 		(C.size_t)(len(message)),
-		(*C.ctt_eth_bls_signature)(&aggregate_sig),
+		(*C.ctt_sila_bls_signature)(&aggregate_sig),
 	)
-	if status != C.cttEthBls_Success {
-		if status == C.cttEthBls_VerificationFailure {
+	if status != C.cttSilaBls_Success {
+		if status == C.cttSilaBls_VerificationFailure {
 			return false, nil
 		}
 
 		err := errors.New(
-			C.GoString(C.ctt_eth_bls_status_to_string(status)),
+			C.GoString(C.ctt_sila_bls_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-// NOTE: C.ctt_eth_bls_batch_sig_accumulator is an incomplete struct. Therefore
+// NOTE: C.ctt_sila_bls_batch_sig_accumulator is an incomplete struct. Therefore
 // we use 2 functions on the Nim side to (de)allocate storage for the struct.
-type ethBlsBatchSigAccumulator struct {
-	ctx *C.ctt_eth_bls_batch_sig_accumulator
+type silaBlsBatchSigAccumulator struct {
+	ctx *C.ctt_sila_bls_batch_sig_accumulator
 }
 
-func ethBlsBatchSigAccumulatorAlloc() (accum ethBlsBatchSigAccumulator) {
-	accum.ctx = C.ctt_eth_bls_alloc_batch_sig_accumulator()
+func silaBlsBatchSigAccumulatorAlloc() (accum silaBlsBatchSigAccumulator) {
+	accum.ctx = C.ctt_sila_bls_alloc_batch_sig_accumulator()
 	return accum
 }
 
-func ethBlsBatchSigAccumulatorFree(accum ethBlsBatchSigAccumulator) {
-	C.ctt_eth_bls_free_batch_sig_accumulator(accum.ctx)
+func silaBlsBatchSigAccumulatorFree(accum silaBlsBatchSigAccumulator) {
+	C.ctt_sila_bls_free_batch_sig_accumulator(accum.ctx)
 }
 
-func (accum ethBlsBatchSigAccumulator) init(secureRandomBytes Bytes32, accumSepTag []byte) {
-	C.ctt_eth_bls_init_batch_sig_accumulator((*C.ctt_eth_bls_batch_sig_accumulator)(accum.ctx),
+func (accum silaBlsBatchSigAccumulator) init(secureRandomBytes Bytes32, accumSepTag []byte) {
+	C.ctt_sila_bls_init_batch_sig_accumulator((*C.ctt_sila_bls_batch_sig_accumulator)(accum.ctx),
 		(*C.byte)(&secureRandomBytes[0]),
 		(*C.byte)(getAddr(accumSepTag)),
 		(C.size_t)(len(accumSepTag)),
 	)
 }
 
-func (accum ethBlsBatchSigAccumulator) update(pub EthBlsPubKey, message []byte, sig EthBlsSignature) bool {
-	status := C.ctt_eth_bls_update_batch_sig_accumulator((*C.ctt_eth_bls_batch_sig_accumulator)(accum.ctx),
-		(*C.ctt_eth_bls_pubkey)(&pub),
+func (accum silaBlsBatchSigAccumulator) update(pub SilaBlsPubKey, message []byte, sig SilaBlsSignature) bool {
+	status := C.ctt_sila_bls_update_batch_sig_accumulator((*C.ctt_sila_bls_batch_sig_accumulator)(accum.ctx),
+		(*C.ctt_sila_bls_pubkey)(&pub),
 		(*C.byte)(getAddr(message)),
 		(C.size_t)(len(message)),
-		(*C.ctt_eth_bls_signature)(&sig),
+		(*C.ctt_sila_bls_signature)(&sig),
 	)
 	return bool(status)
 }
 
-func (accum ethBlsBatchSigAccumulator) finalVerify() bool {
-	status := C.ctt_eth_bls_final_verify_batch_sig_accumulator(
-		(*C.ctt_eth_bls_batch_sig_accumulator)(accum.ctx),
+func (accum silaBlsBatchSigAccumulator) finalVerify() bool {
+	status := C.ctt_sila_bls_final_verify_batch_sig_accumulator(
+		(*C.ctt_sila_bls_batch_sig_accumulator)(accum.ctx),
 	)
 	return bool(status)
 }
 
-func BatchVerifySoA(pubkeys []EthBlsPubKey, messages [][]byte, signatures []EthBlsSignature, secureRandomBytes Bytes32) (bool, error) {
+func BatchVerifySoA(pubkeys []SilaBlsPubKey, messages [][]byte, signatures []SilaBlsSignature, secureRandomBytes Bytes32) (bool, error) {
 	if len(pubkeys) == 0 {
 		err := errors.New(
 			C.GoString(
-				C.ctt_eth_bls_status_to_string(C.cttEthBls_ZeroLengthAggregation),
+				C.ctt_sila_bls_status_to_string(C.cttSilaBls_ZeroLengthAggregation),
 			),
 		)
 		return false, err
@@ -735,7 +735,7 @@ func BatchVerifySoA(pubkeys []EthBlsPubKey, messages [][]byte, signatures []EthB
 		if pub.IsZero() {
 			err := errors.New(
 				C.GoString(
-					C.ctt_eth_bls_status_to_string(C.cttEthBls_PointAtInfinity),
+					C.ctt_sila_bls_status_to_string(C.cttSilaBls_PointAtInfinity),
 				),
 			)
 			return false, err
@@ -745,7 +745,7 @@ func BatchVerifySoA(pubkeys []EthBlsPubKey, messages [][]byte, signatures []EthB
 		if sig.IsZero() {
 			err := errors.New(
 				C.GoString(
-					C.ctt_eth_bls_status_to_string(C.cttEthBls_PointAtInfinity),
+					C.ctt_sila_bls_status_to_string(C.cttSilaBls_PointAtInfinity),
 				),
 			)
 			return false, err
@@ -753,15 +753,15 @@ func BatchVerifySoA(pubkeys []EthBlsPubKey, messages [][]byte, signatures []EthB
 	}
 
 	// NOTE: We *must* use the New / Free functions!
-	accum := ethBlsBatchSigAccumulatorAlloc()
-	defer ethBlsBatchSigAccumulatorFree(accum)
+	accum := silaBlsBatchSigAccumulatorAlloc()
+	defer silaBlsBatchSigAccumulatorFree(accum)
 	accum.init(secureRandomBytes, []byte("serial"))
 
 	for i, pub := range pubkeys {
 		if !accum.update(pub, messages[i], signatures[i]) {
 			err := errors.New(
 				C.GoString(
-					C.ctt_eth_bls_status_to_string(C.cttEthBls_VerificationFailure),
+					C.ctt_sila_bls_status_to_string(C.cttSilaBls_VerificationFailure),
 				),
 			)
 			return false, err
@@ -772,16 +772,16 @@ func BatchVerifySoA(pubkeys []EthBlsPubKey, messages [][]byte, signatures []EthB
 }
 
 type BatchVerifyTriplet struct {
-	pub     EthBlsPubKey
+	pub     SilaBlsPubKey
 	message []byte
-	sig     EthBlsSignature
+	sig     SilaBlsSignature
 }
 
 func BatchVerifyAoS(triplets []BatchVerifyTriplet, secureRandomBytes Bytes32) (bool, error) {
 	if len(triplets) == 0 {
 		err := errors.New(
 			C.GoString(
-				C.ctt_eth_bls_status_to_string(C.cttEthBls_ZeroLengthAggregation),
+				C.ctt_sila_bls_status_to_string(C.cttSilaBls_ZeroLengthAggregation),
 			),
 		)
 		return false, err
@@ -791,22 +791,22 @@ func BatchVerifyAoS(triplets []BatchVerifyTriplet, secureRandomBytes Bytes32) (b
 		if trp.pub.IsZero() || trp.sig.IsZero() {
 			err := errors.New(
 				C.GoString(
-					C.ctt_eth_bls_status_to_string(C.cttEthBls_PointAtInfinity),
+					C.ctt_sila_bls_status_to_string(C.cttSilaBls_PointAtInfinity),
 				),
 			)
 			return false, err
 		}
 	}
 	// NOTE: We *must* use the New / Free functions!
-	accum := ethBlsBatchSigAccumulatorAlloc()
-	defer ethBlsBatchSigAccumulatorFree(accum)
+	accum := silaBlsBatchSigAccumulatorAlloc()
+	defer silaBlsBatchSigAccumulatorFree(accum)
 	accum.init(secureRandomBytes, []byte("serial"))
 
 	for _, trp := range triplets {
 		if !accum.update(trp.pub, trp.message, trp.sig) {
 			err := errors.New(
 				C.GoString(
-					C.ctt_eth_bls_status_to_string(C.cttEthBls_VerificationFailure),
+					C.ctt_sila_bls_status_to_string(C.cttSilaBls_VerificationFailure),
 				),
 			)
 			return false, err

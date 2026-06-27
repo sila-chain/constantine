@@ -33,11 +33,11 @@ export
 ## ############################################################
 ##
 ## This module implements KZG Polynomial commitments (Kate, Zaverucha, Goldberg)
-## for the Ethereum blockchain.
+## for the Sila blockchain.
 ##
 ## References:
 ## - Ethereum spec:
-##   https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md
+##   https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md
 ## - KZG Paper:
 ##   Constant-Size Commitments to Polynomials and Their Applications
 ##   Kate, Zaverucha, Goldberg, 2010
@@ -52,9 +52,9 @@ import ./zoo_exports
 # Constants
 # ------------------------------------------------------------
 # Spec "ENDIANNESS" for deserialization is big-endian in v1.6.1
-#   https://github.com/ethereum/consensus-specs/blob/v1.6.1/specs/deneb/polynomial-commitments.md#constants
+#   https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.6.1/specs/deneb/polynomial-commitments.md#constants
 # It used to be little-endian in v1.3.0 of the spec
-#   https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#misc
+#   https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/phase0/beacon-chain.md#misc
 
 const BYTES_PER_COMMITMENT* = 48
 const BYTES_PER_PROOF* = 48
@@ -102,7 +102,7 @@ type
 
 func fromDigest(dst: var Fr[BLS12_381], src: array[32, byte]) =
   ## Convert a SHA256 digest to an element in the scalar field Fr[BLS12-381]
-  ## hash_to_bls_field: https://github.com/ethereum/consensus-specs/blob/v1.4.0-beta.1/specs/deneb/polynomial-commitments.md#hash_to_bls_field
+  ## hash_to_bls_field: https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0-beta.1/specs/deneb/polynomial-commitments.md#hash_to_bls_field
   var scalar {.noInit.}: BigInt[256]
   scalar.unmarshal(src, bigEndian)
 
@@ -117,7 +117,7 @@ func fromDigest(dst: var Fr[BLS12_381], src: array[32, byte]) =
 
 func fromDigest(dst: var Fr[BLS12_381].getBigInt(), src: array[32, byte]) =
   ## Convert a SHA256 digest to an element in the scalar field Fr[BLS12-381]
-  ## hash_to_bls_field: https://github.com/ethereum/consensus-specs/blob/v1.4.0-beta.1/specs/deneb/polynomial-commitments.md#hash_to_bls_field
+  ## hash_to_bls_field: https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0-beta.1/specs/deneb/polynomial-commitments.md#hash_to_bls_field
   var scalar {.noInit.}: BigInt[256]
   scalar.unmarshal(src, bigEndian)
 
@@ -128,7 +128,7 @@ func fiatShamirChallenge(
       blob: Blob,
       commitmentBytes: array[BYTES_PER_COMMITMENT, byte]) =
   ## Compute a Fiat-Shamir challenge
-  ## compute_challenge: https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md#compute_challenge
+  ## compute_challenge: https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md#compute_challenge
   var transcript {.noInit.}: sha256
   transcript.init()
 

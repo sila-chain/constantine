@@ -7,7 +7,7 @@
 //! at your option. This file may not be copied, modified, or distributed except according to those terms.
 
 use constantine_core::{hardware, Threadpool};
-use constantine_ethereum_bls_sig::*;
+use constantine_sila_bls_sig::*;
 
 use std::fs;
 use std::path::PathBuf;

@@ -5,7 +5,7 @@ members = [
     "constantine-rust/constantine-core",
     "constantine-rust/constantine-halo2-zal",
     "constantine-rust/constantine-sila-kzg",
-    "constantine-rust/constantine-ethereum-bls-sig",
+    "constantine-rust/constantine-sila-bls-sig",
     "constantine-rust/constantine-ethereum-evm-precompiles",
 ]
 

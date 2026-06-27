@@ -1,6 +1,6 @@
 # Test Vectors for EIP-2537 - Precompile for BLS12-381 curve operations
 
-These test vectors are derived from [BLS 12-381 tests](https://github.com/ethereum/bls12-381-tests/tree/eip-2537)
+These test vectors are derived from [BLS 12-381 tests](https://github.com/sila-chain/Sila-Consensus-Spec-Tests/tree/eip-2537)
 
 Note: `BLS12_G1MUL` is executed by the `BLS12_G1MULTIEXP` precompile and `BLS12_G2MUL` is executed by the `BLS12_G2MULTIEXP` precompile.
 

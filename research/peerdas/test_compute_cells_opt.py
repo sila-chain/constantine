@@ -159,7 +159,7 @@ def compute_cells_spec(
     Compute cells following the spec exactly (slow O(n²) method).
 
     This is the reference implementation from:
-    https://github.com/ethereum/consensus-specs/blob/v1.6.1/specs/fulu/polynomial-commitments-sampling.md#compute_cells
+    https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.6.1/specs/fulu/polynomial-commitments-sampling.md#compute_cells
 
     Args:
         blob: Blob in bit-reversed evaluation form (4096 field elements)

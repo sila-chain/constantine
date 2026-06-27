@@ -10,7 +10,7 @@
 import
   std/unittest,
   constantine/named/algebras,
-  constantine/ethereum_eip2333_bls12381_key_derivation,
+  constantine/sila_sip2333_bls12381_key_derivation,
   constantine/math/io/io_bigints,
   constantine/math/arithmetic/bigints,
   constantine/platforms/abstractions,
@@ -113,7 +113,7 @@ proc test3 =
   doAssert bool  eChild.fromDecimal(expectedChild)
   doAssert bool(child == eChild)
 
-suite "Key Derivation (EIP-2333)":
+suite "Key Derivation (SIP-2333)":
   test "Test 0":
     test0()
   test "Test 1":

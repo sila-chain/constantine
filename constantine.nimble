@@ -372,7 +372,7 @@ task test_lib, "Test C library":
   testLib("examples-c", "t_libctt_bls12_381", useGMP = true)
   testLib("examples-c", "t_libctt_banderwagon", useGMP = true)
   testLib("examples-c", "t_libctt_keccak", useGMP = false)
-  testLib("examples-c", "ethereum_bls_signatures", useGMP = false)
+  testLib("examples-c", "sila_bls_signatures", useGMP = false)
   testLib("tests"/"c_api", "t_threadpool", useGMP = false)
 
 # Test config
@@ -639,8 +639,8 @@ const testDesc: seq[tuple[path: string, useGMP: bool]] = @[
   # ----------------------------------------------------------
   ("tests/t_ethereum_evm_modexp.nim", false),
   ("tests/t_ethereum_evm_precompiles.nim", false),
-  ("tests/t_ethereum_bls_signatures.nim", false),
-  ("tests/t_ethereum_eip2333_bls12381_key_derivation.nim", false),
+  ("tests/t_sila_bls_signatures.nim", false),
+  ("tests/t_sila_sip2333_bls12381_key_derivation.nim", false),
   ("tests/t_sila_sip4844_deneb_kzg.nim", false),
   ("tests/t_sila_sip4844_deneb_kzg_parallel.nim", false),
   ("tests/t_sila_sip7594_peerdas.nim", false),
@@ -749,7 +749,7 @@ const benchDesc = [
   "bench_hash_to_curve",
   "bench_gmp_modexp",
   "bench_gmp_modmul",
-  "bench_eth_bls_signatures",
+  "bench_sila_bls_signatures",
   "bench_sila_sip4844_kzg",
   "bench_sila_sip7594_peerdas",
   "bench_kzg_multiproofs",
@@ -1216,8 +1216,8 @@ task bench_hash_to_curve, "Run Hash-to-Curve benchmarks":
 
 # BLS signatures
 # ------------------------------------------
-task bench_eth_bls_signatures, "Run Ethereum BLS signatures benchmarks - CC compiler":
-  runBench("bench_eth_bls_signatures")
+task bench_sila_bls_signatures, "Run Sila BLS signatures benchmarks - CC compiler":
+  runBench("bench_sila_bls_signatures")
 
 
 # EIP 4844 - KZG Polynomial Commitments

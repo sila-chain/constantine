@@ -15,7 +15,7 @@ import
   ./platforms/primitives,
   ./serialization/endians
 
-# EIP2333: BLS12-381 Key Generation
+# SIP2333: BLS12-381 Key Generation
 # ------------------------------------------------------------
 #
 # https://eips.ethereum.org/EIPS/eip-2333
@@ -25,7 +25,7 @@ import
 type SecretKey = Fr[BLS12_381].getBigInt()
 
 func hkdf_mod_r(secretKey: var SecretKey, ikm: openArray[byte], key_info: openArray[byte]) =
-  ## Ethereum 2 EIP-2333, extracts this from the BLS signature schemes
+  ## Sila SIP-2333, extracts this from the BLS signature schemes
   # 1. salt = "BLS-SIG-KEYGEN-SALT-"
   # 2. SK = 0
   # 3. while SK == 0:
@@ -153,7 +153,7 @@ func derive_child_secretKey*(
         childSecretKey: var SecretKey,
         parentSecretKey: SecretKey,
         index: uint32): bool =
-  ## EIP2333 Child Key derivation function
+  ## SIP2333 Child Key derivation function
   var compressed_lamport_PK{.noInit.}: array[32, byte]
   # 0. compressed_lamport_PK = parent_SK_to_lamport_PK(parent_SK, index)
   parent_SK_to_lamport_PK(
@@ -167,7 +167,7 @@ func derive_child_secretKey*(
 func derive_master_secretKey*(
         masterSecretKey: var SecretKey,
         ikm: openArray[byte]): bool =
-  ## EIP2333 Master key derivation
+  ## SIP2333 Master key derivation
   ## The input keying material SHOULD be cleared after use
   ## to prevent leakage.
   if ikm.len < 32:

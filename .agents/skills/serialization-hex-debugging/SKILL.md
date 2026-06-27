@@ -159,7 +159,7 @@ let big2 = BigInt[256].fromUint(123)
 
 - Ethereum spec v1.6.1+ uses **big-endian** (`KZG_ENDIANNESS = 'big'`) for field/scalar elements
   - Note: This changed from little-endian in spec v1.3.0
-  - Reference: https://github.com/ethereum/consensus-specs/blob/v1.6.1/specs/deneb/polynomial-commitments.md#constants
+  - Reference: https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.6.1/specs/deneb/polynomial-commitments.md#constants
 - BLS12-381 uses **big-endian** for serialization (Zcash format)
 - Banderwagon uses **big-endian**
 - Big-endian is common for byte serialization in other contexts

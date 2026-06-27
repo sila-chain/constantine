@@ -321,7 +321,7 @@ func kzg_verify_batch*[bits: static int, F2; Name: static Algebra](
   ##  e(∑ [rᵢ][proofᵢ]₁, [τ]₂) . e(∑[rᵢ]([commitmentᵢ]₁ - [eval_at_challengeᵢ]₁) + ∑[rᵢ][zᵢ][proofᵢ]₁, [-1]₂) = 1
   #
   # Described in:
-  # - https://github.com/ethereum/consensus-specs/blob/v1.4.0-beta.1/specs/deneb/polynomial-commitments.md#verify_kzg_proof_batch
+  # - https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0-beta.1/specs/deneb/polynomial-commitments.md#verify_kzg_proof_batch
   # - https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html]\
   # - Fast amortized KZG proofs
   #   Feist, Khovratovich

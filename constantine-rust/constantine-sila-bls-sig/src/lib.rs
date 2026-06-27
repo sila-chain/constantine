@@ -12,9 +12,9 @@ use constantine_sys::*;
 use ::core::mem::MaybeUninit;
 
 // Create type aliases for the C types
-pub type EthBlsSecKey = ctt_eth_bls_seckey;
-pub type EthBlsPubKey = ctt_eth_bls_pubkey;
-pub type EthBlsSignature = ctt_eth_bls_signature;
+pub type SilaBlsSecKey = ctt_sila_bls_seckey;
+pub type SilaBlsPubKey = ctt_sila_bls_pubkey;
+pub type SilaBlsSignature = ctt_sila_bls_signature;
 
 #[must_use]
 pub fn sha256_hash(message: &[u8], clear_memory: bool) -> [u8; 32] {
@@ -31,41 +31,41 @@ pub fn sha256_hash(message: &[u8], clear_memory: bool) -> [u8; 32] {
 }
 
 #[must_use]
-pub fn derive_pubkey(skey: EthBlsSecKey) -> EthBlsPubKey {
-    let mut result: MaybeUninit<EthBlsPubKey> = MaybeUninit::uninit();
+pub fn derive_pubkey(skey: SilaBlsSecKey) -> SilaBlsPubKey {
+    let mut result: MaybeUninit<SilaBlsPubKey> = MaybeUninit::uninit();
     unsafe {
-        ctt_eth_bls_derive_pubkey(
-            result.as_mut_ptr() as *mut ctt_eth_bls_pubkey,
-            &skey as *const ctt_eth_bls_seckey,
+        ctt_sila_bls_derive_pubkey(
+            result.as_mut_ptr() as *mut ctt_sila_bls_pubkey,
+            &skey as *const ctt_sila_bls_seckey,
         );
         return result.assume_init();
     }
 }
 
 #[must_use]
-pub fn pubkeys_are_equal(pkey1: EthBlsPubKey, pkey2: EthBlsPubKey) -> bool {
+pub fn pubkeys_are_equal(pkey1: SilaBlsPubKey, pkey2: SilaBlsPubKey) -> bool {
     unsafe {
-        return ctt_eth_bls_pubkeys_are_equal(
-            &pkey1 as *const ctt_eth_bls_pubkey,
-            &pkey2 as *const ctt_eth_bls_pubkey,
+        return ctt_sila_bls_pubkeys_are_equal(
+            &pkey1 as *const ctt_sila_bls_pubkey,
+            &pkey2 as *const ctt_sila_bls_pubkey,
         ) as bool;
     }
 }
 
 #[must_use]
-pub fn signatures_are_equal(pkey1: EthBlsSignature, pkey2: EthBlsSignature) -> bool {
+pub fn signatures_are_equal(pkey1: SilaBlsSignature, pkey2: SilaBlsSignature) -> bool {
     unsafe {
-        return ctt_eth_bls_signatures_are_equal(
-            &pkey1 as *const ctt_eth_bls_signature,
-            &pkey2 as *const ctt_eth_bls_signature,
+        return ctt_sila_bls_signatures_are_equal(
+            &pkey1 as *const ctt_sila_bls_signature,
+            &pkey2 as *const ctt_sila_bls_signature,
         ) as bool;
     }
 }
 
 #[must_use]
-pub fn validate_seckey(sec: &EthBlsSecKey) -> Result<(), ctt_codec_scalar_status> {
+pub fn validate_seckey(sec: &SilaBlsSecKey) -> Result<(), ctt_codec_scalar_status> {
     unsafe {
-        let status = ctt_eth_bls_validate_seckey(sec as *const ctt_eth_bls_seckey);
+        let status = ctt_sila_bls_validate_seckey(sec as *const ctt_sila_bls_seckey);
         match status {
             ctt_codec_scalar_status::cttCodecScalar_Success => Ok(()),
             _ => Err(status),
@@ -74,9 +74,9 @@ pub fn validate_seckey(sec: &EthBlsSecKey) -> Result<(), ctt_codec_scalar_status
 }
 
 #[must_use]
-pub fn validate_pubkey(pkey: &EthBlsPubKey) -> Result<(), ctt_codec_ecc_status> {
+pub fn validate_pubkey(pkey: &SilaBlsPubKey) -> Result<(), ctt_codec_ecc_status> {
     unsafe {
-        let status = ctt_eth_bls_validate_pubkey(pkey as *const ctt_eth_bls_pubkey);
+        let status = ctt_sila_bls_validate_pubkey(pkey as *const ctt_sila_bls_pubkey);
         match status {
             ctt_codec_ecc_status::cttCodecEcc_Success => Ok(()),
             _ => Err(status),
@@ -85,9 +85,9 @@ pub fn validate_pubkey(pkey: &EthBlsPubKey) -> Result<(), ctt_codec_ecc_status> 
 }
 
 #[must_use]
-pub fn validate_signature(sig: &EthBlsSignature) -> Result<(), ctt_codec_ecc_status> {
+pub fn validate_signature(sig: &SilaBlsSignature) -> Result<(), ctt_codec_ecc_status> {
     unsafe {
-        let status = ctt_eth_bls_validate_signature(sig as *const ctt_eth_bls_signature);
+        let status = ctt_sila_bls_validate_signature(sig as *const ctt_sila_bls_signature);
         match status {
             ctt_codec_ecc_status::cttCodecEcc_Success => Ok(()),
             _ => Err(status),
@@ -96,24 +96,24 @@ pub fn validate_signature(sig: &EthBlsSignature) -> Result<(), ctt_codec_ecc_sta
 }
 
 #[must_use]
-pub fn serialize_seckey(sec: &EthBlsSecKey) -> [u8; 32] {
+pub fn serialize_seckey(sec: &SilaBlsSecKey) -> [u8; 32] {
     let mut dst = [0u8; 32];
     unsafe {
-        ctt_eth_bls_serialize_seckey(
+        ctt_sila_bls_serialize_seckey(
             dst.as_mut_ptr() as *mut byte,
-            sec as *const ctt_eth_bls_seckey,
+            sec as *const ctt_sila_bls_seckey,
         );
     }
     dst
 }
 
 #[must_use]
-pub fn serialize_pubkey_compressed(pkey: &EthBlsPubKey) -> Result<[u8; 48], ctt_codec_ecc_status> {
+pub fn serialize_pubkey_compressed(pkey: &SilaBlsPubKey) -> Result<[u8; 48], ctt_codec_ecc_status> {
     let mut dst = [0u8; 48];
     unsafe {
-        let status = ctt_eth_bls_serialize_pubkey_compressed(
+        let status = ctt_sila_bls_serialize_pubkey_compressed(
             dst.as_mut_ptr() as *mut byte,
-            pkey as *const ctt_eth_bls_pubkey,
+            pkey as *const ctt_sila_bls_pubkey,
         );
         match status {
             ctt_codec_ecc_status::cttCodecEcc_Success => Ok(dst),
@@ -124,13 +124,13 @@ pub fn serialize_pubkey_compressed(pkey: &EthBlsPubKey) -> Result<[u8; 48], ctt_
 
 #[must_use]
 pub fn serialize_signature_compressed(
-    sig: &EthBlsSignature,
+    sig: &SilaBlsSignature,
 ) -> Result<[u8; 96], ctt_codec_ecc_status> {
     let mut dst = [0u8; 96];
     unsafe {
-        let status = ctt_eth_bls_serialize_signature_compressed(
+        let status = ctt_sila_bls_serialize_signature_compressed(
             dst.as_mut_ptr() as *mut byte,
-            sig as *const ctt_eth_bls_signature,
+            sig as *const ctt_sila_bls_signature,
         );
         match status {
             ctt_codec_ecc_status::cttCodecEcc_Success => Ok(dst),
@@ -140,11 +140,11 @@ pub fn serialize_signature_compressed(
 }
 
 #[must_use]
-pub fn deserialize_seckey(src: &[u8; 32]) -> Result<EthBlsSecKey, ctt_codec_scalar_status> {
-    let mut result: MaybeUninit<EthBlsSecKey> = MaybeUninit::uninit();
+pub fn deserialize_seckey(src: &[u8; 32]) -> Result<SilaBlsSecKey, ctt_codec_scalar_status> {
+    let mut result: MaybeUninit<SilaBlsSecKey> = MaybeUninit::uninit();
     unsafe {
-        let status = ctt_eth_bls_deserialize_seckey(
-            result.as_mut_ptr() as *mut ctt_eth_bls_seckey,
+        let status = ctt_sila_bls_deserialize_seckey(
+            result.as_mut_ptr() as *mut ctt_sila_bls_seckey,
             src.as_ptr() as *const byte,
         );
         match status {
@@ -157,11 +157,11 @@ pub fn deserialize_seckey(src: &[u8; 32]) -> Result<EthBlsSecKey, ctt_codec_scal
 #[must_use]
 pub fn deserialize_pubkey_compressed_unchecked(
     src: &[u8; 48],
-) -> Result<EthBlsPubKey, ctt_codec_ecc_status> {
-    let mut result: MaybeUninit<EthBlsPubKey> = MaybeUninit::uninit();
+) -> Result<SilaBlsPubKey, ctt_codec_ecc_status> {
+    let mut result: MaybeUninit<SilaBlsPubKey> = MaybeUninit::uninit();
     unsafe {
-        let status = ctt_eth_bls_deserialize_pubkey_compressed_unchecked(
-            result.as_mut_ptr() as *mut ctt_eth_bls_pubkey,
+        let status = ctt_sila_bls_deserialize_pubkey_compressed_unchecked(
+            result.as_mut_ptr() as *mut ctt_sila_bls_pubkey,
             src.as_ptr() as *const byte,
         );
         match status {
@@ -175,11 +175,11 @@ pub fn deserialize_pubkey_compressed_unchecked(
 #[must_use]
 pub fn deserialize_signature_compressed_unchecked(
     src: &[u8; 96],
-) -> Result<EthBlsSignature, ctt_codec_ecc_status> {
-    let mut result: MaybeUninit<EthBlsSignature> = MaybeUninit::uninit();
+) -> Result<SilaBlsSignature, ctt_codec_ecc_status> {
+    let mut result: MaybeUninit<SilaBlsSignature> = MaybeUninit::uninit();
     unsafe {
-        let status = ctt_eth_bls_deserialize_signature_compressed_unchecked(
-            result.as_mut_ptr() as *mut ctt_eth_bls_signature,
+        let status = ctt_sila_bls_deserialize_signature_compressed_unchecked(
+            result.as_mut_ptr() as *mut ctt_sila_bls_signature,
             src.as_ptr() as *const byte,
         );
         match status {
@@ -191,11 +191,11 @@ pub fn deserialize_signature_compressed_unchecked(
 }
 
 #[must_use]
-pub fn deserialize_pubkey_compressed(src: &[u8; 48]) -> Result<EthBlsPubKey, ctt_codec_ecc_status> {
-    let mut result: MaybeUninit<EthBlsPubKey> = MaybeUninit::uninit();
+pub fn deserialize_pubkey_compressed(src: &[u8; 48]) -> Result<SilaBlsPubKey, ctt_codec_ecc_status> {
+    let mut result: MaybeUninit<SilaBlsPubKey> = MaybeUninit::uninit();
     unsafe {
-        let status = ctt_eth_bls_deserialize_pubkey_compressed(
-            result.as_mut_ptr() as *mut ctt_eth_bls_pubkey,
+        let status = ctt_sila_bls_deserialize_pubkey_compressed(
+            result.as_mut_ptr() as *mut ctt_sila_bls_pubkey,
             src.as_ptr() as *const byte,
         );
         match status {
@@ -209,11 +209,11 @@ pub fn deserialize_pubkey_compressed(src: &[u8; 48]) -> Result<EthBlsPubKey, ctt
 #[must_use]
 pub fn deserialize_signature_compressed(
     src: &[u8; 96],
-) -> Result<EthBlsSignature, ctt_codec_ecc_status> {
-    let mut result: MaybeUninit<EthBlsSignature> = MaybeUninit::uninit();
+) -> Result<SilaBlsSignature, ctt_codec_ecc_status> {
+    let mut result: MaybeUninit<SilaBlsSignature> = MaybeUninit::uninit();
     unsafe {
-        let status = ctt_eth_bls_deserialize_signature_compressed(
-            result.as_mut_ptr() as *mut ctt_eth_bls_signature,
+        let status = ctt_sila_bls_deserialize_signature_compressed(
+            result.as_mut_ptr() as *mut ctt_sila_bls_signature,
             src.as_ptr() as *const byte,
         );
         match status {
@@ -224,12 +224,12 @@ pub fn deserialize_signature_compressed(
     }
 }
 
-pub fn sign(skey: EthBlsSecKey, message: &[u8]) -> EthBlsSignature {
-    let mut result: MaybeUninit<EthBlsSignature> = MaybeUninit::uninit();
+pub fn sign(skey: SilaBlsSecKey, message: &[u8]) -> SilaBlsSignature {
+    let mut result: MaybeUninit<SilaBlsSignature> = MaybeUninit::uninit();
     unsafe {
-        ctt_eth_bls_sign(
-            result.as_mut_ptr() as *mut ctt_eth_bls_signature,
-            &skey as *const ctt_eth_bls_seckey,
+        ctt_sila_bls_sign(
+            result.as_mut_ptr() as *mut ctt_sila_bls_signature,
+            &skey as *const ctt_sila_bls_seckey,
             message.as_ptr() as *const byte,
             message.len() as usize,
         );
@@ -239,19 +239,19 @@ pub fn sign(skey: EthBlsSecKey, message: &[u8]) -> EthBlsSignature {
 
 #[must_use]
 pub fn verify(
-    pkey: EthBlsPubKey,
+    pkey: SilaBlsPubKey,
     message: &[u8],
-    sig: EthBlsSignature,
-) -> Result<bool, ctt_eth_bls_status> {
+    sig: SilaBlsSignature,
+) -> Result<bool, ctt_sila_bls_status> {
     unsafe {
-        let status = ctt_eth_bls_verify(
-            &pkey as *const ctt_eth_bls_pubkey,
+        let status = ctt_sila_bls_verify(
+            &pkey as *const ctt_sila_bls_pubkey,
             message.as_ptr() as *const byte,
             message.len() as usize,
-            &sig as *const ctt_eth_bls_signature,
+            &sig as *const ctt_sila_bls_signature,
         );
         match status {
-            ctt_eth_bls_status::cttEthBls_Success => Ok(true),
+            ctt_sila_bls_status::cttSilaBls_Success => Ok(true),
             _ => Err(status),
         }
     }
@@ -259,23 +259,23 @@ pub fn verify(
 
 #[must_use]
 pub fn fast_aggregate_verify(
-    pubkeys: &[EthBlsPubKey],
+    pubkeys: &[SilaBlsPubKey],
     message: &[u8],
-    signature: &EthBlsSignature,
-) -> Result<bool, ctt_eth_bls_status> {
+    signature: &SilaBlsSignature,
+) -> Result<bool, ctt_sila_bls_status> {
     // TODO: do we really have to clone here, just to assign to CttSpan due to a *mut field?
     //let spans = to_span(&mut msg);
 
     unsafe {
-        let status = ctt_eth_bls_fast_aggregate_verify(
-            pubkeys.as_ptr() as *const ctt_eth_bls_pubkey,
+        let status = ctt_sila_bls_fast_aggregate_verify(
+            pubkeys.as_ptr() as *const ctt_sila_bls_pubkey,
             pubkeys.len() as usize,
             message.as_ptr() as *const byte,
             message.len() as usize,
-            signature as *const ctt_eth_bls_signature,
+            signature as *const ctt_sila_bls_signature,
         );
         match status {
-            ctt_eth_bls_status::cttEthBls_Success => Ok(true),
+            ctt_sila_bls_status::cttSilaBls_Success => Ok(true),
             _ => Err(status),
         }
     }
@@ -304,10 +304,10 @@ fn to_span(vec: &mut Vec<Vec<u8>>) -> Vec<CttSpan> {
 
 #[must_use]
 pub fn aggregate_verify(
-    pubkeys: &[EthBlsPubKey],
+    pubkeys: &[SilaBlsPubKey],
     messages: &Vec<Vec<u8>>,
-    aggregate_sig: &EthBlsSignature,
-) -> Result<bool, ctt_eth_bls_status> {
+    aggregate_sig: &SilaBlsSignature,
+) -> Result<bool, ctt_sila_bls_status> {
     // TODO: do we really have to clone here, just to assign to CttSpan due to a *mut field?
     // Funny irony, that we can hand (nested) pointers from Rust (contrary to Go), but pointer
     // sanity logic makes us have to copy anyway?
@@ -315,14 +315,14 @@ pub fn aggregate_verify(
     let spans = to_span(&mut msg);
 
     unsafe {
-        let status = ctt_eth_bls_aggregate_verify(
-            pubkeys.as_ptr() as *const ctt_eth_bls_pubkey,
+        let status = ctt_sila_bls_aggregate_verify(
+            pubkeys.as_ptr() as *const ctt_sila_bls_pubkey,
             spans.as_ptr() as *const ctt_span,
             pubkeys.len() as usize,
-            aggregate_sig as *const ctt_eth_bls_signature,
+            aggregate_sig as *const ctt_sila_bls_signature,
         );
         match status {
-            ctt_eth_bls_status::cttEthBls_Success => Ok(true),
+            ctt_sila_bls_status::cttSilaBls_Success => Ok(true),
             _ => Err(status),
         }
     }
@@ -330,11 +330,11 @@ pub fn aggregate_verify(
 
 #[must_use]
 pub fn batch_verify(
-    pubkeys: &[EthBlsPubKey],
+    pubkeys: &[SilaBlsPubKey],
     messages: &Vec<Vec<u8>>,
-    signatures: &[EthBlsSignature],
+    signatures: &[SilaBlsSignature],
     secure_random_bytes: &[u8; 32],
-) -> Result<bool, ctt_eth_bls_status> {
+) -> Result<bool, ctt_sila_bls_status> {
     // TODO: do we really have to clone here, just to assign to CttSpan due to a *mut field?
     // Funny irony, that we can hand (nested) pointers from Rust (contrary to Go), but pointer
     // sanity logic makes us have to copy anyway?
@@ -342,15 +342,15 @@ pub fn batch_verify(
     let spans = to_span(&mut msg);
 
     unsafe {
-        let status = ctt_eth_bls_batch_verify(
-            pubkeys.as_ptr() as *const ctt_eth_bls_pubkey,
+        let status = ctt_sila_bls_batch_verify(
+            pubkeys.as_ptr() as *const ctt_sila_bls_pubkey,
             spans.as_ptr() as *const ctt_span,
-            signatures.as_ptr() as *const ctt_eth_bls_signature,
+            signatures.as_ptr() as *const ctt_sila_bls_signature,
             messages.len() as usize,
             secure_random_bytes.as_ptr() as *const byte,
         );
         match status {
-            ctt_eth_bls_status::cttEthBls_Success => Ok(true),
+            ctt_sila_bls_status::cttSilaBls_Success => Ok(true),
             _ => Err(status),
         }
     }
@@ -359,11 +359,11 @@ pub fn batch_verify(
 #[must_use]
 pub fn batch_verify_parallel(
     tp: &Threadpool,
-    pubkeys: &[EthBlsPubKey],
+    pubkeys: &[SilaBlsPubKey],
     messages: &Vec<Vec<u8>>,
-    signatures: &[EthBlsSignature],
+    signatures: &[SilaBlsSignature],
     secure_random_bytes: &[u8; 32],
-) -> Result<bool, ctt_eth_bls_status> {
+) -> Result<bool, ctt_sila_bls_status> {
     // TODO: do we really have to clone here, just to assign to CttSpan due to a *mut field?
     // Funny irony, that we can hand (nested) pointers from Rust (contrary to Go), but pointer
     // sanity logic makes us have to copy anyway?
@@ -371,16 +371,16 @@ pub fn batch_verify_parallel(
     let spans = to_span(&mut msg);
 
     unsafe {
-        let status = ctt_eth_bls_batch_verify_parallel(
+        let status = ctt_sila_bls_batch_verify_parallel(
             tp.get_private_context(),
-            pubkeys.as_ptr() as *const ctt_eth_bls_pubkey,
+            pubkeys.as_ptr() as *const ctt_sila_bls_pubkey,
             spans.as_ptr() as *const ctt_span,
-            signatures.as_ptr() as *const ctt_eth_bls_signature,
+            signatures.as_ptr() as *const ctt_sila_bls_signature,
             messages.len() as usize,
             secure_random_bytes.as_ptr() as *const byte,
         );
         match status {
-            ctt_eth_bls_status::cttEthBls_Success => Ok(true),
+            ctt_sila_bls_status::cttSilaBls_Success => Ok(true),
             _ => Err(status),
         }
     }

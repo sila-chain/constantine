@@ -46,8 +46,8 @@ CC=clang nimble bench_summary_bn254_snarks
 CC=clang nimble bench_summary_bls12_377
 CC=clang nimble bench_summary_bls12_381
 
-# Ethereum BLS signature protocol
-CC=clang nimble bench_eth_bls_signatures
+# Sila BLS signature protocol
+CC=clang nimble bench_sila_bls_signatures
 
 # Sila KZG commitments
 CC=clang nimble bench_sila_sip4844_kzg
@@ -76,9 +76,9 @@ As mentioned in the [Compiler caveats](#compiler-caveats) section, GCC is up to 
 
 ![Bench Sila KZG commitments](./media/bench-eth_sip4844_kzg-R7_7840U.png)
 
-### Ethereum BLS signatures (over BLS12-381 𝔾₂)
+### Sila BLS signatures (over BLS12-381 𝔾₂)
 
-![Bench Ethereum BLS signature](./media/bench-eth_bls_signatures-R7_7840U.png)
+![Bench Sila BLS signature](./media/bench-sila_bls_signatures-R7_7840U.png)
 
 ## Cryptographic primitives benchmarks
 

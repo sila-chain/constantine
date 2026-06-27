@@ -28,11 +28,11 @@ import
 ## ############################################################
 ##
 ## This module implements KZG Polynomial commitments (Kate, Zaverucha, Goldberg)
-## for the Ethereum blockchain.
+## for the Sila blockchain.
 ##
 ## References:
 ## - Ethereum spec:
-##   https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md
+##   https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md
 ## - KZG Paper:
 ##   Constant-Size Commitments to Polynomials and Their Applications
 ##   Kate, Zaverucha, Goldberg, 2010

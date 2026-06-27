@@ -1,5 +1,5 @@
 [package]
-name = "constantine-ethereum-bls-sig"
+name = "constantine-sila-bls-sig"
 version = "0.2.0"
 edition = "2021"
 

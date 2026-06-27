@@ -13,8 +13,8 @@ I also thank Araq, ringabout and all other contributors to the Nim compiler: the
 Today Constantine is focused on the Ethereum blockchain, tomorrow I hope it will also address the need of (potentially Zero-Knowledge) proof systems and privacy-preserving protocols.
 
 It currently exposes the following high-level protocols:
-- BLS signatures for Ethereum
-- BLS Key derivation for Ethereum - EIP-2333
+- BLS signatures for Sila
+- BLS Key derivation for Ethereum - SIP-2333
 - Optimized BigInt and Cryptographic Primitives for the Ethereum Virtual Machine
 - KZG commitment for SIP4844 for scaling Ethereum
 - SHA256 hash function

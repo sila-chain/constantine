@@ -6,18 +6,18 @@
  *    * Apache v2 license (license terms in the root directory or at http://www.apache.org/licenses/LICENSE-2.0).
  *  at your option. This file may not be copied, modified, or distributed except according to those terms.
  */
-#ifndef __CTT_H_ETHEREUM_BLS_SIGNATURES_PARALLEL__
-#define __CTT_H_ETHEREUM_BLS_SIGNATURES_PARALLEL__
+#ifndef __CTT_H_SILA_BLS_SIGNATURES_PARALLEL__
+#define __CTT_H_SILA_BLS_SIGNATURES_PARALLEL__
 
 #include "constantine/core/datatypes.h"
 #include "constantine/core/threadpool.h"
-#include "constantine/protocols/ethereum_bls_signatures.h"
+#include "constantine/protocols/sila_bls_signatures.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Ethereum BLS signatures parallel interface
+// Sila BLS signatures parallel interface
 // ------------------------------------------------------------------------------------------------
 
 /**
@@ -47,11 +47,11 @@ extern "C" {
  *  resubmit 2^64 times forged (publickey, message, signature) triplets
  *  against the same `secureRandomBytes`
 */
-ctt_eth_bls_status ctt_eth_bls_batch_verify_parallel(
+ctt_sila_bls_status ctt_sila_bls_batch_verify_parallel(
         const ctt_threadpool* tp,
-        const ctt_eth_bls_pubkey pubkey[],
+        const ctt_sila_bls_pubkey pubkey[],
 	const ctt_span messages[],
-        const ctt_eth_bls_signature sig[],
+        const ctt_sila_bls_signature sig[],
         size_t len,
         const byte secure_random_bytes[32]
     ) __attribute__((warn_unused_result));
@@ -61,4 +61,4 @@ ctt_eth_bls_status ctt_eth_bls_batch_verify_parallel(
 }
 #endif
 
-#endif // __CTT_H_ETHEREUM_BLS_SIGNATURES_PARALLEL__
+#endif // __CTT_H_SILA_BLS_SIGNATURES_PARALLEL__

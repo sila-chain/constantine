@@ -4301,83 +4301,83 @@ unsafe extern "C" {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_bls_fp {
+pub struct ctt_sila_bls_fp {
     raw: [byte; 48usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_bls_fp"][::core::mem::size_of::<ctt_eth_bls_fp>() - 48usize];
-    ["Alignment of ctt_eth_bls_fp"][::core::mem::align_of::<ctt_eth_bls_fp>() - 1usize];
-    ["Offset of field: ctt_eth_bls_fp::raw"][::core::mem::offset_of!(ctt_eth_bls_fp, raw) - 0usize];
+    ["Size of ctt_sila_bls_fp"][::core::mem::size_of::<ctt_sila_bls_fp>() - 48usize];
+    ["Alignment of ctt_sila_bls_fp"][::core::mem::align_of::<ctt_sila_bls_fp>() - 1usize];
+    ["Offset of field: ctt_sila_bls_fp::raw"][::core::mem::offset_of!(ctt_sila_bls_fp, raw) - 0usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_bls_fp2 {
-    coords: [ctt_eth_bls_fp; 2usize],
+pub struct ctt_sila_bls_fp2 {
+    coords: [ctt_sila_bls_fp; 2usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_bls_fp2"][::core::mem::size_of::<ctt_eth_bls_fp2>() - 96usize];
-    ["Alignment of ctt_eth_bls_fp2"][::core::mem::align_of::<ctt_eth_bls_fp2>() - 1usize];
-    ["Offset of field: ctt_eth_bls_fp2::coords"]
-        [::core::mem::offset_of!(ctt_eth_bls_fp2, coords) - 0usize];
+    ["Size of ctt_sila_bls_fp2"][::core::mem::size_of::<ctt_sila_bls_fp2>() - 96usize];
+    ["Alignment of ctt_sila_bls_fp2"][::core::mem::align_of::<ctt_sila_bls_fp2>() - 1usize];
+    ["Offset of field: ctt_sila_bls_fp2::coords"]
+        [::core::mem::offset_of!(ctt_sila_bls_fp2, coords) - 0usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_bls_seckey {
+pub struct ctt_sila_bls_seckey {
     raw: [byte; 32usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_bls_seckey"][::core::mem::size_of::<ctt_eth_bls_seckey>() - 32usize];
-    ["Alignment of ctt_eth_bls_seckey"][::core::mem::align_of::<ctt_eth_bls_seckey>() - 1usize];
-    ["Offset of field: ctt_eth_bls_seckey::raw"]
-        [::core::mem::offset_of!(ctt_eth_bls_seckey, raw) - 0usize];
+    ["Size of ctt_sila_bls_seckey"][::core::mem::size_of::<ctt_sila_bls_seckey>() - 32usize];
+    ["Alignment of ctt_sila_bls_seckey"][::core::mem::align_of::<ctt_sila_bls_seckey>() - 1usize];
+    ["Offset of field: ctt_sila_bls_seckey::raw"]
+        [::core::mem::offset_of!(ctt_sila_bls_seckey, raw) - 0usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_bls_pubkey {
-    x: ctt_eth_bls_fp,
-    y: ctt_eth_bls_fp,
+pub struct ctt_sila_bls_pubkey {
+    x: ctt_sila_bls_fp,
+    y: ctt_sila_bls_fp,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_bls_pubkey"][::core::mem::size_of::<ctt_eth_bls_pubkey>() - 96usize];
-    ["Alignment of ctt_eth_bls_pubkey"][::core::mem::align_of::<ctt_eth_bls_pubkey>() - 1usize];
-    ["Offset of field: ctt_eth_bls_pubkey::x"]
-        [::core::mem::offset_of!(ctt_eth_bls_pubkey, x) - 0usize];
-    ["Offset of field: ctt_eth_bls_pubkey::y"]
-        [::core::mem::offset_of!(ctt_eth_bls_pubkey, y) - 48usize];
+    ["Size of ctt_sila_bls_pubkey"][::core::mem::size_of::<ctt_sila_bls_pubkey>() - 96usize];
+    ["Alignment of ctt_sila_bls_pubkey"][::core::mem::align_of::<ctt_sila_bls_pubkey>() - 1usize];
+    ["Offset of field: ctt_sila_bls_pubkey::x"]
+        [::core::mem::offset_of!(ctt_sila_bls_pubkey, x) - 0usize];
+    ["Offset of field: ctt_sila_bls_pubkey::y"]
+        [::core::mem::offset_of!(ctt_sila_bls_pubkey, y) - 48usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_bls_signature {
-    x: ctt_eth_bls_fp2,
-    y: ctt_eth_bls_fp2,
+pub struct ctt_sila_bls_signature {
+    x: ctt_sila_bls_fp2,
+    y: ctt_sila_bls_fp2,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ctt_eth_bls_signature"][::core::mem::size_of::<ctt_eth_bls_signature>() - 192usize];
-    ["Alignment of ctt_eth_bls_signature"]
-        [::core::mem::align_of::<ctt_eth_bls_signature>() - 1usize];
-    ["Offset of field: ctt_eth_bls_signature::x"]
-        [::core::mem::offset_of!(ctt_eth_bls_signature, x) - 0usize];
-    ["Offset of field: ctt_eth_bls_signature::y"]
-        [::core::mem::offset_of!(ctt_eth_bls_signature, y) - 96usize];
+    ["Size of ctt_sila_bls_signature"][::core::mem::size_of::<ctt_sila_bls_signature>() - 192usize];
+    ["Alignment of ctt_sila_bls_signature"]
+        [::core::mem::align_of::<ctt_sila_bls_signature>() - 1usize];
+    ["Offset of field: ctt_sila_bls_signature::x"]
+        [::core::mem::offset_of!(ctt_sila_bls_signature, x) - 0usize];
+    ["Offset of field: ctt_sila_bls_signature::y"]
+        [::core::mem::offset_of!(ctt_sila_bls_signature, y) - 96usize];
 };
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ctt_eth_bls_batch_sig_accumulator {
+pub struct ctt_sila_bls_batch_sig_accumulator {
     _unused: [u8; 0],
 }
 #[repr(u8)]
 #[derive(Copy, Clone, Hash, PartialEq, Eq, Debug)]
-pub enum ctt_eth_bls_status {
-    cttEthBls_Success = 0,
-    cttEthBls_VerificationFailure = 1,
-    cttEthBls_InputsLengthsMismatch = 2,
-    cttEthBls_ZeroLengthAggregation = 3,
-    cttEthBls_PointAtInfinity = 4,
+pub enum ctt_sila_bls_status {
+    cttSilaBls_Success = 0,
+    cttSilaBls_VerificationFailure = 1,
+    cttSilaBls_InputsLengthsMismatch = 2,
+    cttSilaBls_ZeroLengthAggregation = 3,
+    cttSilaBls_PointAtInfinity = 4,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -4394,117 +4394,117 @@ const _: () = {
 };
 unsafe extern "C" {
     #[must_use]
-    pub fn ctt_eth_bls_pubkey_is_zero(pubkey: *const ctt_eth_bls_pubkey) -> bool;
+    pub fn ctt_sila_bls_pubkey_is_zero(pubkey: *const ctt_sila_bls_pubkey) -> bool;
 }
 unsafe extern "C" {
     #[must_use]
-    pub fn ctt_eth_bls_signature_is_zero(sig: *const ctt_eth_bls_signature) -> bool;
+    pub fn ctt_sila_bls_signature_is_zero(sig: *const ctt_sila_bls_signature) -> bool;
 }
 unsafe extern "C" {
     #[must_use]
-    pub fn ctt_eth_bls_pubkeys_are_equal(
-        a: *const ctt_eth_bls_pubkey,
-        b: *const ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_pubkeys_are_equal(
+        a: *const ctt_sila_bls_pubkey,
+        b: *const ctt_sila_bls_pubkey,
     ) -> bool;
 }
 unsafe extern "C" {
     #[must_use]
-    pub fn ctt_eth_bls_signatures_are_equal(
-        a: *const ctt_eth_bls_signature,
-        b: *const ctt_eth_bls_signature,
+    pub fn ctt_sila_bls_signatures_are_equal(
+        a: *const ctt_sila_bls_signature,
+        b: *const ctt_sila_bls_signature,
     ) -> bool;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Validate the secret key.\n\n  Regarding timing attacks, this will leak timing information only if the key is invalid.\n  Namely, the secret key is 0 or the secret key is too large."]
-    pub fn ctt_eth_bls_validate_seckey(
-        seckey: *const ctt_eth_bls_seckey,
+    pub fn ctt_sila_bls_validate_seckey(
+        seckey: *const ctt_sila_bls_seckey,
     ) -> ctt_codec_scalar_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Validate the public key.\n\n  This is an expensive operation that can be cached."]
-    pub fn ctt_eth_bls_validate_pubkey(pubkey: *const ctt_eth_bls_pubkey) -> ctt_codec_ecc_status;
+    pub fn ctt_sila_bls_validate_pubkey(pubkey: *const ctt_sila_bls_pubkey) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Validate the signature.\n\n  This is an expensive operation that can be cached."]
-    pub fn ctt_eth_bls_validate_signature(
-        pubkey: *const ctt_eth_bls_signature,
+    pub fn ctt_sila_bls_validate_signature(
+        pubkey: *const ctt_sila_bls_signature,
     ) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[doc = " Serialize a secret key\n\n  SecretKey wraps Fr[BLS12_381] which is by construction in-range, so this cannot fail"]
-    pub fn ctt_eth_bls_serialize_seckey(dst: *mut byte, seckey: *const ctt_eth_bls_seckey);
+    pub fn ctt_sila_bls_serialize_seckey(dst: *mut byte, seckey: *const ctt_sila_bls_seckey);
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Serialize a public key in compressed (Zcash) format\n\n  Returns cttCodecEcc_Success if successful"]
-    pub fn ctt_eth_bls_serialize_pubkey_compressed(
+    pub fn ctt_sila_bls_serialize_pubkey_compressed(
         dst: *mut byte,
-        pubkey: *const ctt_eth_bls_pubkey,
+        pubkey: *const ctt_sila_bls_pubkey,
     ) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Serialize a signature in compressed (Zcash) format\n\n  Returns cttCodecEcc_Success if successful"]
-    pub fn ctt_eth_bls_serialize_signature_compressed(
+    pub fn ctt_sila_bls_serialize_signature_compressed(
         dst: *mut byte,
-        sig: *const ctt_eth_bls_signature,
+        sig: *const ctt_sila_bls_signature,
     ) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Deserialize a secret key\n  This also validates the secret key.\n\n  This is protected against side-channel unless your key is invalid.\n  In that case it will like whether it's all zeros or larger than the curve order."]
-    pub fn ctt_eth_bls_deserialize_seckey(
-        seckey: *mut ctt_eth_bls_seckey,
+    pub fn ctt_sila_bls_deserialize_seckey(
+        seckey: *mut ctt_sila_bls_seckey,
         src: *const byte,
     ) -> ctt_codec_scalar_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Deserialize a public key in compressed (Zcash) format.\n  This does not validate the public key.\n  It is intended for cases where public keys are stored in a trusted location\n  and validation can be cached.\n\n  Warning ⚠:\n    This procedure skips the very expensive subgroup checks.\n    Not checking subgroup exposes a protocol to small subgroup attacks.\n\n  Returns cttCodecEcc_Success if successful"]
-    pub fn ctt_eth_bls_deserialize_pubkey_compressed_unchecked(
-        pubkey: *mut ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_deserialize_pubkey_compressed_unchecked(
+        pubkey: *mut ctt_sila_bls_pubkey,
         src: *const byte,
     ) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Deserialize a public_key in compressed (Zcash) format.\n  This also validates the public key.\n\n  Returns cttCodecEcc_Success if successful"]
-    pub fn ctt_eth_bls_deserialize_pubkey_compressed(
-        pubkey: *mut ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_deserialize_pubkey_compressed(
+        pubkey: *mut ctt_sila_bls_pubkey,
         src: *const byte,
     ) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Deserialize a signature in compressed (Zcash) format.\n  This does not validate the signature.\n  It is intended for cases where public keys are stored in a trusted location\n  and validation can be cached.\n\n  Warning ⚠:\n    This procedure skips the very expensive subgroup checks.\n    Not checking subgroup exposes a protocol to small subgroup attacks.\n\n  Returns cttCodecEcc_Success if successful"]
-    pub fn ctt_eth_bls_deserialize_signature_compressed_unchecked(
-        sig: *mut ctt_eth_bls_signature,
+    pub fn ctt_sila_bls_deserialize_signature_compressed_unchecked(
+        sig: *mut ctt_sila_bls_signature,
         src: *const byte,
     ) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Deserialize a signature in compressed (Zcash) format.\n  This also validates the signature.\n\n  Returns cttCodecEcc_Success if successful"]
-    pub fn ctt_eth_bls_deserialize_signature_compressed(
-        sig: *mut ctt_eth_bls_signature,
+    pub fn ctt_sila_bls_deserialize_signature_compressed(
+        sig: *mut ctt_sila_bls_signature,
         src: *const byte,
     ) -> ctt_codec_ecc_status;
 }
 unsafe extern "C" {
     #[doc = " Derive the public key matching with a secret key\n\n  Secret protection:\n  - A valid secret key will only leak that it is valid.\n  - An invalid secret key will leak whether it's all zero or larger than the curve order."]
-    pub fn ctt_eth_bls_derive_pubkey(
-        pubkey: *mut ctt_eth_bls_pubkey,
-        seckey: *const ctt_eth_bls_seckey,
+    pub fn ctt_sila_bls_derive_pubkey(
+        pubkey: *mut ctt_sila_bls_pubkey,
+        seckey: *const ctt_sila_bls_seckey,
     );
 }
 unsafe extern "C" {
     #[doc = " Produce a signature for the message under the specified secret key\n  Signature is on BLS12-381 G2 (and public key on G1)\n\n  For message domain separation purpose, the tag is `BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_`\n\n  Input:\n  - A secret key\n  - A message\n\n  Output:\n  - `signature` is overwritten with `message` signed with `secretKey`\n    with the scheme\n  - A status code indicating success or if the secret key is invalid.\n\n  Secret protection:\n  - A valid secret key will only leak that it is valid.\n  - An invalid secret key will leak whether it's all zero or larger than the curve order."]
-    pub fn ctt_eth_bls_sign(
-        sig: *mut ctt_eth_bls_signature,
-        seckey: *const ctt_eth_bls_seckey,
+    pub fn ctt_sila_bls_sign(
+        sig: *mut ctt_sila_bls_signature,
+        seckey: *const ctt_sila_bls_seckey,
         message: *const byte,
         message_len: usize,
     );
@@ -4512,57 +4512,57 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[must_use]
     #[doc = " Check that a signature is valid for a message\n  under the provided public key.\n  returns `true` if the signature is valid, `false` otherwise.\n\n  For message domain separation purpose, the tag is `BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_`\n\n  Input:\n  - A public key initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_pubkey\n  - A message\n  - A signature initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_signature\n\n  Output:\n  - a status code with verification success if signature is valid\n    or indicating verification failure\n\n  In particular, the public key and signature are assumed to be on curve and subgroup-checked."]
-    pub fn ctt_eth_bls_verify(
-        pubkey: *const ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_verify(
+        pubkey: *const ctt_sila_bls_pubkey,
         message: *const byte,
         message_len: usize,
-        sig: *const ctt_eth_bls_signature,
-    ) -> ctt_eth_bls_status;
+        sig: *const ctt_sila_bls_signature,
+    ) -> ctt_sila_bls_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Check that a signature is valid for a message\n  under the aggregate of provided public keys.\n  returns `true` if the signature is valid, `false` otherwise.\n\n  For message domain separation purpose, the tag is `BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_`\n\n  Input:\n  - Public keys initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_pubkey\n  - A message\n  - A signature initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_signature\n\n  In particular, the public keys and signature are assumed to be on curve subgroup checked."]
-    pub fn ctt_eth_bls_fast_aggregate_verify(
-        pubkeys: *const ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_fast_aggregate_verify(
+        pubkeys: *const ctt_sila_bls_pubkey,
         pubkeys_len: usize,
         message: *const byte,
         message_len: usize,
-        aggregate_sig: *const ctt_eth_bls_signature,
-    ) -> ctt_eth_bls_status;
+        aggregate_sig: *const ctt_sila_bls_signature,
+    ) -> ctt_sila_bls_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Verify the aggregated signature of multiple (pubkey, message) pairs\n  returns `true` if the signature is valid, `false` otherwise.\n\n  For message domain separation purpose, the tag is `BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_`\n\n  Input:\n  - Public keys initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_pubkey\n  - Messages\n  - `len`: Number of elements in the `pubkeys` and `messages` arrays.\n  - a signature initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_signature\n\n  In particular, the public keys and signature are assumed to be on curve subgroup checked.\n\n  To avoid splitting zeros and rogue keys attack:\n  1. Public keys signing the same message MUST be aggregated and checked for 0 before calling this function.\n  2. Augmentation or Proof of possessions must used for each public keys."]
-    pub fn ctt_eth_bls_aggregate_verify(
-        pubkeys: *const ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_aggregate_verify(
+        pubkeys: *const ctt_sila_bls_pubkey,
         messages: *const ctt_span,
         len: usize,
-        aggregate_sig: *const ctt_eth_bls_signature,
-    ) -> ctt_eth_bls_status;
+        aggregate_sig: *const ctt_sila_bls_signature,
+    ) -> ctt_sila_bls_status;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = " Verify that all (pubkey, message, signature) triplets are valid\n  returns `true` if all signatures are valid, `false` if at least one is invalid.\n\n  For message domain separation purpose, the tag is `BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_`\n\n  Input:\n  - Public keys initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_pubkey\n  - Messages\n  - Signatures initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_signature\n\n  In particular, the public keys and signature are assumed to be on curve subgroup checked.\n\n  To avoid splitting zeros and rogue keys attack:\n  1. Cryptographically-secure random bytes must be provided.\n  2. Augmentation or Proof of possessions must used for each public keys.\n\n  The secureRandomBytes will serve as input not under the attacker control to foil potential splitting zeros inputs.\n  The scheme assumes that the attacker cannot\n  resubmit 2^64 times forged (publickey, message, signature) triplets\n  against the same `secureRandomBytes`"]
-    pub fn ctt_eth_bls_batch_verify(
-        pubkeys: *const ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_batch_verify(
+        pubkeys: *const ctt_sila_bls_pubkey,
         messages: *const ctt_span,
-        signatures: *const ctt_eth_bls_signature,
+        signatures: *const ctt_sila_bls_signature,
         len: usize,
         secure_random_bytes: *const byte,
-    ) -> ctt_eth_bls_status;
+    ) -> ctt_sila_bls_status;
 }
 unsafe extern "C" {
     #[doc = " Allocator function for the incomplete struct of the batch sig accumulator.\n Users of the C API *must* use this."]
-    pub fn ctt_eth_bls_alloc_batch_sig_accumulator() -> *mut ctt_eth_bls_batch_sig_accumulator;
+    pub fn ctt_sila_bls_alloc_batch_sig_accumulator() -> *mut ctt_sila_bls_batch_sig_accumulator;
 }
 unsafe extern "C" {
     #[doc = " Function to free the storage allocated by the above.\n Users of the C API *must* use this."]
-    pub fn ctt_eth_bls_free_batch_sig_accumulator(ptr: *mut ctt_eth_bls_batch_sig_accumulator);
+    pub fn ctt_sila_bls_free_batch_sig_accumulator(ptr: *mut ctt_sila_bls_batch_sig_accumulator);
 }
 unsafe extern "C" {
     #[doc = "  Initializes a Batch BLS Signature accumulator context.\n\n  This requires cryptographically secure random bytes\n  to defend against forged signatures that would not\n  verify individually but would verify while aggregated\n  https://ethresear.ch/t/fast-verification-of-multiple-bls-signatures/5407/14\n\n  An optional accumulator separation tag can be added\n  so that from a single source of randomness\n  each accumulatpr is seeded with a different state.\n  This is useful in multithreaded context."]
-    pub fn ctt_eth_bls_init_batch_sig_accumulator(
-        ctx: *mut ctt_eth_bls_batch_sig_accumulator,
+    pub fn ctt_sila_bls_init_batch_sig_accumulator(
+        ctx: *mut ctt_sila_bls_batch_sig_accumulator,
         secure_random_bytes: *const byte,
         accum_sep_tag: *const byte,
         accum_sep_tag_len: usize,
@@ -4571,32 +4571,32 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[must_use]
     #[doc = "  Add a (public key, message, signature) triplet\n  to a BLS signature accumulator\n\n  Assumes that the public key and signature\n  have been group checked\n\n  Returns false if pubkey or signatures are the infinity points\n"]
-    pub fn ctt_eth_bls_update_batch_sig_accumulator(
-        ctx: *mut ctt_eth_bls_batch_sig_accumulator,
-        pubkey: *const ctt_eth_bls_pubkey,
+    pub fn ctt_sila_bls_update_batch_sig_accumulator(
+        ctx: *mut ctt_sila_bls_batch_sig_accumulator,
+        pubkey: *const ctt_sila_bls_pubkey,
         message: *const byte,
         message_len: usize,
-        signature: *const ctt_eth_bls_signature,
+        signature: *const ctt_sila_bls_signature,
     ) -> bool;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = "  Finish batch and/or aggregate signature verification and returns the final result.\n\n  Returns false if nothing was accumulated\n  Rteturns false on verification failure"]
-    pub fn ctt_eth_bls_final_verify_batch_sig_accumulator(
-        ctx: *mut ctt_eth_bls_batch_sig_accumulator,
+    pub fn ctt_sila_bls_final_verify_batch_sig_accumulator(
+        ctx: *mut ctt_sila_bls_batch_sig_accumulator,
     ) -> bool;
 }
 unsafe extern "C" {
     #[must_use]
     #[doc = "  Verify that all (pubkey, message, signature) triplets are valid\n  returns `true` if all signatures are valid, `false` if at least one is invalid.\n\n  For message domain separation purpose, the tag is `BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_`\n\n  Input:\n  - Public keys initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_pubkey\n  - Messages as an anonymous struct of `(data = byte*, length = size_t)` pairs\n    (the `View` type on the Nim side uses `int` for the length field, which depends on the\n    system)\n  - Signatures initialized by one of the key derivation or deserialization procedure.\n    Or validated via validate_signature\n  - `len`: number of elements in `pubkey`, `messages`, `sig` arrays\n\n  In particular, the public keys and signature are assumed to be on curve subgroup checked.\n\n  To avoid splitting zeros and rogue keys attack:\n  1. Cryptographically-secure random bytes must be provided.\n  2. Augmentation or Proof of possessions must used for each public keys.\n\n  The secureRandomBytes will serve as input not under the attacker control to foil potential splitting zeros inputs.\n  The scheme assumes that the attacker cannot\n  resubmit 2^64 times forged (publickey, message, signature) triplets\n  against the same `secureRandomBytes`"]
-    pub fn ctt_eth_bls_batch_verify_parallel(
+    pub fn ctt_sila_bls_batch_verify_parallel(
         tp: *const ctt_threadpool,
-        pubkey: *const ctt_eth_bls_pubkey,
+        pubkey: *const ctt_sila_bls_pubkey,
         messages: *const ctt_span,
-        sig: *const ctt_eth_bls_signature,
+        sig: *const ctt_sila_bls_signature,
         len: usize,
         secure_random_bytes: *const byte,
-    ) -> ctt_eth_bls_status;
+    ) -> ctt_sila_bls_status;
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
