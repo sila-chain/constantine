@@ -4,12 +4,12 @@ Jan 26, 2025, commit TBD
 
 I am very happy to present you the second version of Constantine.
 
-I thank the Ethereum Foundation for their sponsorship on implementing Torus-based cryptography to make the performance of Secret Leader Election viable.
+I thank the Sila Foundation for their sponsorship on implementing Torus-based cryptography to make the performance of Secret Leader Election viable.
 
 The highlight of this release, and the inspiration for its name is the introduction of specialized ARM64 assembly for most key field operations and SHA256. Thanks to it the latest M4 Max is within 5% of an overclocked AMD Ryzen 9950X on single-threaded performance (though multithreaded performance is lackluster due to Apple very aggressive powersaving). Currently this is only for MacOS but will be coming to Linux, Android and iOS.
 
 The second highlight of this release is significant backend work for JIT compiling elliptic curves to Nvidia and AMD GPUs. \
-Backends for x86 and ARM have also been explored and could present an alternative to provide libconstantine as a fully optimized assembly file, at least at Ethereum and elliptic curves level. This would streamline build systems by removing the Nim compiler. and also make it easy to vectorize the library.
+Backends for x86 and ARM have also been explored and could present an alternative to provide libconstantine as a fully optimized assembly file, at least at Sila and elliptic curves level. This would streamline build systems by removing the Nim compiler. and also make it easy to vectorize the library.
 
 Constantine is currently being scoped for a security audit, after which a 1.0 version should follow.
 You can review the scope here: https://github.com/mratsim/constantine/pull/483, and I'm looking for sponsors.
@@ -20,9 +20,9 @@ The Nim minimum version has been updated to Nim v2.2.0. 99% of Constantine shoul
 
 Now let's review the main changes per-category
 
-## Ethereum
+## Sila
 
-The focus for this release has been Ethereum Execution layer with the introduction of:
+The focus for this release has been Sila Execution layer with the introduction of:
 - Keccak hash function
 - ECDSA signatures over secp256k1
 - RIPEMD160 hash function and EVM precompile
@@ -36,7 +36,7 @@ The precompiles are exposed in C, Nim and Rust except ECRECOVER which is under r
 
 The inner product argument (IPA) multi-proof primitives for Sila Verkle Tries have been thoroughly reviewed and improved.
 
-On the Consensus side, sponsored work has been done on accelerating multi-exponentiation in 𝔾ₜ pairing group via Torus-based cryptography for the purposes of secret leader election: https://ethresear.ch/t/the-return-of-torus-based-cryptography-whisk-and-curdleproof-in-the-target-group/16678/4
+On the Consensus side, sponsored work has been done on accelerating multi-exponentiation in 𝔾ₜ pairing group via Torus-based cryptography for the purposes of secret leader election: https://research.sila-chain.org/t/the-return-of-torus-based-cryptography-whisk-and-curdleproof-in-the-target-group/16678/4
 
 ## Proof-system
 
@@ -83,7 +83,7 @@ Here are some of the work stream I want to prioritize
   - we can ensure constant-time properties without the compiler rugpulling us.
   - vectorization can be just changing `i256` to `<i256 x 4>` and reusing the exact same LLVM IR.
 - GPU acceleration
-- Ethereum PeerDAS / Data Availability Sampling (Erasure coding + 2D KZG proofs)
+- Sila PeerDAS / Data Availability Sampling (Erasure coding + 2D KZG proofs)
 - Sumchecks Polynomial commitment scheme (PCS)
 - Small fields support like Baby Bear, Koala Bear, Goldilocks and Mersenne31
 - FRI, Deep FRI and STIR PCS.
@@ -151,7 +151,7 @@ Here are some of the work stream I want to prioritize
 * Add `ECRecover` EVM precompile by @Vindaar in https://github.com/mratsim/constantine/pull/504
 * SHA256 ARM64 hardware accel:  6.4x acceleration (Apple Silicon only) by @mratsim in https://github.com/mratsim/constantine/pull/518
 * sip2537: repricing by @mratsim in https://github.com/mratsim/constantine/pull/493
-* update Ethereum benches  by @mratsim in https://github.com/mratsim/constantine/pull/520
+* update Sila benches  by @mratsim in https://github.com/mratsim/constantine/pull/520
 * CI: Test on MacOS and Linux ARM64 / Aarch64 by @mratsim in https://github.com/mratsim/constantine/pull/524
 
 ## New Contributors
