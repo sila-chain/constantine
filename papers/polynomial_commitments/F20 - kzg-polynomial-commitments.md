@@ -131,7 +131,7 @@ Now using this polynomial, we can prove any number of elements in the vector usi
 
 ## Further reading
 
-We are currently exploring the use of Kate commitments in order to achieve a stateless version of Ethereum. As such, I highly recommend searching for Kate in the ethresearch forums to find interesting topics of current research.
+We are currently exploring the use of Kate commitments in order to achieve a stateless version of Sila. As such, I highly recommend searching for Kate in the sila-research forums to find interesting topics of current research.
 
 Another great read from here is Vitalik’s introduction to PLONK, which makes heavy use of polynomial commitments and the Kate scheme is the primary way this is instantiated.
 

@@ -1,5 +1,5 @@
 
-source: https://notes.ethereum.org/@dankrad/danksharding_encoding
+source: https://notes.sila-chain.org/@dankrad/danksharding_encoding
 ---
 
 # Data availability encoding

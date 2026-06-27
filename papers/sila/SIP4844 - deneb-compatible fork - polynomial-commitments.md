@@ -488,7 +488,7 @@ def compute_quotient_eval_within_domain(
     Given `y == p(z)` for a polynomial `p(x)`, compute `q(z)`: the KZG quotient polynomial evaluated at `z` for the
     special case where `z` is in roots of unity.
 
-    For more details, read https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html section "Dividing
+    For more details, read https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html section "Dividing
     when one of the points is zero". The code below computes q(x_m) for the roots of unity special case.
     """
     roots_of_unity_brp = bit_reversal_permutation(compute_roots_of_unity(FIELD_ELEMENTS_PER_BLOB))

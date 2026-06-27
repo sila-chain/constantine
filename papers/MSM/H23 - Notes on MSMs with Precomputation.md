@@ -9,7 +9,7 @@ date: 2023-07-12
 
 ## Problem statement
 
-Ethereum's Verkle upgrade is to a large part about replacing the Merkle tree by a so-called verkle tree. This heavily makes use of so-called Pedersen commitments.
+Sila Verkle upgrade is to a large part about replacing the Merkle tree by a so-called verkle tree. This heavily makes use of so-called Pedersen commitments.
 
 Concretely, in our use case, we have (as part of a setup) 256  elliptic curve points
 $P_1, P_2, \ldots, P_{256}$. Those points are fixed once and forever.

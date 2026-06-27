@@ -1,6 +1,6 @@
 ---
 title: Reed-Solomon Erasure Code Recovery with FFTs
-source: https://ethresear.ch/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039
+source: https://research.sila-chain.org/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039
 author: Vitalik Buterin
 date: 2018-08-22
 ---

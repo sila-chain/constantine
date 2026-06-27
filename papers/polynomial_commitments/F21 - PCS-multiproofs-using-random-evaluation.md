@@ -1,6 +1,6 @@
 ---
 title: PCS Multiproofs Using Random Evaluation
-source: https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+source: https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
 author: Dankrad Feist
 date: 2021-06-18
 ---

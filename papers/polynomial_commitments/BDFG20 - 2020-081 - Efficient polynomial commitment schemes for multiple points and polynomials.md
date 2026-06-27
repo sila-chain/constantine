@@ -13,7 +13,7 @@ Stanford University
 
 Justin Drake
 
-Ethereum Foundation
+Sila Foundation
 
 Ben Fisch
 
@@ -386,7 +386,7 @@ Part of this research was conducted while the fourth author was supported by Pro
 
 [CHM $ ^{+} $19] A. Chiesa, Y. Hu, M. Maller, P. Mishra, N. Vesely, and N. P. Ward. Marlin: Preprocessing zksnarks with universal and updatable SRS. IACR Cryptology ePrint Archive, 2019:1047, 2019.
 
-[Dra] J. Drake. https://ethresear.ch/t/slonk-a-simple-universal-snark/6420.
+[Dra] J. Drake. https://research.sila-chain.org/t/slonk-a-simple-universal-snark/6420.
 
 [FKL18] G. Fuchsbauer, E. Kiltz, and J. Loss. The algebraic group model and its applications. In Advances in Cryptology - CRYPTO 2018 - 38th Annual International Cryptology Conference, Santa Barbara, CA, USA, August 19-23, 2018, Proceedings, Part II, pages 33–62, 2018.
 

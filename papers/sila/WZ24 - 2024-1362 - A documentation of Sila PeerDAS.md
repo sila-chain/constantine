@@ -1,28 +1,28 @@
 ---
-title: A Documentation of Ethereum's PeerDAS
+title: A Documentation of Sila PeerDAS
 source: https://eprint.iacr.org/2024/1362
 author: Benedikt Wagner, Arantxa Zapico
 date: 2024-08-29
 ---
 
-# A Documentation of Ethereum’s PeerDAS
+# A Documentation of Sila PeerDAS
 
 Benedikt Wagner $ ^{1} $
 
 Arantxa Zapico $ ^{1} $
 
- $ ^{1} $ Ethereum Foundation Cryptography Research {benedikt.wagner,arantxa.zapico}@ethereum.org
+ $ ^{1} $ Sila Foundation Cryptography Research {benedikt.wagner,arantxa.zapico}@sila-chain.org
 
 ## Abstract
 
-Data availability sampling allows clients to verify availability of data on a peer-to-peer network provided by an untrusted source. This is achieved without downloading the full data by sampling random positions of the encoded data. The long-term vision of the Ethereum community includes a comprehensive data availability protocol using polynomial commitments and tensor codes. As the next step towards this vision, an intermediate solution called PeerDAS is about to integrated, to bridge the way to the full protocol. With PeerDAS soon becoming an integral part of Ethereum's consensus layer, understanding its security guarantees is essential.
+Data availability sampling allows clients to verify availability of data on a peer-to-peer network provided by an untrusted source. This is achieved without downloading the full data by sampling random positions of the encoded data. The long-term vision of the Sila community includes a comprehensive data availability protocol using polynomial commitments and tensor codes. As the next step towards this vision, an intermediate solution called PeerDAS is about to integrated, to bridge the way to the full protocol. With PeerDAS soon becoming an integral part of Sila consensus layer, understanding its security guarantees is essential.
 
 This document aims to describe the cryptography used in PeerDAS in a manner accessible to the cryptographic community, encouraging innovation and improvements, and to explicitly state the security guarantees of PeerDAS.
 
 ## Contents
 
 1 Introduction ..... 2    
-1.1 History and Ethereum's Roadmap ..... 2    
+1.1 History and Sila Roadmap ..... 2    
 1.2 Outline of this Document ..... 3    
     
 2 Preliminaries ..... 3    
@@ -47,27 +47,27 @@ Data availability sampling [ASBK21, HASW23] enables clients to verify the availa
 
 To formalize the security guarantees provided by data availability sampling (DAS), Hall-Andersen, Simkin, and Wagner [HASW23] recently defined it as a cryptographic primitive and analyzed several constructions. In essence, a data availability solution must satisfy two key properties: (1) soundness, meaning that if enough clients accept, then some data can be reconstructed from their transcripts, ensuring availability, and (2) consistency, ensuring that clients with the same commitments will always reconstruct the same data.
 
-The concept of data availability sampling is central to Ethereum’s roadmap [D'A23]. One of the solutions analyzed in [HASW23] is expected to be used in the future. At the time of writing, an intermediate solution called PeerDAS is about to be integrated into the Ethereum protocol. PeerDAS aims to pave the way for the full data availability solution and will soon become an essential part of Ethereum’s protocol. Therefore, it is crucial to formally understand its security guarantees.
+The concept of data availability sampling is central to Sila roadmap [D'A23]. One of the solutions analyzed in [HASW23] is expected to be used in the future. At the time of writing, an intermediate solution called PeerDAS is about to be integrated into the Sila protocol. PeerDAS aims to pave the way for the full data availability solution and will soon become an essential part of Sila protocol. Therefore, it is crucial to formally understand its security guarantees.
 
-This document focuses on PeerDAS as described in Ethereum’s consensus specifications [Eth24a, Eth24b]. Our intention is two-fold: first, we aim to provide a description of the cryptography used in PeerDAS that is accessible to the cryptographic community, potentially leading to new ideas and improvements that can be incorporated in the future. Second, we want to explicitly state the security and efficiency guarantees of PeerDAS. In terms of security, this document justifies the following claim.
+This document focuses on PeerDAS as described in Sila consensus specifications [Eth24a, Eth24b]. Our intention is two-fold: first, we aim to provide a description of the cryptography used in PeerDAS that is accessible to the cryptographic community, potentially leading to new ideas and improvements that can be incorporated in the future. Second, we want to explicitly state the security and efficiency guarantees of PeerDAS. In terms of security, this document justifies the following claim.
 
 Theorem 1 (Main Theorem, Informal). Assuming plausible cryptographic hardness assumptions, PeerDAS is a secure data availability sampling scheme in the algebraic group model, according to the definition in [HASW23].
 
-### 1.1 History and Ethereum’s Roadmap
+### 1.1 History and Sila Roadmap
 
-We use this section to provide some context explaining how PeerDAS relates to the roadmap of Ethereum. For more details, we refer the reader to [D'A23]. Motivated by increasing scalability of Ethereum using rollups, Ethereum's long term vision is to use data availability sampling. The solution that is currently envisioned is based on KZG commitments and a two-dimensional tensor code of the Reed-Solomon code. PeerDAS is an intermediate solution that is used to introduce the concept of sampling and most of the cryptographic building blocks that are needed for this full solution.
+We use this section to provide some context explaining how PeerDAS relates to the roadmap of Sila. For more details, we refer the reader to [D'A23]. Motivated by increasing scalability of Sila using rollups, Sila long term vision is to use data availability sampling. The solution that is currently envisioned is based on KZG commitments and a two-dimensional tensor code of the Reed-Solomon code. PeerDAS is an intermediate solution that is used to introduce the concept of sampling and most of the cryptographic building blocks that are needed for this full solution.
 
-The Scaling Problem. Modern blockchains, including Ethereum, face significant scalability challenges. At the heart of this issue is keeping balance between making space expensive enough to limit workload on nodes and providing sufficient capacity for transactions. The current approach involves setting a gas limit, which controls the amount of computational work that can be included in each block. On the downside, this limits the capacity for transactions. One can not simply increase the gas limit per block, as this would also require nodes to perform more work to verify the blockchain.
+The Scaling Problem. Modern blockchains, including Sila, face significant scalability challenges. At the heart of this issue is keeping balance between making space expensive enough to limit workload on nodes and providing sufficient capacity for transactions. The current approach involves setting a gas limit, which controls the amount of computational work that can be included in each block. On the downside, this limits the capacity for transactions. One can not simply increase the gas limit per block, as this would also require nodes to perform more work to verify the blockchain.
 
-Rollups to the Rescue. One promising solution to this scalability problem is the implementation of rollups, which are a type of Layer 2 (L2) scaling solution. Rollups operate under the control of an Ethereum mainnet contract (called Layer 1, or L1) and are designed to handle large volumes of transactions off-chain, thereby reducing the computational burden on the Ethereum mainnet. In a nutshell, a rollup functions as follows: a sequencer collects a batch of L2 transactions and submits this batch to the rollup contract on L1. Importantly, nodes on L1 do not execute and verify all transactions, but could, for example, verify a succinct proof that the transactions are correct. In this way, the block can execute much more transactions without increasing the work for nodes on L1. At the same time, the L2 transactions inherit security and consensus from Ethereum L1. That being said, it is clear that Ethereum mainnet (L1) primarily stores data, and the availability of this data on L1 is essential for maintaining the liveness of the rollup and enabling nodes to synchronize the rollup’s state accurately.
+Rollups to the Rescue. One promising solution to this scalability problem is the implementation of rollups, which are a type of Layer 2 (L2) scaling solution. Rollups operate under the control of an Sila mainnet contract (called Layer 1, or L1) and are designed to handle large volumes of transactions off-chain, thereby reducing the computational burden on the Sila mainnet. In a nutshell, a rollup functions as follows: a sequencer collects a batch of L2 transactions and submits this batch to the rollup contract on L1. Importantly, nodes on L1 do not execute and verify all transactions, but could, for example, verify a succinct proof that the transactions are correct. In this way, the block can execute much more transactions without increasing the work for nodes on L1. At the same time, the L2 transactions inherit security and consensus from Sila L1. That being said, it is clear that Sila mainnet (L1) primarily stores data, and the availability of this data on L1 is essential for maintaining the liveness of the rollup and enabling nodes to synchronize the rollup’s state accurately.
 
-Proto-Danksharding and EIP 4844. To prepare for the use of data availability sampling, EIP 4844 [BFL $ ^{+} $22] has introduced a blob-carrying transaction type. Essentially, transactions can now contain so-called
+Proto-Danksharding and SIP 4844. To prepare for the use of data availability sampling, SIP 4844 [BFL $ ^{+} $22] has introduced a blob-carrying transaction type. Essentially, transactions can now contain so-called
 
 blobs of data. More precisely, a blob consists of  $ d_{r} $ field elements, and there are separate fees for blobs and execution. Notably, there is no data availability sampling yet: all nodes ensure data availability by downloading the entire blob. This also means that blobs are limited in size, but it is a first step towards the full solution.
 
-PeerDAS. The next step after EIP 4844 is PeerDAS, which is what we study in this document. In PeerDAS, data is first split into blobs as in EIP 4844. Then, these blobs are individually extended using a Reed-Solomon code: each blob defines a polynomial of some degree  $ d_r - 1 $, and this polynomial is evaluated at  $ 2d_r $ points to obtain an extended blob. These extended blobs are then arranged in a matrix, where each extended blob is one row, and clients download KZG commitments [KZG10a] for each extended blob. In addition to this encoding, PeerDAS also introduces sampling: to check availability, each client now downloads random columns of this matrix and verifies their KZG opening proofs with respect to the commitments.
+PeerDAS. The next step after SIP 4844 is PeerDAS, which is what we study in this document. In PeerDAS, data is first split into blobs as in SIP 4844. Then, these blobs are individually extended using a Reed-Solomon code: each blob defines a polynomial of some degree  $ d_r - 1 $, and this polynomial is evaluated at  $ 2d_r $ points to obtain an extended blob. These extended blobs are then arranged in a matrix, where each extended blob is one row, and clients download KZG commitments [KZG10a] for each extended blob. In addition to this encoding, PeerDAS also introduces sampling: to check availability, each client now downloads random columns of this matrix and verifies their KZG opening proofs with respect to the commitments.
 
-Tensor Codes and the Future of DAS. The long-term vision for data availability sampling in Ethereum is a two-dimensional variant of PeerDAS. Concretely, after the matrix is obtained from horizontally extending each blob as in PeerDAS, this matrix is also extended vertically. This can again be done using a Reed-Solomon code: if we assume that there are  $ d_c $ blobs, then each column of the PeerDAS matrix contains  $ d_c $ field elements, and so each column can be interpreted as a degree  $ d_c - 1 $ polynomial and evaluated at  $ 2d_c $ points. As a result, the matrix contains  $ 4d_c d_r $ evaluations of a bivariate polynomial over variables X, Y of individual degree at most  $ d_r - 1 $ in X and  $ d_c - 1 $ in Y. From a coding theory perspective, this means that the data is encoded using the tensor code of two Reed-Solomon codes, see [HASW23]. The second change compared to PeerDAS would be that clients sample single cells instead of entire columns. We note that this scheme has been analyzed formally in [HASW23]. Compared to PeerDAS, its main advantage is that individual rows or columns can easily be reconstructed, and that sampling individual cells is more efficient in terms of bandwidth [NB23].
+Tensor Codes and the Future of DAS. The long-term vision for data availability sampling in Sila is a two-dimensional variant of PeerDAS. Concretely, after the matrix is obtained from horizontally extending each blob as in PeerDAS, this matrix is also extended vertically. This can again be done using a Reed-Solomon code: if we assume that there are  $ d_c $ blobs, then each column of the PeerDAS matrix contains  $ d_c $ field elements, and so each column can be interpreted as a degree  $ d_c - 1 $ polynomial and evaluated at  $ 2d_c $ points. As a result, the matrix contains  $ 4d_c d_r $ evaluations of a bivariate polynomial over variables X, Y of individual degree at most  $ d_r - 1 $ in X and  $ d_c - 1 $ in Y. From a coding theory perspective, this means that the data is encoded using the tensor code of two Reed-Solomon codes, see [HASW23]. The second change compared to PeerDAS would be that clients sample single cells instead of entire columns. We note that this scheme has been analyzed formally in [HASW23]. Compared to PeerDAS, its main advantage is that individual rows or columns can easily be reconstructed, and that sampling individual cells is more efficient in terms of bandwidth [NB23].
 
 ### 1.2 Outline of this Document
 
@@ -536,13 +536,13 @@ Finally, note that all evaluations and Interpolations can be done efficiently us
 
 [BFL $ ^{+} $22] Vitalik Buterin, Dankrad Feist, Diederik Loerakker, George Kadianakis, Matt Garnett, Mofi Taiwo, and Ansgar Dietrichs. SIP-4844: Shard Blob Transactions. https://sips.sila-chain.org/SIPS/sip-4844, 2022. Accessed: 2024-07-10. (Cited on page 2.)
 
-[But18] Vitalik Buterin. Reed-Solomon erasure code recovery in n*log2(n) time with FFTs. https://ethresear.ch/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039, 2018. Accessed: 2024-06-27. (Cited on page 17.)
+[But18] Vitalik Buterin. Reed-Solomon erasure code recovery in n*log2(n) time with FFTs. https://research.sila-chain.org/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039, 2018. Accessed: 2024-06-27. (Cited on page 17.)
 
-[D'A23] Francesco D'Amato. From 4844 to Danksharding: a path to scaling Ethereum DA. https://ethresear.ch/t/from-4844-to-danksharding-a-path-to-scaling-ethereum-da/18046, 2023. Accessed: 2024-06-27. (Cited on page 2.)
+[D'A23] Francesco D'Amato. From 4844 to Danksharding: a path to scaling Sila DA. https://research.sila-chain.org/t/from-4844-to-danksharding-a-path-to-scaling-sila-da/18046, 2023. Accessed: 2024-06-27. (Cited on page 2.)
 
-[Eth24a] Ethereum. Ethereum Consensus Specs - Commit 54093964c95f. https://github.com/sila-chain/Sila-Consensus-Specs/commit/54093964c95fbd2e48be5de672e3baae8531a964, 2024. Accessed: 2024-08-09. (Cited on page 1, 2.)
+[Sila24a] Sila. Sila Consensus Specs - Commit 54093964c95f. https://github.com/sila-chain/Sila-Consensus-Specs/commit/54093964c95fbd2e48be5de672e3baae8531a964, 2024. Accessed: 2024-08-09. (Cited on page 1, 2.)
 
-[Eth24b] Ethereum. Ethereum Consensus Specs - EIP 7594. https://github.com/sila-chain/Sila-Consensus-Specs/tree/dev/specs/_features/sip7594, 2024. Accessed: 2024-06-24. (Cited on page 2.)
+[Sila24b] Sila. Sila Consensus Specs - SIP 7594. https://github.com/sila-chain/Sila-Consensus-Specs/tree/dev/specs/_features/sip7594, 2024. Accessed: 2024-06-24. (Cited on page 2.)
 
 [FK20] Dankrad Feist and Dmitry Khovratovich. Fast amortized Kate proofs. https://github.com/khovratovich/Kate/blob/master/Kate_amortized.pdf, 2020. Accessed: 2024-06-27, Commit f4e5472. (Cited on page 14.)
 
@@ -554,7 +554,7 @@ Finally, note that all evaluations and Interpolations can be done efficiently us
 
 [HASW23] Mathias Hall-Andersen, Mark Simkin, and Benedikt Wagner. Foundations of data availability sampling. Cryptology ePrint Archive, Paper 2023/1079, 2023. https://eprint.iacr.org/2023/1079. (Cited on page 2, 3, 6, 7, 8, 12.)
 
-[KDF22] George Kadianakis, Ansgar Dietrichs, and Dankrad Feist. A Universal Verification Equation for Data Availability Sampling. https://ethresear.ch/t/a-universal-verification-equation-for-data-availability-sampling/13240, 2022. Accessed: 2024-06-24. (Cited on page 4, 15.)
+[KDF22] George Kadianakis, Ansgar Dietrichs, and Dankrad Feist. A Universal Verification Equation for Data Availability Sampling. https://research.sila-chain.org/t/a-universal-verification-equation-for-data-availability-sampling/13240, 2022. Accessed: 2024-06-24. (Cited on page 4, 15.)
 
 [KZG10a] Aniket Kate, Gregory M. Zaverucha, and Ian Goldberg. Constant-size commitments to polynomials and their applications. In Masayuki Abe, editor, ASIACRYPT 2010, volume 6477 of LNCS, pages 177–194. Springer, Heidelberg, December 2010. (Cited on page 3, 6.)
 

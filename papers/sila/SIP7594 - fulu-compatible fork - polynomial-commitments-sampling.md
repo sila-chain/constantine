@@ -633,7 +633,7 @@ def verify_cell_kzg_proof_batch(
     associated with ``commitment``, evaluated over the domain specified by ``cell_index``.
 
     This function implements the universal verification equation that has been introduced here:
-    https://ethresear.ch/t/a-universal-verification-equation-for-data-availability-sampling/13240
+    https://research.sila-chain.org/t/a-universal-verification-equation-for-data-availability-sampling/13240
 
     Public method.
     """
@@ -788,10 +788,10 @@ def recover_cells_and_kzg_proofs(
     Given at least 50% of cells for a blob, recover all the cells/proofs.
     This algorithm uses FFTs to recover cells faster than using Lagrange
     implementation, as can be seen here:
-    https://ethresear.ch/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039
+    https://research.sila-chain.org/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039
 
     A faster version thanks to Qi Zhou can be found here:
-    https://github.com/ethereum/research/blob/51b530a53bd4147d123ab3e390a9d08605c2cdb8/polynomial_reconstruction/polynomial_reconstruction_danksharding.py
+    https://github.com/sila-chain/Sila-Research/blob/51b530a53bd4147d123ab3e390a9d08605c2cdb8/polynomial_reconstruction/polynomial_reconstruction_danksharding.py
 
     Public method.
     """

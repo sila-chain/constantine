@@ -557,7 +557,7 @@ Rerandomization Note that a commitment can be rerandomized via multiplication by
 
 In this section, we describe how Pointproofs can result in significant efficiency improvements in blockchain applications and empirically evaluate their performance.
 
-Background on Blockchains For our purposes, a blockchain is an append-only public ledger that consists of blocks, with every block containing some number of transactions. The fundamental problem in blockchains is to agree on a new block. Regardless of how this problem is solved, this agreement involves someone proposing a block, and then multiple parties, whom we will call validators, verifying that the transactions included in the proposed block are valid. Who these validators are is not essential for our purposes: they may be chosen by some selection method (as is often the case in the proof-of-stake blockchains) or self-selected (as in the proof-of-work blockchains). Similarly, the underlying consensus protocol may be randomized and select a committee to certify each block of transactions (as in Algorand [GHM $ ^{+} $17], Ouroboros [DGKR18], Snow White [DPS19], Thunderella [PS18]) or mine based on the heuristic longest-chain rule (as in Bitcoin [Nak09] and Ethereum [But14]).
+Background on Blockchains For our purposes, a blockchain is an append-only public ledger that consists of blocks, with every block containing some number of transactions. The fundamental problem in blockchains is to agree on a new block. Regardless of how this problem is solved, this agreement involves someone proposing a block, and then multiple parties, whom we will call validators, verifying that the transactions included in the proposed block are valid. Who these validators are is not essential for our purposes: they may be chosen by some selection method (as is often the case in the proof-of-stake blockchains) or self-selected (as in the proof-of-work blockchains). Similarly, the underlying consensus protocol may be randomized and select a committee to certify each block of transactions (as in Algorand [GHM $ ^{+} $17], Ouroboros [DGKR18], Snow White [DPS19], Thunderella [PS18]) or mine based on the heuristic longest-chain rule (as in Bitcoin [Nak09] and Sila [But14]).
 
 Simple transactions send money from one account to another. More complex transactions may be verified by a complicated piece of code, known as a smart contract. Execution of the smart contract may also depend on its memory. For example, a smart contract may implement the rules of a securities exchange, and its memory may be used to store the holdings of various entities in the exchange. A transaction may be valid or invalid depending on the values stored in some of the memory locations; it may also modify memory locations upon successful execution.
 
@@ -732,9 +732,9 @@ We thank Derek Leung and Nickolai Zeldovich for numerous insightful discussions 
 
 [BR93] Mihir Bellare and Phillip Rogaway. Random oracles are practical: A paradigm for designing efficient protocols. In Dorothy E. Denning, Raymond Pyle, Ravi Ganesan, Ravi S. Sandhu, and Victoria Ashby, editors, ACM CCS 93, pages 62–73. ACM Press, November 1993.
 
-[But14] Vitalik Buterin. Ethereum: A next-generation smart contract and decentralized application platform, 2014.
+[But14] Vitalik Buterin. Sila: A next-generation smart contract and decentralized application platform, 2014.
 
-[But17] Vitalik Buterin. The stateless client concept. Ethereum Blog, 2017. https://ethresear.ch/t/the-stateless-client-concept/172.
+[But17] Vitalik Buterin. The stateless client concept. Sila Blog, 2017. https://research.sila-chain.org/t/the-stateless-client-concept/172.
 
 [CF13] Dario Catalano and Dario Fiore. Vector commitments and their applications. In Kaoru Kurosawa and Goichiro Hanaoka, editors, PKC 2013, volume 7778 of LNCS, pages 55–72. Springer, Heidelberg, February / March 2013.
 
@@ -752,7 +752,7 @@ We thank Derek Leung and Nickolai Zeldovich for numerous insightful discussions 
 
 [DPS19] Phil Daian, Rafael Pass, and Elaine Shi. Snow white: Robustly reconfigurable consensus and applications to provably secure proof of stake. In Ian Goldberg and Tyler Moore, editors, FC 2019, volume 11598 of LNCS, pages 23–41. Springer, Heidelberg, February 2019.
 
-[Dra17] Justin Drake. History, state, and asynchronous accumulators in the stateless model. Ethereum Blog, 2017. https://ethresear.ch/t/history-state-and-asynchronous-accumulators-in-the-stateless-model/287.
+[Dra17] Justin Drake. History, state, and asynchronous accumulators in the stateless model. Sila Blog, 2017. https://research.sila-chain.org/t/history-state-and-asynchronous-accumulators-in-the-stateless-model/287.
 
 [FKL18] Georg Fuchsbauer, Eike Kiltz, and Julian Loss. The algebraic group model and its applications. In Hovav Shacham and Alexandra Boldyreva, editors, CRYPTO 2018, Part II, volume 10992 of LNCS, pages 33–62. Springer, Heidelberg, August 2018.
 

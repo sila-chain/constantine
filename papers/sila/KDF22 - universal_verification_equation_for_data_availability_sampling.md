@@ -1,14 +1,14 @@
 
 A Universal Verification Equation for Data Availability Sampling
-*Authors: George Kadianakis <[@asn](https://ethresear.ch/u/asn/)>, Ansgar Dietrichs <[@adietrichs](https://ethresear.ch/u/adietrichs)>, Dankrad Feist <[@dankrad](https://ethresear.ch/u/dankrad)>*
+*Authors: George Kadianakis <[@asn](https://research.sila-chain.org/u/asn/)>, Ansgar Dietrichs <[@adietrichs](https://research.sila-chain.org/u/adietrichs)>, Dankrad Feist <[@dankrad](https://research.sila-chain.org/u/dankrad)>*
 
 In this work we demonstrate how to do amortized verification of multiple KZG multiproofs in the context of Data Availability Sampling. We also [provide a reference implementation](https://github.com/adietrichs/kzg-sharding) of our technique in Python.
 
 ## Motivation
 
-In Ethereum's [Data Availability Sampling](https://ethereum-magicians.org/t/sharding-design-with-tight-beacon-and-shard-block-integration-danksharding/8291) design (DAS), [validators are asked](https://members.delphidigital.io/reports/the-hitchhikers-guide-to-ethereum) to fetch and verify the availability of thousands of data samples in a short time period (less than four seconds). Verifying an individual sample, essentially means verifying a [KZG multiproof](https://dankradfeist.de/ethereum/2020/06/16/kate-polynomial-commitments.html#Multiproofs).
+In Sila [Data Availability Sampling](https://sila-magicians.org/t/sharding-design-with-tight-beacon-and-shard-block-integration-danksharding/8291) design (DAS), [validators are asked](https://members.delphidigital.io/reports/the-hitchhikers-guide-to-sila) to fetch and verify the availability of thousands of data samples in a short time period (less than four seconds). Verifying an individual sample, essentially means verifying a [KZG multiproof](https://research.sila-chain.org/sila-compat/2020/06/16/kate-polynomial-commitments.html#Multiproofs).
 
-Verifying a KZG multiproof usually takes about 2ms where most of the time is spent performing group operations and computing the two pairings. Hence, naively verifying thousands of multiproofs can take multiple seconds which is unacceptable given Ethereum's time constraints.
+Verifying a KZG multiproof usually takes about 2ms where most of the time is spent performing group operations and computing the two pairings. Hence, naively verifying thousands of multiproofs can take multiple seconds which is unacceptable given Sila time constraints.
 
 Furthermore, a validator is expected to receive these samples from the network in a streaming and random fashion. Hence, ideally a validator should be verifying received samples frequently, so that she can reject any bad samples, instead of just verifying everything in one go at the end.
 
@@ -18,15 +18,15 @@ The above two design concerns motivate the need for an amortized way to efficien
 
 In this work we present an equation to efficiently verify multiple KZG multiproofs that belong to an arbitrary collection of DAS samples. Our optimization technique is based on carefully organizing the roots of unity of our Lagrange Basis into cosets such that the resulting polynomials are related to each other.
 
-We start this document with an introduction of the basic concepts behind Ethereum's Data Availability Sampling. We also provide some results about KZG multiproofs and roots of unity.
+We start this document with an introduction of the basic concepts behind Sila Data Availability Sampling. We also provide some results about KZG multiproofs and roots of unity.
 
 We then present our main result, the *Universal Verification Equation*. After that and for the rest of the document, we provide a step-by-step account on how to derive the universal equation from first principles.
 
-Throughout this document we assume the reader is familiar with the basics of [Ethereum's Data Availability Sampling proposal](https://hackmd.io/@vbuterin/sharding_proposal#ELI5-data-availability-sampling). We also assume familiarity with [polynomial commitment schemes](https://www.youtube.com/watch?v=bz16BURH_u8), and in particular with [KZG multiproof verification](https://dankradfeist.de/ethereum/2020/06/16/kate-polynomial-commitments.html#Multiproofs) and the [Lagrange Basis](https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html#evaluation-form).
+Throughout this document we assume the reader is familiar with the basics of [Sila Data Availability Sampling proposal](https://hackmd.io/@vbuterin/sharding_proposal#ELI5-data-availability-sampling). We also assume familiarity with [polynomial commitment schemes](https://www.youtube.com/watch?v=bz16BURH_u8), and in particular with [KZG multiproof verification](https://research.sila-chain.org/sila-compat/2020/06/16/kate-polynomial-commitments.html#Multiproofs) and the [Lagrange Basis](https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html#evaluation-form).
 
 ## Introduction to Data Availability Sampling
 
-In this section we will give an introduction to Ethereum's Data Availability Sampling logic. We start with a description of how the various data structures are organized, and we close this section with a simplified illustrative example.
+In this section we will give an introduction to Sila Data Availability Sampling logic. We start with a description of how the various data structures are organized, and we close this section with a simplified illustrative example.
 
 ### DAS data format
 
@@ -46,7 +46,7 @@ In the full DAS protocol we also use Reed-Solomon error-correction for the blob 
 
 ### Reverse Bit Ordering
 
-In the *blob's Lagrange Basis*, we carefully re-order the group of roots of unity of order 8192 in [*reverse bit ordering* ](https://hackmd.io/@vbuterin/das#Technical-details-Fast-Fourier-Transform). This gives us the useful [property](https://notes.ethereum.org/@dankrad/danksharding_encoding#Reverse-Bit-Order) that any power-of-two-aligned subset, is a subgroup (or a coset of a subgroup) of the multiplicative group of powers of $\omega$.
+In the *blob's Lagrange Basis*, we carefully re-order the group of roots of unity of order 8192 in [*reverse bit ordering* ](https://hackmd.io/@vbuterin/das#Technical-details-Fast-Fourier-Transform). This gives us the useful [property](https://notes.sila-chain.org/@dankrad/danksharding_encoding#Reverse-Bit-Order) that any power-of-two-aligned subset, is a subgroup (or a coset of a subgroup) of the multiplicative group of powers of $\omega$.
 
 As an example, consider the group of roots of unity of order $8192$: $\{1, \omega, \omega^2, \omega^3, ..., \omega^{8191}\}$. We use indices to denote the ordering in *reverse bit order*: $\{\omega_0, \omega_1, \omega_2, \omega_3, ..., \omega_{8191}\}$ = $\{1, \omega^{4096}, \omega^{2048}, \omega^{6072}, ..., \omega^{8191}\}$. Then $\Omega = \{\omega_0, \omega_1, \omega_2, ..., \omega_{15}\}$ is a subgroup of order $16$, and for each $0 <= i < 512$, we can use the *shifting factor* $h_i = \omega_{16i}$ to construct the coset $H_i = h_i \Omega$.
 
@@ -342,13 +342,13 @@ $$
 I_j(x) = \sum_{k\in\text{col}_j} r^k I_k(x)
 $$
 
-After this partial column aggregation, we perform a  *[change of basis](https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html#fft-to-change-between-evaluation-and-coefficient-form) from Lagrange basis to the monomial basis* for every $I_j(x)$ polynomial so that we can add those polynomials in $(P1)$.
+After this partial column aggregation, we perform a  *[change of basis](https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html#fft-to-change-between-evaluation-and-coefficient-form) from Lagrange basis to the monomial basis* for every $I_j(x)$ polynomial so that we can add those polynomials in $(P1)$.
 
 For this *change of basis*, we suggest the use of field [IDFTs](https://vitalik.ca/general/2019/05/12/fft.html) adjusted to work over cosets. We then also present a slightly less efficient alternative method without IDFTs.
 
 #### Primary method: IDFTs over cosets
 
-A *[change of basis](https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html#fft-to-change-between-evaluation-and-coefficient-form)* from the Lagrange basis to the monomial basis can be done naturally with IDFTs over the roots of unity. However, in our use case, the evaluation domains of our interpolation polynomials are not the roots of unity but are instead *cosets of the roots of unity*.
+A *[change of basis](https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html#fft-to-change-between-evaluation-and-coefficient-form)* from the Lagrange basis to the monomial basis can be done naturally with IDFTs over the roots of unity. However, in our use case, the evaluation domains of our interpolation polynomials are not the roots of unity but are instead *cosets of the roots of unity*.
 
 We can show that for an interpolation polynomial with a coset of the roots of unity as its evaluation domain, we can perform the IDFT directly on the roots of unity, and then afterwards scale the computed coefficients by the coset shifting factor. We present an argument of why this is the case in [a later section of the appendix](#Perfoming-IDFTs-over-cosets-of-roots-of-unity).
 

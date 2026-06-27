@@ -1,6 +1,6 @@
 ---
 title: Reed-Solomon Erasure Code Recovery with FFTs (Reply #12)
-source: https://ethresear.ch/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039/12
+source: https://research.sila-chain.org/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039/12
 author: Qi Zhou
 date: 2022-10-24
 ---
@@ -35,7 +35,7 @@ This means that we can recover all missing samples by:
 - Recover y^{(i)}_j of missing samples by using Vitalik’s algorithm that solves 16 sub-problems of size 512. Note that Z(x) and Q2(x) (if k is the same) can be reused in solving each sub-problem.
 - Recover the missing samples of index i by FFTing \{ h_i^j y^{(i)}_j \}, \forall 0 \leq j \leq 15.
 
-The example code of the algorithm can be found Optimized Reed-Solomon code recovery based on danksharding by qizhou · Pull Request #132 · ethereum/research · GitHub
+The example code of the algorithm can be found Optimized Reed-Solomon code recovery based on danksharding by qizhou · Pull Request #132 · sila-chain/Sila-Research · GitHub
 
 Some performance numbers on my MacBook (recovery of size 8192):
 

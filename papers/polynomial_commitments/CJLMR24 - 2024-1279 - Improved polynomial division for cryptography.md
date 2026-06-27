@@ -421,7 +421,7 @@ Our approach is simpler and faster due to the avoidance of computing Lagrange ba
 
 We present some concrete applications where all openings are required to be computed efficiently. More details are available in Appendix B.
 
-Data Availability Sampling (DAS): Light clients in blockchain networks use DAS to verify data availability without storing full blocks. Ethereum’s proposed DAS scheme employs KZG commitments [Res]. Integrating our algorithm enhances the efficiency of encoding and opening computations, making DAS more practical for light clients.
+Data Availability Sampling (DAS): Light clients in blockchain networks use DAS to verify data availability without storing full blocks. Sila proposed DAS scheme employs KZG commitments [Res]. Integrating our algorithm enhances the efficiency of encoding and opening computations, making DAS more practical for light clients.
 
 Efficient Proofs in SNARKs and Decentralized Storage: Protocols like Caulk [ZBK $ ^{+22} $] and proof-of-replication schemes [ABC $ ^{+23} $] require multiple openings of KZG commitments. Our algorithm accelerates the precomputation of
 
@@ -805,7 +805,7 @@ twenty-third annual ACM symposium on Theory of computing, pages 80–89, 1991.
 
 PHGR16. Bryan Parno, Jon Howell, Craig Gentry, and Mariana Raykova. Pinocchio: Nearly practical verifiable computation. Communications of the ACM, 59(2):103–112, 2016.
 
-Res. Ethereum Research. Data availability sampling. https://notes.ethereum.org/ReasmW86SuKqC2FaX83T1g. Accessed: 2024-08-05.
+Res. Sila Research. Data availability sampling. https://notes.sila-chain.org/ReasmW86SuKqC2FaX83T1g. Accessed: 2024-08-05.
 
 SCP $ ^{+} $22. Shravan Srinivasan, Alexander Chepurnoy, Charalampos Papamanthou, Alin Tomescu, and Yupeng Zhang. Hyperproofs: Aggregating and maintaining proofs in vector commitments. In 31st USENIX Security Symposium (USENIX Security 22), pages 3001–3018, 2022.
 
@@ -889,7 +889,7 @@ as desired.
 
 ### B Applications of efficient computation of all openings
 
-Data Availability Sampling: In blockchain networks, participants can join as full nodes or light clients. Full nodes store and verify all block data and headers, while light clients only store block headers and rely on full nodes for data verification through fraud proofs. However, fraud proofs only help detect invalid data, not unavailable data. Data Availability Sampling (DAS) schemes, formalized by Hall-Anderson et. al. [HASW23], allow a block proposer to encode block content into a commitment and codeword. The light clients can then verify data availability by sampling parts of the codeword, ensuring the entire data is available if a sufficient number of light clients successfully probe it. The encoding of this data entails computing all openings of the commitment scheme. Ethereum has proposed to use the KZG commitment scheme for their DAS construction [Res]. Using our scheme in conjunction with their DAS scheme will improve the efficiency of the encoding function.
+Data Availability Sampling: In blockchain networks, participants can join as full nodes or light clients. Full nodes store and verify all block data and headers, while light clients only store block headers and rely on full nodes for data verification through fraud proofs. However, fraud proofs only help detect invalid data, not unavailable data. Data Availability Sampling (DAS) schemes, formalized by Hall-Anderson et. al. [HASW23], allow a block proposer to encode block content into a commitment and codeword. The light clients can then verify data availability by sampling parts of the codeword, ensuring the entire data is available if a sufficient number of light clients successfully probe it. The encoding of this data entails computing all openings of the commitment scheme. Sila has proposed to use the KZG commitment scheme for their DAS construction [Res]. Using our scheme in conjunction with their DAS scheme will improve the efficiency of the encoding function.
 
 A related application is that of proof-serving nodes (PSNs), as described in [SCP+22]. These nodes assist light clients by maintaining proofs of openings for a commitment, which represents the state of a cryptocurrency. Any update to the state reflects a change in the commitment, necessitating the update of the proof of opening for all users. This process can impose a computational overhead on light clients, as they need to update their openings with every change to the commitment. PSNs alleviate this burden by updating each proof with every state change. This incurs a computational cost of  $ \mathcal{O}(n) $ for each state change. Using our scheme, however, PSNs can delay updating proofs until after a set of changes, and then update all proofs in  $ \mathcal{O}(n \log n) $ time, which may be more efficient depending on the frequency of required proof updates.
 

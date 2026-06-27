@@ -9,7 +9,7 @@ date: 2024-03-21
 
 This document revisits potential Verkle Tree-related Multiscalar Multiplications (MSM) optimizations.
 
-The main gist of this round is to focus on how Gottfried Herold's ideas in [Notes on MSMs with Precomputation](https://hackmd.io/WfIjm0icSmSoqy2cfqenhQ) could improve our current (Geth) performance (but the ideas apply to any other VKT crypto library).
+The main gist of this round is to focus on how Gottfried Herold's ideas in [Notes on MSMs with Precomputation](https://hackmd.io/WfIjm0icSmSoqy2cfqenhQ) could improve our current (Sila) performance (but the ideas apply to any other VKT crypto library).
 
 ## Refresher on Verkle Trees and MSM
 
@@ -22,7 +22,7 @@ The fundamental work of the following EL tasks are a fixed-basis MSM calculation
 
 As we can see, optimizing MSM calculation is relevant for many important tasks.
 
-### How do we calculate MSMs today? (in Geth)
+### How do we calculate MSMs today? (in Sila)
 
 Today’s algorithm exploits the fact that the basis is fixed, compared to other kinds of MSM where the basis isn’t fixed and where a Pippenger-like algorithm is the usual choice.
 
@@ -303,7 +303,7 @@ MSMComparison/MSM_length_all_basis_(256)-16               2.45ms ± 0%    1.37ms
 
 For MSMs of 16 non-zero scalars up to 256, we got a speedup between 20% and 44%, which is very good, using only 144MiB more memory. This has 0 compromises in any other case (which was one of the constraints of this exploration).
 
-Let's look at the above benchmark comparisons in a [Rock5B](https://ameridroid.com/products/rock5-model-b) (very low-hardware setup, maybe already discarded already for an Ethereum node post-4844):
+Let's look at the above benchmark comparisons in a [Rock5B](https://ameridroid.com/products/rock5-model-b) (very low-hardware setup, maybe already discarded already for an Sila node post-4844):
 ```
 name                                                   old time/op    new time/op    delta
 MSMComparison/MSM_in_the_basis[0:5]/msmLength=1-8        27.1µs ± 2%    27.4µs ± 3%     ~     (p=0.247 n=10+10)
@@ -350,14 +350,14 @@ The current and new strategies can be parallelized since aggregating windows is 
 
 Furthermore, it’s easy to lose the view of the big picture when doing benchmarks deep in the stack. In the Verkle Trees EIPs, the use of these MSM comes from:
 
-- Calculating tree keys, which clients can parallelize if they do the EVM execution in flat-db storage, collecting all changes, and dumping everything at the end of the tree to calculate the new root. This means that all tree accesses can be paralellized at this level, thus it’s not necessary to add extra parallelization overhead at the cryptography layer. This hasn’t been done yet in Geth since it’s a big-ish change that can cause rebase pains in the medium term, but it will be done eventually.
+- Calculating tree keys, which clients can parallelize if they do the EVM execution in flat-db storage, collecting all changes, and dumping everything at the end of the tree to calculate the new root. This means that all tree accesses can be paralellized at this level, thus it’s not necessary to add extra parallelization overhead at the cryptography layer. This hasn’t been done yet in Sila since it’s a big-ish change that can cause rebase pains in the medium term, but it will be done eventually.
 - Updating tree nodes, which clients can “commit” in a single go by parallelizing work “per level”, means that MSMs should already take advantage of all cores but “higher in the stack”.
-- The state conversion work from MPT to VKT happens on every block. In this case, we’re doing many tree key calculations and new *LeafNode* insertions, which require these MSMs. We’ve already parallelized this work at the geth level, so there’s no need to parallelize the MSMs.
+- The state conversion work from MPT to VKT happens on every block. In this case, we’re doing many tree key calculations and new *LeafNode* insertions, which require these MSMs. We’ve already parallelized this work at the sila level, so there’s no need to parallelize the MSMs.
 - Clients could easily parallelize this algorithm but make it optional at runtime if some cases don’t fall into the above categories.
 
 ### What happened to the clever trick of the new algorithm to reduce the precomputed table sizes?
 
-As mentioned in the *How do we calculate MSMs today? (in Geth)*  **section, today we do some point negation tricks to save 50% of table sizes by a known “point negation” trick where we can save 1-bit length in the windows.
+As mentioned in the *How do we calculate MSMs today? (in Sila)*  **section, today we do some point negation tricks to save 50% of table sizes by a known “point negation” trick where we can save 1-bit length in the windows.
 
 As Gottfried mentioned in his document, the new algorithm includes a similar (but a bit more convoluted) trick that we can use to save 50% of pre-computation and, thus, memory usage.
 
@@ -383,7 +383,7 @@ The new strategy requires:
 
 All the presented numbers are synthetic benchmarks that show the raw performance of MSMs. The speedups are quite significant, so this will be a good strategy to have from now on.
 
-After preparing a more polished branch with this strategy to be used in `go-verkle` and geth, we could run other existing “higher level benchmarks” and a chain-replay run checking if we notice a `mgasps` throughput improvement or potential bump in the number of key-values we can migrate (MPT→VKT) per block.
+After preparing a more polished branch with this strategy to be used in `go-verkle` and sila, we could run other existing “higher level benchmarks” and a chain-replay run checking if we notice a `mgasps` throughput improvement or potential bump in the number of key-values we can migrate (MPT→VKT) per block.
 
 Of course, any decision that considers performance should always consider slowest client implementation, so there won’t be an immediate decision regarding speeding up the migration. However, this this work and strategy could be applied to other libraries so more clients could benefit from it.
 

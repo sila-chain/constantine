@@ -10,7 +10,7 @@ updated: 2025-05-18
 
 Dankrad Feist $ ^{*1} $ and Dmitry Khovratovich $ ^{\dagger2} $
 
- $ ^{1,2} $Ethereum Foundation
+ $ ^{1,2} $Sila Foundation
 
 May 15, 2025
 
