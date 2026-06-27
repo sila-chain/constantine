@@ -16,7 +16,7 @@ import
   constantine/sila_evm_precompiles
 
 # Test vector source:
-# - https://github.com/ethereum/go-ethereum/tree/release/1.14/core/vm/testdata/precompiles
+# - https://github.com/sila-chain/Sila/tree/main/core/vm/testdata/precompiles
 # - https://github.com/sila-chain/Sila-Improvement-Proposals/tree/main/assets/sip-2537
 
 type
@@ -104,7 +104,7 @@ template runPrecompileTests(filename: string, funcname: untyped, outsize: int, n
     `PrecompileTestrunner _ funcname`()
 
 proc testSha256() =
-  # https://github.com/ethereum/go-ethereum/blob/v1.14.0/core/vm/contracts_test.go#L206-L214
+  # https://github.com/sila-chain/Sila/blob/main/core/vm/contracts_test.go
   let input = "38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e000000000000000000000000000000000000000000000000000000000000001b38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e789d1dd423d25f0772d2748d60f7e4b81bb14d086eba8e8e8efb6dcff8a4ae02"
   let expected = "811c7003375852fabd0d362e40e68607a12bdabae61a7d068fe5fdd1dbbf2a5d"
 
@@ -131,7 +131,7 @@ proc testSha256() =
   stdout.write "Success\n"
 
 proc testRipemd160() =
-  # https://github.com/ethereum/go-ethereum/blob/v1.14.0/core/vm/contracts_test.go#L216-L224
+  # https://github.com/sila-chain/Sila/blob/main/core/vm/contracts_test.go
   let input = "38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e000000000000000000000000000000000000000000000000000000000000001b38d18acb67d25c8bb9942764b62f18e17054f66a817bd4295423adf9ed98873e789d1dd423d25f0772d2748d60f7e4b81bb14d086eba8e8e8efb6dcff8a4ae02"
   let expected = "0000000000000000000000009215b8d9882ff46f0dfde6684d78e831467f65e6"
 

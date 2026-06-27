@@ -23,7 +23,7 @@ import
   # For KZG point precompile
   ./sila_sip4844_kzg,
   # ECDSA for ECRecover
-  ./ethereum_ecdsa_signatures
+  ./sila_ecdsa_signatures
 
 # For KZG point precompile
 export SilaKZGContext, TrustedSetupFormat, TrustedSetupStatus,
@@ -1314,14 +1314,14 @@ func sila_evm_ecrecover*(r: var openArray[byte],
   ##     - 32 byte: `r` of the signature, scalar `Fr[Secp256k1]`
   ##     - 32 byte: `s` of the signature, scalar `Fr[Secp256k1]`
   ##
-  ## Implementation follows Geth here:
-  ## https://github.com/ethereum/go-ethereum/blob/341647f1865dab437a690dc1424ba71495de2dd8/core/vm/contracts.go#L243-L272
+  ## Implementation follows Sila upstream-compatibility reference here:
+  ## https://github.com/sila-chain/Sila/blob/main/core/vm/contracts.go
   ##
-  ## and to a lesser extent the Ethereum Yellow Paper in appendix F:
-  ## https://ethereum.github.io/yellowpaper/paper.pdf
+  ## and to a lesser extent the Sila protocol reference in appendix F:
+  ## https://sila-chain.org/protocol/reference
   ##
-  ## Internal Geth implementation in:
-  ## https://github.com/ethereum/go-ethereum/blob/master/signer/core/signed_data.go#L292-L319
+  ## Internal Sila upstream-compatibility reference in:
+  ## https://github.com/sila-chain/Sila/blob/main/signer/core/signed_data.go
   if len(input) != 128:
     return cttEVM_InvalidInputSize
 
@@ -1358,7 +1358,7 @@ func sila_evm_ecrecover*(r: var openArray[byte],
   var pubKey {.noinit.}: PublicKey
   pubKey.recoverPubkeyFromDigest(msgHash, signature, evenY)
 
-  # 4. now calculate the Ethereum address of the public key (keccak256)
+  # 4. now calculate the Sila address of the public key (keccak256)
   privateAccess(PublicKey)
   var rawPubkey {.noinit.}: array[64, byte] # `[x, y]` coordinates of public key
   rawPubkey.toOpenArray( 0, 32-1).marshal(pubKey.raw.x, bigEndian)

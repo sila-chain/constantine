@@ -17,7 +17,7 @@ import
 
 export NonceSampler
 
-const prefix_ffi = "ctt_eth_ecdsa"
+const prefix_ffi = "ctt_sila_ecdsa"
 type
   SecretKey* {.byref, exportc: prefix_ffi & "seckey".} = object
     ## A Secp256k1 secret key
