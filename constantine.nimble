@@ -9,7 +9,7 @@ license       = "MIT or Apache License 2.0"
 
 requires "nim >= 2.2.0"
 # Note, if you're not using Multiexponentiation in pairing group
-# which is likely as it's an experimental feature for Ethereum Secret Leader Election (at best early 2027),
+# which is likely as it's an experimental feature for Sila Secret Leader Election (at best early 2027),
 # the library is compatible with Nim 1.6.16 and 2.0.8
 # and still has proper guards to handle v1.6 and v2.x differences
 
@@ -637,8 +637,8 @@ const testDesc: seq[tuple[path: string, useGMP: bool]] = @[
 
   # Protocols
   # ----------------------------------------------------------
-  ("tests/t_ethereum_evm_modexp.nim", false),
-  ("tests/t_ethereum_evm_precompiles.nim", false),
+  ("tests/t_sila_evm_modexp.nim", false),
+  ("tests/t_sila_evm_precompiles.nim", false),
   ("tests/t_sila_bls_signatures.nim", false),
   ("tests/t_sila_sip2333_bls12381_key_derivation.nim", false),
   ("tests/t_sila_sip4844_deneb_kzg.nim", false),
@@ -760,7 +760,7 @@ const benchDesc = [
   "sila_sip7594/perf_recover_cells_and_kzg_proofs",
   "sila_sip7594/perf_verify_cell_kzg_proof_batch",
   "bench_verkle_primitives",
-  "bench_eth_evm_precompiles",
+  "bench_sila_evm_precompiles",
   "bench_multilinear_extensions",
   "bench_fft_fields",
   "bench_fft_ec",
@@ -782,7 +782,7 @@ const skipStackHardening = [
 # use sanitizers for specific tests
 const useSanitizers = [
   "tests/math_arbitrary_precision/t_bigints_powmod_vs_gmp.nim",
-  "tests/t_ethereum_evm_modexp.nim",
+  "tests/t_sila_evm_modexp.nim",
   "tests/t_etherem_evm_precompiles.nim",
 ]
 
@@ -1255,13 +1255,13 @@ task bench_verkle, "Run benchmarks for Banderwagon":
 
 # EIP 2537 - BLS12-381 precompiles
 # ------------------------------------------
-task bench_eth_eip2537_subgroup_checks_impact, "Run EIP2537 subgroup checks impact benchmark - CC compiler":
-  runBench("bench_eth_eip2537_subgroup_checks_impact")
+task bench_sila_sip2537_subgroup_checks_impact, "Run SIP2537 subgroup checks impact benchmark - CC compiler":
+  runBench("bench_sila_sip2537_subgroup_checks_impact")
 
 # EVM
 # ------------------------------------------
-task bench_eth_evm_precompiles, "Run Ethereum EVM precompiles - CC compiler":
-  runBench("bench_eth_evm_precompiles")
+task bench_sila_evm_precompiles, "Run Sila EVM precompiles - CC compiler":
+  runBench("bench_sila_evm_precompiles")
 
 # FFT
 # ------------------------------------------

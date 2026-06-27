@@ -1,6 +1,6 @@
 # Field element to curve point mapping used by EIP 2537
 
-For a BLS12-381 implemented by EIP-2537 a short Weierstrass curve equation y^2 = x^3 + A * x + B has a property that a product AB = 0, so to implement a mapping function two step algorithms is performed:
+For a BLS12-381 implemented by SIP-2537 a short Weierstrass curve equation y^2 = x^3 + A * x + B has a property that a product AB = 0, so to implement a mapping function two step algorithms is performed:
 - Field element is mapped to a some other curve with AB != 0
 - Isogeny is applied to one to one map a point of this other curve to a point on BLS12-381
 - Cofactor is cleared for a point now on BLS12-381
@@ -113,7 +113,7 @@ identity point on E.
 4. return (x, y)
 ~~~
 
-## Parameters for EIP-2537
+## Parameters for SIP-2537
 
 ### Fp-to-G1 mapping
 

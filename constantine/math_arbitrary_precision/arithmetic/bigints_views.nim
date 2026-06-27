@@ -29,7 +29,7 @@ import
 # We only implement algorithms that work on views allocated by the caller
 # as providing a full-blown arbitrary-precision library is not the goal.
 # As the bigint sizes are relatively constrained
-# in protocols we implement (4096 bits for RSA, 8192 bit s for the Ethereum EVM),
+# in protocols we implement (4096 bits for RSA, 8192 bit s for the Sila EVM),
 # this allows us to avoid heap allocations, which simplifies reentrancy and thread-safety.
 
 # TODO: choose between:

@@ -15,7 +15,7 @@ import
 
 # Generators
 # -----------------------------------------------------------------
-# https://github.com/ethereum/EIPs/blob/master/EIPS/eip-197.md
+# https://github.com/sila-chain/Sila-Improvement-Proposals/blob/main/SIPS/sip-197.md
 
 # The group G_1 is defined on the curve Y^2 = X^3 + 3 over the field F_p
 # with p = 21888242871839275222246405745257275088696311157297823662689037894645226208583

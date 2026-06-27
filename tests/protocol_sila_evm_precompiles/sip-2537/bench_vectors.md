@@ -1,4 +1,4 @@
-# Set of test vectors to perform benchmarking of EIP-2537
+# Set of test vectors to perform benchmarking of SIP-2537
 
 ## Inlined vectors
 

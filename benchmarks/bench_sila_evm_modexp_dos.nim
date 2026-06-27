@@ -1,5 +1,5 @@
 import
-  constantine/ethereum_evm_precompiles,
+  constantine/sila_evm_precompiles,
   constantine/math/arithmetic,
   constantine/math/io/io_bigints,
   constantine/platforms/abstractions,
@@ -29,19 +29,19 @@ template bench(fnCall: untyped, ticks, ns: var int64): untyped =
       ticks += stopClock - startClock
     ns += inNanoseconds(stopTime-startTime)
 
-func computeGasFee(inputs: openArray[byte]): tuple[eip128, eip2565: int] =
+func computeGasFee(inputs: openArray[byte]): tuple[eip128, sip2565: int] =
   ## Note: This is an approximation
   # For Denial-of-Service fuzzing we want to ensure that
   # 30M gas blocks are processed in a few milliseconds at most
-  # https://eips.ethereum.org/EIPS/eip-198
-  # https://eips.ethereum.org/EIPS/eip-2565
-  func mulComplexityEIP198(x: int): int =
+  # https://sips.sila-chain.org/SIPS/sip-198
+  # https://sips.sila-chain.org/SIPS/sip-2565
+  func mulComplexitySIP198(x: int): int =
     ## Estimates the difficulty of Karatsuba multiplication
     if x <= 64: x * x
     elif x <= 1024: (x * x) div 4 + 96*x - 3072
     else: (x * x) div 16 + 480*x - 199680
 
-  func mulComplexityEIP2565(x: int): int =
+  func mulComplexitySIP2565(x: int): int =
     result = (x+7) div 8
     result *= result
 
@@ -66,16 +66,16 @@ func computeGasFee(inputs: openArray[byte]): tuple[eip128, eip2565: int] =
     if result < 1:
       result = 1
 
-  func gasCostEIP198(baseLen, modLen: int, exponent: openArray[byte]): int =
+  func gasCostSIP198(baseLen, modLen: int, exponent: openArray[byte]): int =
     const Gquaddivisor = 20
-    let mulComplexity = mulComplexityEIP198(max(baseLen, modLen))
+    let mulComplexity = mulComplexitySIP198(max(baseLen, modLen))
     let adjExpLen = iterCount(exponent)
 
     return (mulComplexity * max(adjExpLen, 1)) div Gquaddivisor
 
-  func gasCostEIP2565(baseLen, modLen: int, exponent: openArray[byte]): int =
+  func gasCostSIP2565(baseLen, modLen: int, exponent: openArray[byte]): int =
     const Gquaddivisor = 3
-    let mulComplexity = mulComplexityEIP2565(max(baseLen, modLen))
+    let mulComplexity = mulComplexitySIP2565(max(baseLen, modLen))
     let iterCount = iterCount(exponent)
 
     return max(200, (mulComplexity * iterCount) div Gquaddivisor)
@@ -101,10 +101,10 @@ func computeGasFee(inputs: openArray[byte]): tuple[eip128, eip2565: int] =
   template exponent(): untyped =
     inputs.toOpenArray(expStart, expStop)
 
-  let gasFeeEIP198 = gasCostEIP198(baseByteLen, modulusByteLen, exponent)
-  let gasFeeEIP2565 = gasCostEIP2565(baseByteLen, modulusByteLen, exponent)
+  let gasFeeSIP198 = gasCostSIP198(baseByteLen, modulusByteLen, exponent)
+  let gasFeeSIP2565 = gasCostSIP2565(baseByteLen, modulusByteLen, exponent)
 
-  return (gasFeeEIP198, gasFeeEIP2565)
+  return (gasFeeSIP198, gasFeeSIP2565)
 
 proc dos1() =
 
@@ -138,22 +138,22 @@ proc dos1() =
   var r = newSeq[byte](32)
   var ticks, nanoseconds: int64
 
-  let (gasFeeEIP198, gasFeeEIP2565) = computeGasFee(input)
+  let (gasFeeSIP198, gasFeeSIP2565) = computeGasFee(input)
   const blockSize = 30000000
 
-  let execsEIP198 = blockSize div gasFeeEIP198
-  let execsEIP2565 = blockSize div gasFeeEIP2565
+  let execsSIP198 = blockSize div gasFeeSIP198
+  let execsSIP2565 = blockSize div gasFeeSIP2565
 
-  echo "Gas cost: ", gasFeeEIP198, " gas (EIP-198) - ", execsEIP198, " executions per block"
-  echo "Gas cost: ", gasFeeEIP2565, " gas (EIP-2565) - ", execsEIP2565, " executions per block"
+  echo "Gas cost: ", gasFeeSIP198, " gas (SIP-198) - ", execsSIP198, " executions per block"
+  echo "Gas cost: ", gasFeeSIP2565, " gas (SIP-2565) - ", execsSIP2565, " executions per block"
 
-  for i in 0 ..< execsEIP2565:
+  for i in 0 ..< execsSIP2565:
       bench(
-        (let _ = r.eth_evm_modexp(input)),
+        (let _ = r.sila_evm_modexp(input)),
         ticks, nanoseconds)
 
-  report("EVM Modexp - 32,32,32 - even base & power-of-2 modulus", nanoseconds, ticks, execsEIP2565)
-  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsEIP2565, " iterations"
+  report("EVM Modexp - 32,32,32 - even base & power-of-2 modulus", nanoseconds, ticks, execsSIP2565)
+  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsSIP2565, " iterations"
 
 proc dos2() =
 
@@ -191,22 +191,22 @@ proc dos2() =
   var r = newSeq[byte](121)
   var ticks, nanoseconds: int64
 
-  let (gasFeeEIP198, gasFeeEIP2565) = computeGasFee(input)
+  let (gasFeeSIP198, gasFeeSIP2565) = computeGasFee(input)
   const blockSize = 30000000
 
-  let execsEIP198 = blockSize div gasFeeEIP198
-  let execsEIP2565 = blockSize div gasFeeEIP2565
+  let execsSIP198 = blockSize div gasFeeSIP198
+  let execsSIP2565 = blockSize div gasFeeSIP2565
 
-  echo "Gas cost: ", gasFeeEIP198, " gas (EIP-198) - ", execsEIP198, " executions per block"
-  echo "Gas cost: ", gasFeeEIP2565, " gas (EIP-2565) - ", execsEIP2565, " executions per block"
+  echo "Gas cost: ", gasFeeSIP198, " gas (SIP-198) - ", execsSIP198, " executions per block"
+  echo "Gas cost: ", gasFeeSIP2565, " gas (SIP-2565) - ", execsSIP2565, " executions per block"
 
-  for i in 0 ..< execsEIP2565:
+  for i in 0 ..< execsSIP2565:
       bench(
-        (let _ = r.eth_evm_modexp(input)),
+        (let _ = r.sila_evm_modexp(input)),
         ticks, nanoseconds)
 
-  report("EVM Modexp - 1,1,121 - exponent=1 and odd modulus", nanoseconds, ticks, execsEIP2565)
-  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsEIP2565, " iterations"
+  report("EVM Modexp - 1,1,121 - exponent=1 and odd modulus", nanoseconds, ticks, execsSIP2565)
+  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsSIP2565, " iterations"
 
 proc dos2a() =
   # shortcuttable variation with even modulus
@@ -245,22 +245,22 @@ proc dos2a() =
   var r = newSeq[byte](121)
   var ticks, nanoseconds: int64
 
-  let (gasFeeEIP198, gasFeeEIP2565) = computeGasFee(input)
+  let (gasFeeSIP198, gasFeeSIP2565) = computeGasFee(input)
   const blockSize = 30000000
 
-  let execsEIP198 = blockSize div gasFeeEIP198
-  let execsEIP2565 = blockSize div gasFeeEIP2565
+  let execsSIP198 = blockSize div gasFeeSIP198
+  let execsSIP2565 = blockSize div gasFeeSIP2565
 
-  echo "Gas cost: ", gasFeeEIP198, " gas (EIP-198) - ", execsEIP198, " executions per block"
-  echo "Gas cost: ", gasFeeEIP2565, " gas (EIP-2565) - ", execsEIP2565, " executions per block"
+  echo "Gas cost: ", gasFeeSIP198, " gas (SIP-198) - ", execsSIP198, " executions per block"
+  echo "Gas cost: ", gasFeeSIP2565, " gas (SIP-2565) - ", execsSIP2565, " executions per block"
 
-  for i in 0 ..< execsEIP2565:
+  for i in 0 ..< execsSIP2565:
       bench(
-        (let _ = r.eth_evm_modexp(input)),
+        (let _ = r.sila_evm_modexp(input)),
         ticks, nanoseconds)
 
-  report("EVM Modexp - 1,1,121 - exponent=1 and even modulus", nanoseconds, ticks, execsEIP2565)
-  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsEIP2565, " iterations"
+  report("EVM Modexp - 1,1,121 - exponent=1 and even modulus", nanoseconds, ticks, execsSIP2565)
+  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsSIP2565, " iterations"
 
 proc dos2b() =
   # even variation with no shortcut
@@ -299,22 +299,22 @@ proc dos2b() =
   var r = newSeq[byte](121)
   var ticks, nanoseconds: int64
 
-  let (gasFeeEIP198, gasFeeEIP2565) = computeGasFee(input)
+  let (gasFeeSIP198, gasFeeSIP2565) = computeGasFee(input)
   const blockSize = 30000000
 
-  let execsEIP198 = blockSize div gasFeeEIP198
-  let execsEIP2565 = blockSize div gasFeeEIP2565
+  let execsSIP198 = blockSize div gasFeeSIP198
+  let execsSIP2565 = blockSize div gasFeeSIP2565
 
-  echo "Gas cost: ", gasFeeEIP198, " gas (EIP-198) - ", execsEIP198, " executions per block"
-  echo "Gas cost: ", gasFeeEIP2565, " gas (EIP-2565) - ", execsEIP2565, " executions per block"
+  echo "Gas cost: ", gasFeeSIP198, " gas (SIP-198) - ", execsSIP198, " executions per block"
+  echo "Gas cost: ", gasFeeSIP2565, " gas (SIP-2565) - ", execsSIP2565, " executions per block"
 
-  for i in 0 ..< execsEIP2565:
+  for i in 0 ..< execsSIP2565:
       bench(
-        (let _ = r.eth_evm_modexp(input)),
+        (let _ = r.sila_evm_modexp(input)),
         ticks, nanoseconds)
 
-  report("EVM Modexp - 1,1,121 - exponent=16 and odd modulus", nanoseconds, ticks, execsEIP2565)
-  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsEIP2565, " iterations"
+  report("EVM Modexp - 1,1,121 - exponent=16 and odd modulus", nanoseconds, ticks, execsSIP2565)
+  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsSIP2565, " iterations"
 
 proc dos2c() =
   # odd variation with no shortcut
@@ -353,22 +353,22 @@ proc dos2c() =
   var r = newSeq[byte](121)
   var ticks, nanoseconds: int64
 
-  let (gasFeeEIP198, gasFeeEIP2565) = computeGasFee(input)
+  let (gasFeeSIP198, gasFeeSIP2565) = computeGasFee(input)
   const blockSize = 30000000
 
-  let execsEIP198 = blockSize div gasFeeEIP198
-  let execsEIP2565 = blockSize div gasFeeEIP2565
+  let execsSIP198 = blockSize div gasFeeSIP198
+  let execsSIP2565 = blockSize div gasFeeSIP2565
 
-  echo "Gas cost: ", gasFeeEIP198, " gas (EIP-198) - ", execsEIP198, " executions per block"
-  echo "Gas cost: ", gasFeeEIP2565, " gas (EIP-2565) - ", execsEIP2565, " executions per block"
+  echo "Gas cost: ", gasFeeSIP198, " gas (SIP-198) - ", execsSIP198, " executions per block"
+  echo "Gas cost: ", gasFeeSIP2565, " gas (SIP-2565) - ", execsSIP2565, " executions per block"
 
-  for i in 0 ..< execsEIP2565:
+  for i in 0 ..< execsSIP2565:
     bench(
-      (let _ = r.eth_evm_modexp(input)),
+      (let _ = r.sila_evm_modexp(input)),
       ticks, nanoseconds)
 
-  report("EVM Modexp - 1,1,121 - exponent=7 and odd modulus", nanoseconds, ticks, execsEIP2565)
-  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsEIP2565, " iterations"
+  report("EVM Modexp - 1,1,121 - exponent=7 and odd modulus", nanoseconds, ticks, execsSIP2565)
+  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsSIP2565, " iterations"
 
 proc dos2d() =
   # odd variation with no shortcut and power of 2 modulus
@@ -407,22 +407,22 @@ proc dos2d() =
   var r = newSeq[byte](121)
   var ticks, nanoseconds: int64
 
-  let (gasFeeEIP198, gasFeeEIP2565) = computeGasFee(input)
+  let (gasFeeSIP198, gasFeeSIP2565) = computeGasFee(input)
   const blockSize = 30000000
 
-  let execsEIP198 = blockSize div gasFeeEIP198
-  let execsEIP2565 = blockSize div gasFeeEIP2565
+  let execsSIP198 = blockSize div gasFeeSIP198
+  let execsSIP2565 = blockSize div gasFeeSIP2565
 
-  echo "Gas cost: ", gasFeeEIP198, " gas (EIP-198) - ", execsEIP198, " executions per block"
-  echo "Gas cost: ", gasFeeEIP2565, " gas (EIP-2565) - ", execsEIP2565, " executions per block"
+  echo "Gas cost: ", gasFeeSIP198, " gas (SIP-198) - ", execsSIP198, " executions per block"
+  echo "Gas cost: ", gasFeeSIP2565, " gas (SIP-2565) - ", execsSIP2565, " executions per block"
 
-  for i in 0 ..< execsEIP2565:
+  for i in 0 ..< execsSIP2565:
     bench(
-      (let _ = r.eth_evm_modexp(input)),
+      (let _ = r.sila_evm_modexp(input)),
       ticks, nanoseconds)
 
-  report("EVM Modexp - 1,1,121 - exponent=7 and power-of-2 modulus", nanoseconds, ticks, execsEIP2565)
-  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsEIP2565, " iterations"
+  report("EVM Modexp - 1,1,121 - exponent=7 and power-of-2 modulus", nanoseconds, ticks, execsSIP2565)
+  echo "Total time: ", nanoseconds.float64 / 1e6, " ms for ", execsSIP2565, " iterations"
 
 dos1()
 echo "\n"

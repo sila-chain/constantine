@@ -27,7 +27,7 @@ import
   constantine/sila_sip4844_kzg_parallel,
   constantine/sila_sip7594_peerdas,
 
-  constantine/ethereum_evm_precompiles,
+  constantine/sila_evm_precompiles,
 
   # Ensure globals like proc from kernel32.dll are populated at library load time
   ./lib_autoload

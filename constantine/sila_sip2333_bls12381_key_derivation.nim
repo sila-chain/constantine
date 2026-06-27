@@ -18,7 +18,7 @@ import
 # SIP2333: BLS12-381 Key Generation
 # ------------------------------------------------------------
 #
-# https://eips.ethereum.org/EIPS/eip-2333
+# https://sips.sila-chain.org/SIPS/sip-2333
 
 {.push raises: [], checks: off.} # No exceptions
 

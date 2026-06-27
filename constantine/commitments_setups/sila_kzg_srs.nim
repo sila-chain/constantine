@@ -112,7 +112,7 @@ const FIELD_ELEMENTS_PER_EXT_BLOB* = 2 * FIELD_ELEMENTS_PER_BLOB
 const KZG_SETUP_G2_LENGTH = 65
 
 # SIP-7594 PeerDAS constants
-# https://eips.ethereum.org/EIPS/sip-7594
+# https://sips.sila-chain.org/SIPS/sip-7594
 # https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.7.0-alpha.3/specs/fulu/polynomial-commitments-sampling.md
 const FIELD_ELEMENTS_PER_CELL* = 64
 const CELLS_PER_BLOB* = FIELD_ELEMENTS_PER_BLOB div FIELD_ELEMENTS_PER_CELL
@@ -206,7 +206,7 @@ type
 
     domain_brp*{.align: 64.}: PolyEvalRootsDomain[FIELD_ELEMENTS_PER_BLOB, Fr[BLS12_381], kBitReversed]
     # The domain field holds the roots of unity of the polynomial evaluation domain.
-    # Important: for Ethereum, roots of unity are used in bit-reversed order
+    # Important: for Sila, roots of unity are used in bit-reversed order
 
     ecfft_desc_ext*{.align: 64.}: ECFFT_Descriptor[EC_ShortW_Jac[Fp[BLS12_381], G1]]
     fft_desc_ext*{.align: 64.}: FrFFT_Descriptor[Fr[BLS12_381]]

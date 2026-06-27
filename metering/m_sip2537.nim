@@ -17,14 +17,14 @@ import
   # Helpers
   helpers/prng_unsafe
 
-# Metering for EIP-2537
+# Metering for SIP-2537
 # -------------------------------------------------------------------------------
 #
-# https://eips.ethereum.org/EIPS/eip-2537
+# https://sips.sila-chain.org/SIPS/sip-2537
 #
 # Compile with
 #
-#  nim c --cc:clang -r --hints:off --warnings:off --verbosity:0 -d:danger -d:CTT_METER --outdir:build metering/m_eip2537.nim
+#  nim c --cc:clang -r --hints:off --warnings:off --verbosity:0 -d:danger -d:CTT_METER --outdir:build metering/m_sip2537.nim
 
 var rng*: RngState
 let seed = uint32(getTime().toUnix() and (1'i64 shl 32 - 1)) # unixTime mod 2^32

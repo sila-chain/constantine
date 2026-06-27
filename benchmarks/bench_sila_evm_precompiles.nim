@@ -8,7 +8,7 @@
 
 import
   # Internals
-  constantine/ethereum_evm_precompiles,
+  constantine/sila_evm_precompiles,
   constantine/serialization/codecs,
   constantine/named/algebras,
   constantine/math/[arithmetic, ec_shortweierstrass, extension_fields],
@@ -22,8 +22,8 @@ import
   # Standard library
   std/[os, strutils]
 
-# For EIP-2537, we use the worst case vectors:
-#   https://eips.ethereum.org/assets/eip-2537/bench_vectors
+# For SIP-2537, we use the worst case vectors:
+#   https://sips.sila-chain.org/assets/sip-2537/bench_vectors
 
 proc separator() = separator(128)
 
@@ -51,7 +51,7 @@ const gasSchedule = {
   "SHA256":                  -1,
   # ECRecover
   "ECRECOVER":             3000,
-  # EIP-196 and 197, gas cost from EIP-1108
+  # SIP-196 and 197, gas cost from SIP-1108
   "BN254_G1ADD":            150,
   "BN254_G1MUL":           6000,
   "BN254_PAIRINGCHECK":      -1,
@@ -177,7 +177,7 @@ proc benchSha256(words, iters: int) =
 
   let opName = &"SHA256 - {length:>3} bytes"
   bench(opName, gasSha256(length), iters):
-    discard output.eth_evm_sha256(inputs)
+    discard output.sila_evm_sha256(inputs)
 
 proc benchRipeMD160(words, iters: int) =
   let length = words*32
@@ -186,7 +186,7 @@ proc benchRipeMD160(words, iters: int) =
 
   let opName = &"RipeMD160 - {length:>3} bytes"
   bench(opName, gasRipeMD160(length), iters):
-    discard output.eth_evm_ripemd160(inputs)
+    discard output.sila_evm_ripemd160(inputs)
 
 # EcRecover
 # -----------------------------------------------------------------------------------------------------
@@ -199,9 +199,9 @@ proc benchEcRecover(iters: int) =
 
   let opName = "ECRECOVER"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_ecrecover(input)
+    discard output.sila_evm_ecrecover(input)
 
-# EIP-196 & EIP-197
+# SIP-196 & SIP-197
 # -----------------------------------------------------------------------------------------------------
 
 proc benchBN254G1Add(iters: int) =
@@ -211,7 +211,7 @@ proc benchBN254G1Add(iters: int) =
 
   let opName = "BN254_G1ADD"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bn254_g1add(inputs)
+    discard output.sila_evm_bn254_g1add(inputs)
 
 proc benchBN254G1Mul(iters: int) =
   var inputs = newSeq[byte](96)
@@ -220,16 +220,16 @@ proc benchBN254G1Mul(iters: int) =
 
   let opName = "BN254_G1MUL"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bn254_g1mul(inputs)
+    discard output.sila_evm_bn254_g1mul(inputs)
 
 proc benchBN254PairingCheck(pairingCtx: seq[byte], size, iters: int) =
   var inputs = @(pairingCtx.toOpenArray(0, 192*size-1))
   var output = newSeq[byte](32)
 
   bench(&"BN254_PAIRINGCHECK {size:>1}", gasBN254PairingCheck(size), iters):
-    discard output.eth_evm_bn254_ecpairingcheck(inputs)
+    discard output.sila_evm_bn254_ecpairingcheck(inputs)
 
-# EIP-2537
+# SIP-2537
 # -----------------------------------------------------------------------------------------------------
 
 proc benchBls12G1Add(iters: int) =
@@ -239,7 +239,7 @@ proc benchBls12G1Add(iters: int) =
 
   let opName = "BLS12_G1ADD"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bls12381_g1add(inputs)
+    discard output.sila_evm_bls12381_g1add(inputs)
 
 proc benchBls12G2Add(iters: int) =
   var inputs = newSeq[byte](512)
@@ -248,7 +248,7 @@ proc benchBls12G2Add(iters: int) =
 
   let opName = "BLS12_G2ADD"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bls12381_g2add(inputs)
+    discard output.sila_evm_bls12381_g2add(inputs)
 
 proc benchBls12G1Mul(iters: int) =
   var inputs = newSeq[byte](160)
@@ -258,7 +258,7 @@ proc benchBls12G1Mul(iters: int) =
 
   let opName = "BLS12_G1MUL"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bls12381_g1mul(inputs)
+    discard output.sila_evm_bls12381_g1mul(inputs)
 
 proc benchBls12G2Mul(iters: int) =
   var inputs = newSeq[byte](288)
@@ -268,7 +268,7 @@ proc benchBls12G2Mul(iters: int) =
 
   let opName = "BLS12_G2MUL"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bls12381_g2mul(inputs)
+    discard output.sila_evm_bls12381_g2mul(inputs)
 
 proc benchBls12MapToG1(iters: int) =
   var inputs = newSeq[byte](64)
@@ -278,7 +278,7 @@ proc benchBls12MapToG1(iters: int) =
 
   let opName = "BLS12_MAP_FP_TO_G1"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bls12381_map_fp_to_g1(inputs)
+    discard output.sila_evm_bls12381_map_fp_to_g1(inputs)
 
 proc benchBls12MapToG2(iters: int) =
   var inputs = newSeq[byte](128)
@@ -288,14 +288,14 @@ proc benchBls12MapToG2(iters: int) =
 
   let opName = "BLS12_MAP_FP2_TO_G2"
   bench(opName, gasSchedule[opName], iters):
-    discard output.eth_evm_bls12381_map_fp2_to_g2(inputs)
+    discard output.sila_evm_bls12381_map_fp2_to_g2(inputs)
 
 proc benchBls12PairingCheck(pairingCtx: seq[byte], size, iters: int) =
   var inputs = @(pairingCtx.toOpenArray(0, 384*size-1))
   var output = newSeq[byte](32)
 
   bench(&"BLS12_PAIRINGCHECK {size:>1}", gasBls12PairingCheck(size), iters):
-    discard output.eth_evm_bls12381_pairingcheck(inputs)
+    discard output.sila_evm_bls12381_pairingcheck(inputs)
 
 proc createMsmInputs(EC: typedesc, length: int): seq[byte] =
   var P: affine(EC)
@@ -330,14 +330,14 @@ proc benchBls12MsmG1(msmCtx: seq[byte], size, iters: int) =
   var output = newSeq[byte](128)
 
   bench(&"BLS12_G1MSM {size:>3}", gasBls12MsmG1(size, gasSchedule["BLS12_G1MUL"]), iters):
-    discard output.eth_evm_bls12381_g1msm(inputs)
+    discard output.sila_evm_bls12381_g1msm(inputs)
 
 proc benchBls12MsmG2(msmCtx: seq[byte], size, iters: int) =
   var inputs = @(msmCtx.toOpenArray(0, 288*size-1))
   var output = newSeq[byte](256)
 
   bench(&"BLS12_G2MSM {size:>3}", gasBls12MsmG2(size, gasSchedule["BLS12_G2MUL"]), iters):
-    discard output.eth_evm_bls12381_g2msm(inputs)
+    discard output.sila_evm_bls12381_g2msm(inputs)
 
 # SIP-4844
 # -----------------------------------------------------------------------------------------------------
@@ -360,7 +360,7 @@ proc benchKzgPointEvaluation(iters: int) =
 
   let opName = "KZG_POINT_EVALUATION"
   bench(opName, gasSchedule[opName], iters):
-    discard ctx.eth_evm_kzg_point_evaluation(output, input)
+    discard ctx.sila_evm_kzg_point_evaluation(output, input)
 
 # Main
 # -----------------------------------------------------------------------------------------------------

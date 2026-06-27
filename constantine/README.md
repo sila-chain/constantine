@@ -19,7 +19,7 @@ Warning ⚠️:
         - [KZG commitments for SIP-4844](#kzg-commitments-for-sip-4844)
             - [Performance](#performance)
     - [Ethereum Execution Layer](#ethereum-execution-layer)
-        - [Ethereum Virtual Machine](#ethereum-virtual-machine)
+        - [Sila Virtual Machine](#ethereum-virtual-machine)
             - [Performance](#performance)
         - [IPA for Verkle Tries](#ipa-for-verkle-tries)
 
@@ -45,7 +45,7 @@ source, serial bench from https://github.com/mratsim/constantine/pull/279#issuec
 ### BLS12-381 Key Derivation for wallets
 
 Specs:
-- https://eips.ethereum.org/EIPS/eip-2333
+- https://sips.sila-chain.org/SIPS/sip-2333
 
 ### KZG commitments for SIP-4844
 
@@ -76,23 +76,23 @@ https://github.com/mratsim/constantine/pull/304#issuecomment-1844795359
 
 ## Ethereum Execution Layer
 
-### Ethereum Virtual Machine
+### Sila Virtual Machine
 
-Constantine implements precompiles primitives for the Ethereum virtual machine
+Constantine implements precompiles primitives for the Sila virtual machine
 
 - SHA256
-- ECADD on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x6, spec [EIP-196](https://eips.ethereum.org/EIPS/eip-196) and pricing [EIP-1108](https://eips.ethereum.org/EIPS/eip-1108)
-- ECMUL on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x7, spec [EIP-196](https://eips.ethereum.org/EIPS/eip-196) and pricing [EIP-1108](https://eips.ethereum.org/EIPS/eip-1108)
-- ECPAIRING on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x8, spec [EIP-197](https://eips.ethereum.org/EIPS/eip-197) and pricing [EIP-1108](https://eips.ethereum.org/EIPS/eip-1108)
-- MODEXP, arbitrary precision modular exponentiation, spec [EIP-198](https://eips.ethereum.org/EIPS/eip-198)
-- BLS12-381 precompiles (addition, scalar multiplication, MSM, pairing, hashing-to-curve), spec [EIP-2537](https://eips.ethereum.org/EIPS/eip-2537)
+- ECADD on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x6, spec [SIP-196](https://sips.sila-chain.org/SIPS/sip-196) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
+- ECMUL on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x7, spec [SIP-196](https://sips.sila-chain.org/SIPS/sip-196) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
+- ECPAIRING on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x8, spec [SIP-197](https://sips.sila-chain.org/SIPS/sip-197) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
+- MODEXP, arbitrary precision modular exponentiation, spec [SIP-198](https://sips.sila-chain.org/SIPS/sip-198)
+- BLS12-381 precompiles (addition, scalar multiplication, MSM, pairing, hashing-to-curve), spec [SIP-2537](https://sips.sila-chain.org/SIPS/sip-2537)
 
 #### Performance
 
 - SHA256 implementation is faster than OpenSSL's for messages less than 65kB: https://github.com/mratsim/constantine/pull/206
   and 16% faster for 32 bytes.
-- EIP-2537: https://github.com/mratsim/constantine/pull/368
-- https://ethereum-magicians.org/t/eip-2537-bls12-precompile-discussion-thread/4187/76
+- SIP-2537: https://github.com/mratsim/constantine/pull/368
+- https://ethereum-magicians.org/t/sip-2537-bls12-precompile-discussion-thread/4187/76
 
 ### IPA for Verkle Tries
 

@@ -8,7 +8,7 @@
 
 import
   constantine/platforms/metering/[reports, tracer],
-  constantine/ethereum_evm_precompiles,
+  constantine/sila_evm_precompiles,
   constantine/platforms/abstractions
 
 let input = [
@@ -46,7 +46,7 @@ var r = newSeq[byte](121)
 
 resetMetering()
 
-let status = eth_evm_modexp(r, input)
+let status = sila_evm_modexp(r, input)
 doAssert status == cttEVM_Success
 
 const flags = if UseASM_X86_64 or UseASM_X86_32: "UseAssembly" else: "NoAssembly"

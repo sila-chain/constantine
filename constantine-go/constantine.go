@@ -827,7 +827,7 @@ type (
 )
 
 func EvmSha256(inputs []byte) (result Bytes32, err error) {
-	status := C.ctt_eth_evm_sha256((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_sha256((*C.byte)(&result[0]),
 		32,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -844,7 +844,7 @@ func EvmSha256(inputs []byte) (result Bytes32, err error) {
 func EvmModexp(inputs []byte) (result []byte, err error) {
 	var size C.uint64_t
 	// Call Nim function to determine correct size to allocate for `result`
-	status := C.ctt_eth_evm_modexp_result_size(&size,
+	status := C.ctt_sila_evm_modexp_result_size(&size,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
 	)
@@ -855,7 +855,7 @@ func EvmModexp(inputs []byte) (result []byte, err error) {
 		return result, err
 	}
 	result = make([]byte, int(size), int(size))
-	status = C.ctt_eth_evm_modexp((*C.byte)(getAddr(result)),
+	status = C.ctt_sila_evm_modexp((*C.byte)(getAddr(result)),
 		(C.size_t)(len(result)),
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -870,7 +870,7 @@ func EvmModexp(inputs []byte) (result []byte, err error) {
 }
 
 func EvmBn254G1Add(inputs []byte) (result Bytes64, err error) {
-	status := C.ctt_eth_evm_bn254_g1add((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bn254_g1add((*C.byte)(&result[0]),
 		64,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -885,7 +885,7 @@ func EvmBn254G1Add(inputs []byte) (result Bytes64, err error) {
 }
 
 func EvmBn254G1Mul(inputs []byte) (result Bytes64, err error) {
-	status := C.ctt_eth_evm_bn254_g1mul((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bn254_g1mul((*C.byte)(&result[0]),
 		64,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -900,7 +900,7 @@ func EvmBn254G1Mul(inputs []byte) (result Bytes64, err error) {
 }
 
 func EvmBn254G1EcPairingCheck(inputs []byte) (result Bytes32, err error) {
-	status := C.ctt_eth_evm_bn254_ecpairingcheck((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bn254_ecpairingcheck((*C.byte)(&result[0]),
 		32,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -915,7 +915,7 @@ func EvmBn254G1EcPairingCheck(inputs []byte) (result Bytes32, err error) {
 }
 
 func EvmBls12381G1Add(inputs []byte) (result Bytes128, err error) {
-	status := C.ctt_eth_evm_bls12381_g1add((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_g1add((*C.byte)(&result[0]),
 		128,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -930,7 +930,7 @@ func EvmBls12381G1Add(inputs []byte) (result Bytes128, err error) {
 }
 
 func EvmBls12381G1Mul(inputs []byte) (result Bytes128, err error) {
-	status := C.ctt_eth_evm_bls12381_g1mul((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_g1mul((*C.byte)(&result[0]),
 		128,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -945,7 +945,7 @@ func EvmBls12381G1Mul(inputs []byte) (result Bytes128, err error) {
 }
 
 func EvmBls12381G1Msm(inputs []byte) (result Bytes128, err error) {
-	status := C.ctt_eth_evm_bls12381_g1msm((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_g1msm((*C.byte)(&result[0]),
 		128,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -960,7 +960,7 @@ func EvmBls12381G1Msm(inputs []byte) (result Bytes128, err error) {
 }
 
 func EvmBls12381G2Add(inputs []byte) (result Bytes256, err error) {
-	status := C.ctt_eth_evm_bls12381_g2add((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_g2add((*C.byte)(&result[0]),
 		256,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -975,7 +975,7 @@ func EvmBls12381G2Add(inputs []byte) (result Bytes256, err error) {
 }
 
 func EvmBls12381G2Mul(inputs []byte) (result Bytes256, err error) {
-	status := C.ctt_eth_evm_bls12381_g2mul((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_g2mul((*C.byte)(&result[0]),
 		256,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -990,7 +990,7 @@ func EvmBls12381G2Mul(inputs []byte) (result Bytes256, err error) {
 }
 
 func EvmBls12381G2Msm(inputs []byte) (result Bytes256, err error) {
-	status := C.ctt_eth_evm_bls12381_g2msm((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_g2msm((*C.byte)(&result[0]),
 		256,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -1005,7 +1005,7 @@ func EvmBls12381G2Msm(inputs []byte) (result Bytes256, err error) {
 }
 
 func EvmBls12381PairingCheck(inputs []byte) (result Bytes32, err error) {
-	status := C.ctt_eth_evm_bls12381_pairingcheck((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_pairingcheck((*C.byte)(&result[0]),
 		32,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -1020,7 +1020,7 @@ func EvmBls12381PairingCheck(inputs []byte) (result Bytes32, err error) {
 }
 
 func EvmBls12381MapFpToG1(inputs []byte) (result Bytes128, err error) {
-	status := C.ctt_eth_evm_bls12381_map_fp_to_g1((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_map_fp_to_g1((*C.byte)(&result[0]),
 		128,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),
@@ -1035,7 +1035,7 @@ func EvmBls12381MapFpToG1(inputs []byte) (result Bytes128, err error) {
 }
 
 func EvmBls12381MapFp2ToG2(inputs []byte) (result Bytes256, err error) {
-	status := C.ctt_eth_evm_bls12381_map_fp2_to_g2((*C.byte)(&result[0]),
+	status := C.ctt_sila_evm_bls12381_map_fp2_to_g2((*C.byte)(&result[0]),
 		256,
 		(*C.byte)(getAddr(inputs)),
 		(C.size_t)(len(inputs)),

@@ -4900,7 +4900,7 @@ pub enum ctt_evm_status {
 unsafe extern "C" {
     #[must_use]
     #[doc = "  SHA256\n\n  Inputs:\n  - r: array with 32 bytes of storage for the result\n  - r_len: length of `r`. Must be 32\n  - inputs: Message to hash\n  - inputs_len: length of the inputs array\n\n  Output:\n  - 32-byte digest\n  - status code:\n    cttEVM_Success\n    cttEVM_InvalidOutputSize"]
-    pub fn ctt_eth_evm_sha256(
+    pub fn ctt_sila_evm_sha256(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4910,7 +4910,7 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[must_use]
     #[doc = "  RipeMD160\n\n  Inputs:\n  - r: array with 32 bytes of storage for the result\n  - r_len: length of `r`. Must be 32\n  - inputs: Message to hash\n  - inputs_len: length of the inputs array\n\n  Output:\n  - 32-byte digest, first 12 bytes are 0\n  - status code:\n    cttEVM_Success\n    cttEVM_InvalidOutputSize"]
-    pub fn ctt_eth_evm_ripemd160(
+    pub fn ctt_sila_evm_ripemd160(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4919,8 +4919,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Helper for `eth_evm_modexp`. Returns the size required to be allocated based on the\n  given input. Call this function first, then allocate space for the result buffer\n  in the call to `eth_evm_modexp` based on this function's result.\n\n  The size depends on the `modulusLen`, which is the third 32 bytes,\n  `inputs == [baseLen { 32 bytes }, exponentLen { 32 bytes }, modulusLen { 32 bytes }, ... ]`\n  in `inputs`.\n\n  The associated modulus length in bytes is the size required by the\n  result to `eth_evm_modexp`."]
-    pub fn ctt_eth_evm_modexp_result_size(
+    #[doc = "  Helper for `sila_evm_modexp`. Returns the size required to be allocated based on the\n  given input. Call this function first, then allocate space for the result buffer\n  in the call to `sila_evm_modexp` based on this function's result.\n\n  The size depends on the `modulusLen`, which is the third 32 bytes,\n  `inputs == [baseLen { 32 bytes }, exponentLen { 32 bytes }, modulusLen { 32 bytes }, ... ]`\n  in `inputs`.\n\n  The associated modulus length in bytes is the size required by the\n  result to `sila_evm_modexp`."]
+    pub fn ctt_sila_evm_modexp_result_size(
         size: *mut u64,
         inputs: *const byte,
         inputs_len: usize,
@@ -4928,8 +4928,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Modular exponentiation\n\n  Name: MODEXP\n\n  Inputs:\n  - `baseLen`:     32 bytes base integer length (in bytes)\n  - `exponentLen`: 32 bytes exponent length (in bytes)\n  - `modulusLen`:  32 bytes modulus length (in bytes)\n  - `base`:        base integer (`baseLen` bytes)\n  - `exponent`:    exponent (`exponentLen` bytes)\n  - `modulus`:     modulus (`modulusLen` bytes)\n\n  Output:\n  - baseᵉˣᵖᵒⁿᵉⁿᵗ (mod modulus)\n    The result buffer size `r` MUST match the modulusLen\n  - status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize if the lengths require more than 32-bit or 64-bit addressing (depending on hardware)\n    cttEVM_InvalidOutputSize\n\n  Spec\n    Yellow Paper Appendix E\n    EIP-198 - https://github.com/ethereum/EIPs/blob/master/EIPS/eip-198.md\n\n  Hardware considerations:\n    This procedure stack allocates a table of (16+1)*modulusLen and many stack temporaries.\n    Make sure to validate gas costs and reject large inputs to bound stack usage."]
-    pub fn ctt_eth_evm_modexp(
+    #[doc = "  Modular exponentiation\n\n  Name: MODEXP\n\n  Inputs:\n  - `baseLen`:     32 bytes base integer length (in bytes)\n  - `exponentLen`: 32 bytes exponent length (in bytes)\n  - `modulusLen`:  32 bytes modulus length (in bytes)\n  - `base`:        base integer (`baseLen` bytes)\n  - `exponent`:    exponent (`exponentLen` bytes)\n  - `modulus`:     modulus (`modulusLen` bytes)\n\n  Output:\n  - baseᵉˣᵖᵒⁿᵉⁿᵗ (mod modulus)\n    The result buffer size `r` MUST match the modulusLen\n  - status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize if the lengths require more than 32-bit or 64-bit addressing (depending on hardware)\n    cttEVM_InvalidOutputSize\n\n  Spec\n    Yellow Paper Appendix E\n    SIP-198 - https://github.com/sila-chain/Sila-Improvement-Proposals/blob/main/SIPS/sip-198.md\n\n  Hardware considerations:\n    This procedure stack allocates a table of (16+1)*modulusLen and many stack temporaries.\n    Make sure to validate gas costs and reject large inputs to bound stack usage."]
+    pub fn ctt_sila_evm_modexp(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4938,8 +4938,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve addition on BN254_Snarks\n  (also called alt_bn128 in Ethereum specs\n   and bn256 in Ethereum tests)\n\n  Name: ECADD\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A G1 point Q with coordinates (Qx, Qy)\n\n  Each coordinate is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, Qx, Qy]\n  If the length is less than 128 bytes, input is virtually padded with zeros.\n  If the length is greater than 128 bytes, input is truncated to 128 bytes.\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - A G1 point R = P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-196"]
-    pub fn ctt_eth_evm_bn254_g1add(
+    #[doc = "  Elliptic Curve addition on BN254_Snarks\n  (also called alt_bn128 in Sila specs\n   and bn256 in Sila tests)\n\n  Name: ECADD\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A G1 point Q with coordinates (Qx, Qy)\n\n  Each coordinate is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, Qx, Qy]\n  If the length is less than 128 bytes, input is virtually padded with zeros.\n  If the length is greater than 128 bytes, input is truncated to 128 bytes.\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - A G1 point R = P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-196"]
+    pub fn ctt_sila_evm_bn254_g1add(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4948,8 +4948,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve multiplication on BN254_Snarks\n  (also called alt_bn128 in Ethereum specs\n   and bn256 in Ethereum tests)\n\n  Name: ECMUL\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A scalar s in 0 ..< 2²⁵⁶\n\n  Each coordinate is a 32-byte bigEndian integer\n  r is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, r]\n  If the length is less than 96 bytes, input is virtually padded with zeros.\n  If the length is greater than 96 bytes, input is truncated to 96 bytes.\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - A G1 point R = [s]P\n  - Status codes:\n    cttEVM_Success\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-196"]
-    pub fn ctt_eth_evm_bn254_g1mul(
+    #[doc = "  Elliptic Curve multiplication on BN254_Snarks\n  (also called alt_bn128 in Sila specs\n   and bn256 in Sila tests)\n\n  Name: ECMUL\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A scalar s in 0 ..< 2²⁵⁶\n\n  Each coordinate is a 32-byte bigEndian integer\n  r is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, r]\n  If the length is less than 96 bytes, input is virtually padded with zeros.\n  If the length is greater than 96 bytes, input is truncated to 96 bytes.\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - A G1 point R = [s]P\n  - Status codes:\n    cttEVM_Success\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-196"]
+    pub fn ctt_sila_evm_bn254_g1mul(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4958,8 +4958,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve pairing check on BN254_Snarks\n  (also called alt_bn128 in Ethereum specs\n   and bn256 in Ethereum tests)\n\n  Name: ECPAIRING / Pairing check\n\n  Inputs:\n  - An array of [(P0, Q0), (P1, Q1), ... (Pk, Qk)] points in (G1, G2)\n\n  Output\n  - Output buffer MUST be of length 32 bytes\n  - 0 or 1 in uint256 BigEndian representation\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n    cttEVM_PointNotInSubgroup\n\n  Specs https://eips.ethereum.org/EIPS/eip-197\n        https://eips.ethereum.org/EIPS/eip-1108"]
-    pub fn ctt_eth_evm_bn254_ecpairingcheck(
+    #[doc = "  Elliptic Curve pairing check on BN254_Snarks\n  (also called alt_bn128 in Sila specs\n   and bn256 in Sila tests)\n\n  Name: ECPAIRING / Pairing check\n\n  Inputs:\n  - An array of [(P0, Q0), (P1, Q1), ... (Pk, Qk)] points in (G1, G2)\n\n  Output\n  - Output buffer MUST be of length 32 bytes\n  - 0 or 1 in uint256 BigEndian representation\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n    cttEVM_PointNotInSubgroup\n\n  Specs https://sips.sila-chain.org/SIPS/sip-197\n        https://sips.sila-chain.org/SIPS/sip-1108"]
+    pub fn ctt_sila_evm_bn254_ecpairingcheck(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4968,8 +4968,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve addition on BLS12-381 G1\n\n  Name: BLS12_G1ADD\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A G1 point Q with coordinates (Qx, Qy)\n  - Input buffer MUST be 256 bytes\n\n  Each coordinate is a 64-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, Qx, Qy]\n\n  Inputs are NOT subgroup-checked.\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G1 point R=P+Q with coordinates (Rx, Ry)\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_g1add(
+    #[doc = "  Elliptic Curve addition on BLS12-381 G1\n\n  Name: BLS12_G1ADD\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A G1 point Q with coordinates (Qx, Qy)\n  - Input buffer MUST be 256 bytes\n\n  Each coordinate is a 64-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, Qx, Qy]\n\n  Inputs are NOT subgroup-checked.\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G1 point R=P+Q with coordinates (Rx, Ry)\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_g1add(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4978,8 +4978,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve addition on BLS12-381 G2\n\n  Name: BLS12_G2ADD\n\n  Inputs:\n  - A G2 point P with coordinates (Px, Py)\n  - A G2 point Q with coordinates (Qx, Qy)\n  - Input buffer MUST be 512 bytes\n\n  Each coordinate is a 128-byte bigEndian integer pair (a+𝑖b) with 𝑖 = √-1\n  They are serialized concatenated in a byte array [Px, Py, Qx, Qy]\n\n  Inputs are NOT subgroup-checked.\n\n  Output\n  - Output buffer MUST be of length 256 bytes\n  - A G2 point R=P+Q with coordinates (Rx, Ry)\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_g2add(
+    #[doc = "  Elliptic Curve addition on BLS12-381 G2\n\n  Name: BLS12_G2ADD\n\n  Inputs:\n  - A G2 point P with coordinates (Px, Py)\n  - A G2 point Q with coordinates (Qx, Qy)\n  - Input buffer MUST be 512 bytes\n\n  Each coordinate is a 128-byte bigEndian integer pair (a+𝑖b) with 𝑖 = √-1\n  They are serialized concatenated in a byte array [Px, Py, Qx, Qy]\n\n  Inputs are NOT subgroup-checked.\n\n  Output\n  - Output buffer MUST be of length 256 bytes\n  - A G2 point R=P+Q with coordinates (Rx, Ry)\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_g2add(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4988,8 +4988,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve scalar multiplication on BLS12-381 G1\n\n  Name: BLS12_G1MUL\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A scalar s in 0 ..< 2²⁵⁶\n  - Input buffer MUST be 160 bytes\n\n  Each coordinate is a 64-byte bigEndian integer\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, s]\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G1 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_g1mul(
+    #[doc = "  Elliptic Curve scalar multiplication on BLS12-381 G1\n\n  Name: BLS12_G1MUL\n\n  Inputs:\n  - A G1 point P with coordinates (Px, Py)\n  - A scalar s in 0 ..< 2²⁵⁶\n  - Input buffer MUST be 160 bytes\n\n  Each coordinate is a 64-byte bigEndian integer\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, s]\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G1 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_g1mul(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -4998,8 +4998,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve scalar multiplication on BLS12-381 G2\n\n  Name: BLS12_G2MUL\n\n  Inputs:\n  - A G2 point P with coordinates (Px, Py)\n  - A scalar s in 0 ..< 2²⁵⁶\n  - Input buffer MUST be 288 bytes\n\n  Each coordinate is a 128-byte bigEndian integer pair (a+𝑖b) with 𝑖 = √-1\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, s]\n\n  Output\n  - Output buffer MUST be of length 256 bytes\n  - A G2 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_g2mul(
+    #[doc = "  Elliptic Curve scalar multiplication on BLS12-381 G2\n\n  Name: BLS12_G2MUL\n\n  Inputs:\n  - A G2 point P with coordinates (Px, Py)\n  - A scalar s in 0 ..< 2²⁵⁶\n  - Input buffer MUST be 288 bytes\n\n  Each coordinate is a 128-byte bigEndian integer pair (a+𝑖b) with 𝑖 = √-1\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [Px, Py, s]\n\n  Output\n  - Output buffer MUST be of length 256 bytes\n  - A G2 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_g2mul(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -5008,8 +5008,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve addition on BLS12-381 G1\n\n  Name: BLS12_G1MSM\n\n  Inputs:\n  - A sequence of pairs of points\n    - G1 points Pᵢ with coordinates (Pᵢx, Pᵢy)\n    - scalar sᵢ in 0 ..< 2²⁵⁶\n  - Each pair MUST be 160 bytes\n  - The total length MUST be a multiple of 160 bytes\n\n  Each coordinate is a 64-byte bigEndian integer\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [(P₀x, P₀y, r₀), (P₁x, P₁y, r₁) ..., (Pₙx, Pₙy, rₙ)]\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G1 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_g1msm(
+    #[doc = "  Elliptic Curve addition on BLS12-381 G1\n\n  Name: BLS12_G1MSM\n\n  Inputs:\n  - A sequence of pairs of points\n    - G1 points Pᵢ with coordinates (Pᵢx, Pᵢy)\n    - scalar sᵢ in 0 ..< 2²⁵⁶\n  - Each pair MUST be 160 bytes\n  - The total length MUST be a multiple of 160 bytes\n\n  Each coordinate is a 64-byte bigEndian integer\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [(P₀x, P₀y, r₀), (P₁x, P₁y, r₁) ..., (Pₙx, Pₙy, rₙ)]\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G1 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_g1msm(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -5018,8 +5018,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic Curve addition on BLS12-381 G2\n\n  Name: BLS12_G2MSM\n\n  Inputs:\n  - A sequence of pairs of points\n    - G2 points Pᵢ with coordinates (Pᵢx, Pᵢy)\n    - scalar sᵢ in 0 ..< 2²⁵⁶\n  - Each pair MUST be 288 bytes\n  - The total length MUST be a multiple of 288 bytes\n\n  Each coordinate is a 128-byte bigEndian integer pair (a+𝑖b) with 𝑖 = √-1\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [(P₀x, P₀y, r₀), (P₁x, P₁y, r₁) ..., (Pₙx, Pₙy, rₙ)]\n\n  Output\n  - Output buffer MUST be of length 512 bytes\n  - A G2 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_g2msm(
+    #[doc = "  Elliptic Curve addition on BLS12-381 G2\n\n  Name: BLS12_G2MSM\n\n  Inputs:\n  - A sequence of pairs of points\n    - G2 points Pᵢ with coordinates (Pᵢx, Pᵢy)\n    - scalar sᵢ in 0 ..< 2²⁵⁶\n  - Each pair MUST be 288 bytes\n  - The total length MUST be a multiple of 288 bytes\n\n  Each coordinate is a 128-byte bigEndian integer pair (a+𝑖b) with 𝑖 = √-1\n  s is a 32-byte bigEndian integer\n  They are serialized concatenated in a byte array [(P₀x, P₀y, r₀), (P₁x, P₁y, r₁) ..., (Pₙx, Pₙy, rₙ)]\n\n  Output\n  - Output buffer MUST be of length 512 bytes\n  - A G2 point R=P+Q with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_g2msm(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -5028,8 +5028,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Elliptic curve pairing check on BLS12-381\n\n  Name: BLS12_PAIRINGCHECK\n\n  Inputs:\n  - An array of [(P0, Q0), (P1, Q1), ... (Pk, Qk)] points in (G1, G2)\n\n  Output\n  - Output buffer MUST be of length 32 bytes\n  - 0 or 1 in uint256 BigEndian representation\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n    cttEVM_PointNotInSubgroup\n\n  specs https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_pairingcheck(
+    #[doc = "  Elliptic curve pairing check on BLS12-381\n\n  Name: BLS12_PAIRINGCHECK\n\n  Inputs:\n  - An array of [(P0, Q0), (P1, Q1), ... (Pk, Qk)] points in (G1, G2)\n\n  Output\n  - Output buffer MUST be of length 32 bytes\n  - 0 or 1 in uint256 BigEndian representation\n  - Status codes:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n    cttEVM_PointNotOnCurve\n    cttEVM_PointNotInSubgroup\n\n  specs https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_pairingcheck(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -5038,8 +5038,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Map a field element to G1\n\n  Name: BLS12_MAP_FP_TO_G1\n\n  Input:\n  - A field element in 0 ..< p, p the prime field of BLS12-381\n  - The length MUST be a 48-byte (381-bit) number serialized in 64-byte big-endian number\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - A G1 point R with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_map_fp_to_g1(
+    #[doc = "  Map a field element to G1\n\n  Name: BLS12_MAP_FP_TO_G1\n\n  Input:\n  - A field element in 0 ..< p, p the prime field of BLS12-381\n  - The length MUST be a 48-byte (381-bit) number serialized in 64-byte big-endian number\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - A G1 point R with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_map_fp_to_g1(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -5048,8 +5048,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  Map an Fp2 extension field element to G2\n\n  Name: BLS12_MAP_FP2_TO_G2\n\n  Input:\n  - An extension field element in (0, 0) ..< (p, p), p the prime field of BLS12-381\n  - The length MUST be a tuple of 48-byte (381-bit) number serialized in tuple of 64-byte big-endian numbers\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G2 point R with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n\n  Spec https://eips.ethereum.org/EIPS/eip-2537"]
-    pub fn ctt_eth_evm_bls12381_map_fp2_to_g2(
+    #[doc = "  Map an Fp2 extension field element to G2\n\n  Name: BLS12_MAP_FP2_TO_G2\n\n  Input:\n  - An extension field element in (0, 0) ..< (p, p), p the prime field of BLS12-381\n  - The length MUST be a tuple of 48-byte (381-bit) number serialized in tuple of 64-byte big-endian numbers\n\n  Output\n  - Output buffer MUST be of length 128 bytes\n  - A G2 point R with coordinates (Rx, Ry)\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_InvalidOutputSize\n    cttEVM_IntLargerThanModulus\n\n  Spec https://sips.sila-chain.org/SIPS/sip-2537"]
+    pub fn ctt_sila_evm_bls12381_map_fp2_to_g2(
         r: *mut byte,
         r_len: usize,
         inputs: *const byte,
@@ -5058,8 +5058,8 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[must_use]
-    #[doc = "  SIP-4844 Blobs KZG point evaluation\n\n  Name: POINT_EVALUATION\n\n  Verify `p(z) = y` given commitment that corresponds to the polynomial `p(x)` and a KZG proof.\n\n  Input:\n  - versioned_hash | z | y | commitment | proof |\n  - The length MUST be 192 bytes with the following breakdown:\n    - 32 bytes, SHA256 versioned hash of the commitment VERSIONED_HASH_VERSION_KZG + sha256(commitment)[1:]\n      currently VERSIONED_HASH_VERSION_KZG is hardcoded at 0x01.\n    - 32 bytes, z a polynomial opening challenge\n    - 32 bytes, y the evaluation of the polynomial `p` at the challenge\n    - 48 bytes, C a commitment to the polynomial `p`\n    - 48 bytes, a succinct proof that allows verifying p(z) = y withut the full polynomial\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - On success, returns:\n      - 32 bytes, the number of field elements per SIP-4844 blobs, encoded in big-endian\n      - 32 bytes, the 255-bit BLS12-381 scalar field modulus (i.e. curve order r), encoded in big endian\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_VerificationFailure\n\n  Spec https://eips.ethereum.org/EIPS/sip-4844"]
-    pub fn ctt_eth_evm_kzg_point_evaluation(
+    #[doc = "  SIP-4844 Blobs KZG point evaluation\n\n  Name: POINT_EVALUATION\n\n  Verify `p(z) = y` given commitment that corresponds to the polynomial `p(x)` and a KZG proof.\n\n  Input:\n  - versioned_hash | z | y | commitment | proof |\n  - The length MUST be 192 bytes with the following breakdown:\n    - 32 bytes, SHA256 versioned hash of the commitment VERSIONED_HASH_VERSION_KZG + sha256(commitment)[1:]\n      currently VERSIONED_HASH_VERSION_KZG is hardcoded at 0x01.\n    - 32 bytes, z a polynomial opening challenge\n    - 32 bytes, y the evaluation of the polynomial `p` at the challenge\n    - 48 bytes, C a commitment to the polynomial `p`\n    - 48 bytes, a succinct proof that allows verifying p(z) = y withut the full polynomial\n\n  Output\n  - Output buffer MUST be of length 64 bytes\n  - On success, returns:\n      - 32 bytes, the number of field elements per SIP-4844 blobs, encoded in big-endian\n      - 32 bytes, the 255-bit BLS12-381 scalar field modulus (i.e. curve order r), encoded in big endian\n  - Status code:\n    cttEVM_Success\n    cttEVM_InvalidInputSize\n    cttEVM_VerificationFailure\n\n  Spec https://sips.sila-chain.org/SIPS/sip-4844"]
+    pub fn ctt_sila_evm_kzg_point_evaluation(
         ctx: *const ctt_sila_kzg_context,
         r: *mut byte,
         r_len: usize,

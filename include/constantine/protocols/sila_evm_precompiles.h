@@ -6,8 +6,8 @@
  *    * Apache v2 license (license terms in the root directory or at http://www.apache.org/licenses/LICENSE-2.0).
  *  at your option. This file may not be copied, modified, or distributed except according to those terms.
  */
-#ifndef __CTT_H_ETHEREUM_EVM_PRECOMPILES__
-#define __CTT_H_ETHEREUM_EVM_PRECOMPILES__
+#ifndef __CTT_H_SILA_EVM_PRECOMPILES__
+#define __CTT_H_SILA_EVM_PRECOMPILES__
 
 #include "constantine/core/datatypes.h"
 #include "constantine/protocols/sila_sip4844_kzg.h"
@@ -58,7 +58,7 @@ static const char* ctt_evm_status_to_string(ctt_evm_status status) {
  *    cttEVM_Success
  *    cttEVM_InvalidOutputSize
  */
-ctt_evm_status ctt_eth_evm_sha256(
+ctt_evm_status ctt_sila_evm_sha256(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
     ) __attribute__((warn_unused_result));
@@ -78,24 +78,24 @@ ctt_evm_status ctt_eth_evm_sha256(
  *    cttEVM_Success
  *    cttEVM_InvalidOutputSize
  */
-ctt_evm_status ctt_eth_evm_ripemd160(
+ctt_evm_status ctt_sila_evm_ripemd160(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
     ) __attribute__((warn_unused_result));
 
 /**
- *  Helper for `eth_evm_modexp`. Returns the size required to be allocated based on the
+ *  Helper for `sila_evm_modexp`. Returns the size required to be allocated based on the
  *  given input. Call this function first, then allocate space for the result buffer
- *  in the call to `eth_evm_modexp` based on this function's result.
+ *  in the call to `sila_evm_modexp` based on this function's result.
  *
  *  The size depends on the `modulusLen`, which is the third 32 bytes,
  *  `inputs == [baseLen { 32 bytes }, exponentLen { 32 bytes }, modulusLen { 32 bytes }, ... ]`
  *  in `inputs`.
  *
  *  The associated modulus length in bytes is the size required by the
- *  result to `eth_evm_modexp`.
+ *  result to `sila_evm_modexp`.
  */
-ctt_evm_status ctt_eth_evm_modexp_result_size(
+ctt_evm_status ctt_sila_evm_modexp_result_size(
     uint64_t* size,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -124,13 +124,13 @@ ctt_evm_status ctt_eth_evm_modexp_result_size(
  *
  *  Spec
  *    Yellow Paper Appendix E
- *    EIP-198 - https://github.com/ethereum/EIPs/blob/master/EIPS/eip-198.md
+ *    SIP-198 - https://github.com/sila-chain/Sila-Improvement-Proposals/blob/main/SIPS/sip-198.md
  *
  *  Hardware considerations:
  *    This procedure stack allocates a table of (16+1)*modulusLen and many stack temporaries.
  *    Make sure to validate gas costs and reject large inputs to bound stack usage.
  */
-ctt_evm_status ctt_eth_evm_modexp(
+ctt_evm_status ctt_sila_evm_modexp(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -138,8 +138,8 @@ ctt_evm_status ctt_eth_evm_modexp(
 
 /**
   *  Elliptic Curve addition on BN254_Snarks
-  *  (also called alt_bn128 in Ethereum specs
-  *   and bn256 in Ethereum tests)
+  *  (also called alt_bn128 in Sila specs
+  *   and bn256 in Sila tests)
   *
   *  Name: ECADD
   *
@@ -161,17 +161,17 @@ ctt_evm_status ctt_eth_evm_modexp(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-196
+  *  Spec https://sips.sila-chain.org/SIPS/sip-196
   */
-ctt_evm_status ctt_eth_evm_bn254_g1add(
+ctt_evm_status ctt_sila_evm_bn254_g1add(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
 
 /**
   *  Elliptic Curve multiplication on BN254_Snarks
-  *  (also called alt_bn128 in Ethereum specs
-  *   and bn256 in Ethereum tests)
+  *  (also called alt_bn128 in Sila specs
+  *   and bn256 in Sila tests)
   *
   *  Name: ECMUL
   *
@@ -193,17 +193,17 @@ ctt_evm_status ctt_eth_evm_bn254_g1add(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-196
+  *  Spec https://sips.sila-chain.org/SIPS/sip-196
   */
-ctt_evm_status ctt_eth_evm_bn254_g1mul(
+ctt_evm_status ctt_sila_evm_bn254_g1mul(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
 
 /**
   *  Elliptic Curve pairing check on BN254_Snarks
-  *  (also called alt_bn128 in Ethereum specs
-  *   and bn256 in Ethereum tests)
+  *  (also called alt_bn128 in Sila specs
+  *   and bn256 in Sila tests)
   *
   *  Name: ECPAIRING / Pairing check
   *
@@ -221,10 +221,10 @@ ctt_evm_status ctt_eth_evm_bn254_g1mul(
   *    cttEVM_PointNotOnCurve
   *    cttEVM_PointNotInSubgroup
   *
-  *  Specs https://eips.ethereum.org/EIPS/eip-197
-  *        https://eips.ethereum.org/EIPS/eip-1108
+  *  Specs https://sips.sila-chain.org/SIPS/sip-197
+  *        https://sips.sila-chain.org/SIPS/sip-1108
   */
-ctt_evm_status ctt_eth_evm_bn254_ecpairingcheck(
+ctt_evm_status ctt_sila_evm_bn254_ecpairingcheck(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -254,9 +254,9 @@ ctt_evm_status ctt_eth_evm_bn254_ecpairingcheck(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_g1add(
+ctt_evm_status ctt_sila_evm_bls12381_g1add(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -286,9 +286,9 @@ ctt_evm_status ctt_eth_evm_bls12381_g1add(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_g2add(
+ctt_evm_status ctt_sila_evm_bls12381_g2add(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -317,9 +317,9 @@ ctt_evm_status ctt_eth_evm_bls12381_g2add(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_g1mul(
+ctt_evm_status ctt_sila_evm_bls12381_g1mul(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -348,9 +348,9 @@ ctt_evm_status ctt_eth_evm_bls12381_g1mul(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_g2mul(
+ctt_evm_status ctt_sila_evm_bls12381_g2mul(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -381,9 +381,9 @@ ctt_evm_status ctt_eth_evm_bls12381_g2mul(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_g1msm(
+ctt_evm_status ctt_sila_evm_bls12381_g1msm(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -414,9 +414,9 @@ ctt_evm_status ctt_eth_evm_bls12381_g1msm(
   *    cttEVM_IntLargerThanModulus
   *    cttEVM_PointNotOnCurve
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_g2msm(
+ctt_evm_status ctt_sila_evm_bls12381_g2msm(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -440,9 +440,9 @@ ctt_evm_status ctt_eth_evm_bls12381_g2msm(
   *    cttEVM_PointNotOnCurve
   *    cttEVM_PointNotInSubgroup
   *
-  *  specs https://eips.ethereum.org/EIPS/eip-2537
+  *  specs https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_pairingcheck(
+ctt_evm_status ctt_sila_evm_bls12381_pairingcheck(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -465,9 +465,9 @@ ctt_evm_status ctt_eth_evm_bls12381_pairingcheck(
   *    cttEVM_InvalidOutputSize
   *    cttEVM_IntLargerThanModulus
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_map_fp_to_g1(
+ctt_evm_status ctt_sila_evm_bls12381_map_fp_to_g1(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -490,9 +490,9 @@ ctt_evm_status ctt_eth_evm_bls12381_map_fp_to_g1(
   *    cttEVM_InvalidOutputSize
   *    cttEVM_IntLargerThanModulus
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-2537
+  *  Spec https://sips.sila-chain.org/SIPS/sip-2537
   */
-ctt_evm_status ctt_eth_evm_bls12381_map_fp2_to_g2(
+ctt_evm_status ctt_sila_evm_bls12381_map_fp2_to_g2(
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));
@@ -524,9 +524,9 @@ ctt_evm_status ctt_eth_evm_bls12381_map_fp2_to_g2(
   *    cttEVM_InvalidInputSize
   *    cttEVM_VerificationFailure
   *
-  *  Spec https://eips.ethereum.org/EIPS/sip-4844
+  *  Spec https://sips.sila-chain.org/SIPS/sip-4844
   */
-ctt_evm_status ctt_eth_evm_kzg_point_evaluation(
+ctt_evm_status ctt_sila_evm_kzg_point_evaluation(
     const ctt_sila_kzg_context* ctx,
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
@@ -536,4 +536,4 @@ ctt_evm_status ctt_eth_evm_kzg_point_evaluation(
 }
 #endif
 
-#endif // __CTT_H_ETHEREUM_EVM_PRECOMPILES__
+#endif // __CTT_H_SILA_EVM_PRECOMPILES__

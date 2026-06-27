@@ -6,7 +6,7 @@
 //!   * Apache v2 license (license terms in the root directory or at http://www.apache.org/licenses/LICENSE-2.0).
 //! at your option. This file may not be copied, modified, or distributed except according to those terms.
 
-use constantine_ethereum_evm_precompiles::*;
+use constantine_sila_evm_precompiles::*;
 use constantine_sys::ctt_evm_status;
 
 use std::fs;
@@ -21,42 +21,42 @@ use serde_json;
 
 macro_rules! test_dir {
     () => {
-        "../../tests/protocol_ethereum_evm_precompiles/"
+        "../../tests/protocol_sila_evm_precompiles/"
     };
 }
 
 const MODEXP_TESTS: &str = concat!(test_dir!(), "modexp.json");
-const MODEXP_EIP2565_TESTS: &str = concat!(test_dir!(), "modexp_eip2565.json");
+const MODEXP_SIP2565_TESTS: &str = concat!(test_dir!(), "modexp_sip2565.json");
 
 const BN256ADD_TESTS: &str = concat!(test_dir!(), "bn256Add.json");
 const BN256SCALARMUL_TESTS: &str = concat!(test_dir!(), "bn256ScalarMul.json");
 const BN256PAIRING_TESTS: &str = concat!(test_dir!(), "bn256Pairing.json");
 
-const ADD_G1_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/add_G1_bls.json");
-const FAIL_ADD_G1_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/fail-add_G1_bls.json");
-const ADD_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/add_G2_bls.json");
-const FAIL_ADD_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/fail-add_G2_bls.json");
+const ADD_G1_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/add_G1_bls.json");
+const FAIL_ADD_G1_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/fail-add_G1_bls.json");
+const ADD_G2_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/add_G2_bls.json");
+const FAIL_ADD_G2_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/fail-add_G2_bls.json");
 
-const MUL_G1_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/mul_G1_bls.json");
-const FAIL_MUL_G1_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/fail-mul_G1_bls.json");
-const MUL_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/mul_G2_bls.json");
-const FAIL_MUL_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/fail-mul_G2_bls.json");
+const MUL_G1_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/mul_G1_bls.json");
+const FAIL_MUL_G1_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/fail-mul_G1_bls.json");
+const MUL_G2_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/mul_G2_bls.json");
+const FAIL_MUL_G2_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/fail-mul_G2_bls.json");
 
-const MULTIEXP_G1_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/multiexp_G1_bls.json");
-const FAIL_MULTIEXP_G1_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/fail-multiexp_G1_bls.json");
-const MULTIEXP_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/multiexp_G2_bls.json");
-const FAIL_MULTIEXP_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/fail-multiexp_G2_bls.json");
+const MULTIEXP_G1_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/multiexp_G1_bls.json");
+const FAIL_MULTIEXP_G1_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/fail-multiexp_G1_bls.json");
+const MULTIEXP_G2_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/multiexp_G2_bls.json");
+const FAIL_MULTIEXP_G2_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/fail-multiexp_G2_bls.json");
 
-const PAIRING_CHECK_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/pairing_check_bls.json");
+const PAIRING_CHECK_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/pairing_check_bls.json");
 const FAIL_PAIRING_CHECK_BLS_TESTS: &str =
-    concat!(test_dir!(), "eip-2537/fail-pairing_check_bls.json");
+    concat!(test_dir!(), "sip-2537/fail-pairing_check_bls.json");
 
-const MAP_FP_TO_G1_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/map_fp_to_G1_bls.json");
+const MAP_FP_TO_G1_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/map_fp_to_G1_bls.json");
 const FAIL_MAP_FP_TO_G1_BLS_TESTS: &str =
-    concat!(test_dir!(), "eip-2537/fail-map_fp_to_G1_bls.json");
-const MAP_FP2_TO_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/map_fp2_to_G2_bls.json");
+    concat!(test_dir!(), "sip-2537/fail-map_fp_to_G1_bls.json");
+const MAP_FP2_TO_G2_BLS_TESTS: &str = concat!(test_dir!(), "sip-2537/map_fp2_to_G2_bls.json");
 const FAIL_MAP_FP2_TO_G2_BLS_TESTS: &str =
-    concat!(test_dir!(), "eip-2537/fail-map_fp2_to_G2_bls.json");
+    concat!(test_dir!(), "sip-2537/fail-map_fp2_to_G2_bls.json");
 
 const POINT_EVALUATION_TESTS: &str = concat!(test_dir!(), "sip-4844/pointEvaluation.json");
 const SRS_PATH: &str =
@@ -142,8 +142,8 @@ fn t_modexp() {
 }
 
 #[test]
-fn t_modexp_eip2565_tests() {
-    let test_name = MODEXP_EIP2565_TESTS.to_string();
+fn t_modexp_sip2565_tests() {
+    let test_name = MODEXP_SIP2565_TESTS.to_string();
     t_generate(test_name, evm_modexp);
 }
 

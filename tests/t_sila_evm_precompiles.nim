@@ -13,11 +13,11 @@ import
   pkg/jsony,
   # Internals
   constantine/serialization/codecs,
-  constantine/ethereum_evm_precompiles
+  constantine/sila_evm_precompiles
 
 # Test vector source:
 # - https://github.com/ethereum/go-ethereum/tree/release/1.14/core/vm/testdata/precompiles
-# - https://github.com/ethereum/EIPs/tree/3b5fcad/assets/eip-2537
+# - https://github.com/sila-chain/Sila-Improvement-Proposals/tree/main/assets/sip-2537
 
 type
   HexString = string
@@ -32,7 +32,7 @@ type
 
 const
   TestVectorsDir* =
-    currentSourcePath.rsplit(DirSep, 1)[0] / "protocol_ethereum_evm_precompiles"
+    currentSourcePath.rsplit(DirSep, 1)[0] / "protocol_sila_evm_precompiles"
 
 const
   TrustedSetupMainnet =
@@ -119,12 +119,12 @@ proc testSha256() =
 
   var r = newSeq[byte](expected.len div 2)
 
-  let status = eth_evm_sha256(r, inputbytes)
+  let status = sila_evm_sha256(r, inputbytes)
   if status != cttEVM_Success:
     reset(r)
 
   doAssert r == expectedbytes, "[Test Failure]\n" &
-    "  eth_evm_sha256 status: " & $status & "\n" &
+    "  sila_evm_sha256 status: " & $status & "\n" &
     "  " & "result:   " & r.toHex() & "\n" &
     "  " & "expected: " & expectedbytes.toHex() & '\n'
 
@@ -147,12 +147,12 @@ proc testRipemd160() =
   var r = newSeq[byte](expected.len div 2) # Canary value
   r.fromHex"AAAABBBBCCCCDDDDEEEEFFFF0000111122223333444455556666777788889999"
 
-  let status = eth_evm_ripemd160(r, inputbytes)
+  let status = sila_evm_ripemd160(r, inputbytes)
   if status != cttEVM_Success:
     reset(r)
 
   doAssert r == expectedbytes, "[Test Failure]\n" &
-    "  eth_evm_ripemd160 status: " & $status & "\n" &
+    "  sila_evm_ripemd160 status: " & $status & "\n" &
     "  " & "result:   " & r.toHex() & "\n" &
     "  " & "expected: " & expectedbytes.toHex() & '\n'
 
@@ -164,37 +164,37 @@ proc testRipemd160() =
 testSha256()
 testRipemd160()
 
-runPrecompileTests("modexp.json", eth_evm_modexp, 0)
-runPrecompileTests("modexp_eip2565.json", eth_evm_modexp, 0)
+runPrecompileTests("modexp.json", sila_evm_modexp, 0)
+runPrecompileTests("modexp_sip2565.json", sila_evm_modexp, 0)
 
-runPrecompileTests("bn256Add.json", eth_evm_bn254_g1add, 64)
-runPrecompileTests("bn256ScalarMul.json", eth_evm_bn254_g1mul, 64)
-runPrecompileTests("bn256Pairing.json", eth_evm_bn254_ecpairingcheck, 32)
+runPrecompileTests("bn256Add.json", sila_evm_bn254_g1add, 64)
+runPrecompileTests("bn256ScalarMul.json", sila_evm_bn254_g1mul, 64)
+runPrecompileTests("bn256Pairing.json", sila_evm_bn254_ecpairingcheck, 32)
 
-runPrecompileTests("eip-2537/add_G1_bls.json", eth_evm_bls12381_g1add, 128)
-runPrecompileTests("blsG1AddNimbus.json", eth_evm_bls12381_g1add, 128)
-runPrecompileTests("eip-2537/fail-add_G1_bls.json", eth_evm_bls12381_g1add, 128)
-runPrecompileTests("eip-2537/add_G2_bls.json", eth_evm_bls12381_g2add, 256)
-runPrecompileTests("eip-2537/fail-add_G2_bls.json", eth_evm_bls12381_g2add, 256)
+runPrecompileTests("sip-2537/add_G1_bls.json", sila_evm_bls12381_g1add, 128)
+runPrecompileTests("blsG1AddNimbus.json", sila_evm_bls12381_g1add, 128)
+runPrecompileTests("sip-2537/fail-add_G1_bls.json", sila_evm_bls12381_g1add, 128)
+runPrecompileTests("sip-2537/add_G2_bls.json", sila_evm_bls12381_g2add, 256)
+runPrecompileTests("sip-2537/fail-add_G2_bls.json", sila_evm_bls12381_g2add, 256)
 
-runPrecompileTests("eip-2537/mul_G1_bls.json", eth_evm_bls12381_g1mul, 128)
-runPrecompileTests("eip-2537/fail-mul_G1_bls.json", eth_evm_bls12381_g1mul, 128)
-runPrecompileTests("eip-2537/mul_G2_bls.json", eth_evm_bls12381_g2mul, 256)
-runPrecompileTests("eip-2537/fail-mul_G2_bls.json", eth_evm_bls12381_g2mul, 256)
+runPrecompileTests("sip-2537/mul_G1_bls.json", sila_evm_bls12381_g1mul, 128)
+runPrecompileTests("sip-2537/fail-mul_G1_bls.json", sila_evm_bls12381_g1mul, 128)
+runPrecompileTests("sip-2537/mul_G2_bls.json", sila_evm_bls12381_g2mul, 256)
+runPrecompileTests("sip-2537/fail-mul_G2_bls.json", sila_evm_bls12381_g2mul, 256)
 
-runPrecompileTests("eip-2537/multiexp_G1_bls.json", eth_evm_bls12381_g1msm, 128)
-runPrecompileTests("eip-2537/fail-multiexp_G1_bls.json", eth_evm_bls12381_g1msm, 128)
-runPrecompileTests("eip-2537/multiexp_G2_bls.json", eth_evm_bls12381_g2msm, 256)
-runPrecompileTests("eip-2537/fail-multiexp_G2_bls.json", eth_evm_bls12381_g2msm, 256)
+runPrecompileTests("sip-2537/multiexp_G1_bls.json", sila_evm_bls12381_g1msm, 128)
+runPrecompileTests("sip-2537/fail-multiexp_G1_bls.json", sila_evm_bls12381_g1msm, 128)
+runPrecompileTests("sip-2537/multiexp_G2_bls.json", sila_evm_bls12381_g2msm, 256)
+runPrecompileTests("sip-2537/fail-multiexp_G2_bls.json", sila_evm_bls12381_g2msm, 256)
 
-runPrecompileTests("eip-2537/pairing_check_bls.json", eth_evm_bls12381_pairingcheck, 32)
-runPrecompileTests("eip-2537/fail-pairing_check_bls.json", eth_evm_bls12381_pairingcheck, 32)
+runPrecompileTests("sip-2537/pairing_check_bls.json", sila_evm_bls12381_pairingcheck, 32)
+runPrecompileTests("sip-2537/fail-pairing_check_bls.json", sila_evm_bls12381_pairingcheck, 32)
 
-runPrecompileTests("eip-2537/map_fp_to_G1_bls.json", eth_evm_bls12381_map_fp_to_g1, 128)
-runPrecompileTests("eip-2537/fail-map_fp_to_G1_bls.json", eth_evm_bls12381_map_fp_to_g1, 128)
-runPrecompileTests("eip-2537/map_fp2_to_G2_bls.json", eth_evm_bls12381_map_fp2_to_g2, 256)
-runPrecompileTests("eip-2537/fail-map_fp2_to_G2_bls.json", eth_evm_bls12381_map_fp2_to_g2, 256)
+runPrecompileTests("sip-2537/map_fp_to_G1_bls.json", sila_evm_bls12381_map_fp_to_g1, 128)
+runPrecompileTests("sip-2537/fail-map_fp_to_G1_bls.json", sila_evm_bls12381_map_fp_to_g1, 128)
+runPrecompileTests("sip-2537/map_fp2_to_G2_bls.json", sila_evm_bls12381_map_fp2_to_g2, 256)
+runPrecompileTests("sip-2537/fail-map_fp2_to_G2_bls.json", sila_evm_bls12381_map_fp2_to_g2, 256)
 
-runPrecompileTests("sip-4844/pointEvaluation.json", eth_evm_kzg_point_evaluation, 64, true)
+runPrecompileTests("sip-4844/pointEvaluation.json", sila_evm_kzg_point_evaluation, 64, true)
 
-runPrecompileTests("ecRecover.json", eth_evm_ecrecover, 32)
+runPrecompileTests("ecRecover.json", sila_evm_ecrecover, 32)

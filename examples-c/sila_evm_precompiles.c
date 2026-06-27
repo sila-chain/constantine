@@ -52,7 +52,7 @@ int main() {
   byte result[32] = {0};
   const char txt[] = "Foo, Bar and Baz are all friends.";
 
-  evm_status = ctt_eth_evm_sha256(result, 32, (const byte *)txt, sizeof(txt));
+  evm_status = ctt_sila_evm_sha256(result, 32, (const byte *)txt, sizeof(txt));
   if (evm_status != cttEVM_Success) {
     printf("SHA256 hash calc from input failed %d - %s\n", evm_status,
            ctt_evm_status_to_string(evm_status));
@@ -81,7 +81,7 @@ int main() {
   from_hex(expected, 256, expected_str, 512);
   byte g2Res[256];
 
-  evm_status = ctt_eth_evm_bls12381_map_fp2_to_g2(g2Res, 256, input, 128);
+  evm_status = ctt_sila_evm_bls12381_map_fp2_to_g2(g2Res, 256, input, 128);
   if (evm_status != cttEVM_Success) {
     printf("Mapping input from Fp2 to G2 failed %d - %s\n", evm_status,
            ctt_evm_status_to_string(evm_status));

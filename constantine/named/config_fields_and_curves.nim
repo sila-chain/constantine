@@ -246,7 +246,7 @@ declareCurves:
   curve BLS12_377:
     # Zexe curve
     # (p41) https://eprint.iacr.org/2018/962.pdf
-    # https://github.com/ethereum/EIPs/blob/41dea9615/EIPS/eip-2539.md
+    # https://github.com/sila-chain/Sila-Improvement-Proposals/blob/main/SIPS/sip-2539.md
     bitwidth: 377
     modulus: "0x01ae3a4617c510eac63b05c06ca1493b1a22d9f300f5138f1ef3622fba094800170b5d44300000008508c00000000001"
     family: BarretoLynnScott

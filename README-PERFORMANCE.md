@@ -52,8 +52,8 @@ CC=clang nimble bench_sila_bls_signatures
 # Sila KZG commitments
 CC=clang nimble bench_sila_sip4844_kzg
 
-# Ethereum Virtual Machine (EVM) precompiles
-CC=clang nimble bench_eth_evm_precompiles
+# Sila Virtual Machine (EVM) precompiles
+CC=clang nimble bench_sila_evm_precompiles
 
 # Multi-scalar multiplication
 CC=clang nimble bench_ec_g1_msm_bls12_381
@@ -68,9 +68,9 @@ As mentioned in the [Compiler caveats](#compiler-caveats) section, GCC is up to 
 
 ## Ethereum benchmarks
 
-### Ethereum Virtual Machine (EVM) precompiles
+### Sila Virtual Machine (EVM) precompiles
 
-![Bench Sila KZG commitments](./media/bench-eth_evm_precompiles-R7_7840U.png)
+![Bench Sila KZG commitments](./media/bench-sila_evm_precompiles-R7_7840U.png)
 
 ### Sila KZG commitments (SIP-4844)
 

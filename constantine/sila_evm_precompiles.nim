@@ -35,12 +35,12 @@ export hashes
 
 # ############################################################
 #
-#                       Ethereum EVM precompiles
+#                       Sila EVM precompiles
 #
 # ############################################################
 
 import ./zoo_exports
-const prefix_ffi = "ctt_" # all funcs already have an `eth_evm` prefix in Nim
+const prefix_ffi = "ctt_" # all funcs already have an `sila_evm` prefix in Nim
 
 # No exceptions for the EVM API
 {.push raises: [].}
@@ -56,7 +56,7 @@ type
     cttEVM_VerificationFailure
     cttEVM_MalformedSignature
 
-func eth_evm_sha256*(r: var openArray[byte], inputs: openArray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_sha256*(r: var openArray[byte], inputs: openArray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## SHA256
   ##
   ## Inputs:
@@ -74,7 +74,7 @@ func eth_evm_sha256*(r: var openArray[byte], inputs: openArray[byte]): CttEVMSta
   sha256.hash(cast[ptr array[32, byte]](r[0].addr)[], inputs)
   return cttEVM_Success
 
-func eth_evm_ripemd160*(r: var openArray[byte], inputs: openArray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_ripemd160*(r: var openArray[byte], inputs: openArray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## RIPEMD160
   ##
   ## Inputs:
@@ -94,17 +94,17 @@ func eth_evm_ripemd160*(r: var openArray[byte], inputs: openArray[byte]): CttEVM
   ripemd160.hash(cast[ptr array[20, byte]](toOpenArray(r, 12, 31)[0].addr)[], inputs)
   return cttEVM_Success
 
-func eth_evm_modexp_result_size*(size: var uint64, inputs: openArray[byte]): CttEVMStatus {.noInline, tags:[Alloca, Vartime], libPrefix: prefix_ffi, meter.} =
-  ## Helper for `eth_evm_modexp`. Returns the size required to be allocated based on the
+func sila_evm_modexp_result_size*(size: var uint64, inputs: openArray[byte]): CttEVMStatus {.noInline, tags:[Alloca, Vartime], libPrefix: prefix_ffi, meter.} =
+  ## Helper for `sila_evm_modexp`. Returns the size required to be allocated based on the
   ## given input. Call this function first, then allocate space for the result buffer
-  ## in the call to `eth_evm_modexp` based on the value stored in `size` after the call.
+  ## in the call to `sila_evm_modexp` based on the value stored in `size` after the call.
   ##
   ## The size depends on the `modulusLen`, which is the third 32 bytes,
   ## `inputs == [baseLen { 32 bytes }, exponentLen { 32 bytes }, modulusLen { 32 bytes }, ... ]`
   ## in `inputs`.
   ##
   ## The associated modulus length in bytes is the size required by the
-  ## result to `eth_evm_modexp`.
+  ## result to `sila_evm_modexp`.
   # Auto-pad with zero
   var paddedLengths: array[96, byte]
   paddedLengths.rawCopy(0, inputs, 0, min(inputs.len, paddedLengths.len))
@@ -119,7 +119,7 @@ func eth_evm_modexp_result_size*(size: var uint64, inputs: openArray[byte]): Ctt
   size = uint64(modulusByteLen)
   result = cttEVM_Success
 
-func eth_evm_modexp*(r: var openArray[byte], inputs: openArray[byte]): CttEVMStatus {.noInline, tags:[Alloca, Vartime], libPrefix: prefix_ffi, meter.} =
+func sila_evm_modexp*(r: var openArray[byte], inputs: openArray[byte]): CttEVMStatus {.noInline, tags:[Alloca, Vartime], libPrefix: prefix_ffi, meter.} =
   ## Modular exponentiation
   ##
   ## Name: MODEXP
@@ -142,7 +142,7 @@ func eth_evm_modexp*(r: var openArray[byte], inputs: openArray[byte]): CttEVMSta
   ##
   ## Spec
   ##   Yellow Paper Appendix E
-  ##   EIP-198 - https://github.com/ethereum/EIPs/blob/master/EIPS/eip-198.md
+  ##   SIP-198 - https://github.com/sila-chain/Sila-Improvement-Proposals/blob/main/SIPS/sip-198.md
   ##
   ## Hardware considerations:
   ##   This procedure stack allocates a table of (16+1)*modulusLen and many stack temporaries.
@@ -256,7 +256,7 @@ func eth_evm_modexp*(r: var openArray[byte], inputs: openArray[byte]): CttEVMSta
 # ----------------------------------------------------------------
 
 proc parseEip2537(dst: var Fp[BLS12_381], src: openArray[byte]): CttEvmStatus {.inline.} =
-  ## Parses a curve point following the encoding rules defined in EIP-2537,
+  ## Parses a curve point following the encoding rules defined in SIP-2537,
   ## i.e. requiring the input to be exactly 64 bytes, with the 'upper' 16 bytes
   ## required to be empty.
   ## The input is required to be a coordinate of a point on the BLS12-381 curve and
@@ -266,7 +266,7 @@ proc parseEip2537(dst: var Fp[BLS12_381], src: openArray[byte]): CttEvmStatus {.
   ## byte concatenated and the caller takes care of splitting the input for a
   ## before calling this.
   ##
-  ## Ref: https://eips.ethereum.org/EIPS/eip-2537#fine-points-and-encoding-of-base-elements
+  ## Ref: https://sips.sila-chain.org/SIPS/sip-2537#fine-points-and-encoding-of-base-elements
 
   var big {.noInit.}: Fp[BLS12_381].getBigInt()
   if src.len != 64:
@@ -320,8 +320,8 @@ func fromRawCoords[Name: static Algebra, G: static Subgroup](
 
   # Deserialization
   # ----------------------
-  # Encoding spec BN254: https://eips.ethereum.org/EIPS/eip-196
-  #           BLS12-381: https://eips.ethereum.org/EIPS/eip-2537
+  # Encoding spec BN254: https://sips.sila-chain.org/SIPS/sip-196
+  #           BLS12-381: https://sips.sila-chain.org/SIPS/sip-2537
 
   let status_x = dst.x.parseRawUint(x)
   if status_x != cttEVM_Success:
@@ -354,8 +354,8 @@ func fromRawCoords[Name: static Algebra](
 
   # Deserialization
   # ----------------------
-  # Encoding spec BN254: https://eips.ethereum.org/EIPS/eip-196
-  #           BLS12-381: https://eips.ethereum.org/EIPS/eip-2537
+  # Encoding spec BN254: https://sips.sila-chain.org/SIPS/sip-196
+  #           BLS12-381: https://sips.sila-chain.org/SIPS/sip-2537
 
   let status_x0 = dst.x.c0.parseRawUint(x0)
   if status_x0 != cttEVM_Success:
@@ -410,10 +410,10 @@ func fromRawCoords[Name: static Algebra, G: static Subgroup](
     return status
   dst.fromAffine(aff)
 
-func eth_evm_bn254_g1add*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bn254_g1add*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve addition on BN254_Snarks
-  ## (also called alt_bn128 in Ethereum specs
-  ##  and bn256 in Ethereum tests)
+  ## (also called alt_bn128 in Sila specs
+  ##  and bn256 in Sila tests)
   ##
   ## Name: ECADD
   ##
@@ -435,7 +435,7 @@ func eth_evm_bn254_g1add*(r: var openArray[byte], inputs: openarray[byte]): CttE
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-196
+  ## Spec https://sips.sila-chain.org/SIPS/sip-196
 
   if r.len != 64:
     return cttEVM_InvalidOutputSize
@@ -468,10 +468,10 @@ func eth_evm_bn254_g1add*(r: var openArray[byte], inputs: openarray[byte]): CttE
   r.toOpenArray(32, 63).marshal(aff.y, bigEndian)
   return cttEVM_Success
 
-func eth_evm_bn254_g1mul*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bn254_g1mul*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve multiplication on BN254_Snarks
-  ## (also called alt_bn128 in Ethereum specs
-  ##  and bn256 in Ethereum tests)
+  ## (also called alt_bn128 in Sila specs
+  ##  and bn256 in Sila tests)
   ##
   ## Name: ECMUL
   ##
@@ -493,7 +493,7 @@ func eth_evm_bn254_g1mul*(r: var openArray[byte], inputs: openarray[byte]): CttE
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-196
+  ## Spec https://sips.sila-chain.org/SIPS/sip-196
 
   if r.len != 64:
     return cttEVM_InvalidOutputSize
@@ -540,11 +540,11 @@ func eth_evm_bn254_g1mul*(r: var openArray[byte], inputs: openarray[byte]): CttE
   r.toOpenArray(32, 63).marshal(aff.y, bigEndian)
   return cttEVM_Success
 
-func eth_evm_bn254_ecpairingcheck*(
+func sila_evm_bn254_ecpairingcheck*(
       r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve pairing check on BN254_Snarks
-  ## (also called alt_bn128 in Ethereum specs
-  ##  and bn256 in Ethereum tests)
+  ## (also called alt_bn128 in Sila specs
+  ##  and bn256 in Sila tests)
   ##
   ## Name: ECPAIRING / Pairing check
   ##
@@ -562,8 +562,8 @@ func eth_evm_bn254_ecpairingcheck*(
   ##   cttEVM_PointNotOnCurve
   ##   cttEVM_PointNotInSubgroup
   ##
-  ## Specs https://eips.ethereum.org/EIPS/eip-197
-  ##       https://eips.ethereum.org/EIPS/eip-1108
+  ## Specs https://sips.sila-chain.org/SIPS/sip-197
+  ##       https://sips.sila-chain.org/SIPS/sip-1108
   if r.len != 32:
     return cttEVM_InvalidOutputSize
 
@@ -595,7 +595,7 @@ func eth_evm_bn254_ecpairingcheck*(
     if statusP != cttEVM_Success:
       return statusP
 
-    # Warning EIP197 encoding order:
+    # Warning SIP197 encoding order:
     # Fp2 (a, b) <=> a*𝑖 + b instead of regular a+𝑖b
     let statusQ = Q.fromRawCoords(
       x1 = inputs.toOpenArray(pos+64, pos+95),
@@ -625,7 +625,7 @@ func eth_evm_bn254_ecpairingcheck*(
     r[r.len-1] = byte 1
   return cttEVM_Success
 
-func eth_evm_bls12381_g1add*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_g1add*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve addition on BLS12-381 G1
   ##
   ## Name: BLS12_G1ADD
@@ -650,7 +650,7 @@ func eth_evm_bls12381_g1add*(r: var openArray[byte], inputs: openarray[byte]): C
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
   if inputs.len != 256:
     return cttEVM_InvalidInputSize
 
@@ -685,7 +685,7 @@ func eth_evm_bls12381_g1add*(r: var openArray[byte], inputs: openarray[byte]): C
   r.toOpenArray(64, 128-1).marshal(aff.y, bigEndian)
   return cttEVM_Success
 
-func eth_evm_bls12381_g2add*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_g2add*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve addition on BLS12-381 G2
   ##
   ## Name: BLS12_G2ADD
@@ -710,7 +710,7 @@ func eth_evm_bls12381_g2add*(r: var openArray[byte], inputs: openarray[byte]): C
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
   if inputs.len != 512:
     return cttEVM_InvalidInputSize
 
@@ -751,7 +751,7 @@ func eth_evm_bls12381_g2add*(r: var openArray[byte], inputs: openarray[byte]): C
   r.toOpenArray(192, 256-1).marshal(aff.y.c1, bigEndian)
   return cttEVM_Success
 
-func eth_evm_bls12381_g1mul*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_g1mul*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve scalar multiplication on BLS12-381 G1
   ##
   ## Name: BLS12_G1MUL
@@ -775,7 +775,7 @@ func eth_evm_bls12381_g1mul*(r: var openArray[byte], inputs: openarray[byte]): C
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
   if inputs.len != 160:
     return cttEVM_InvalidInputSize
 
@@ -819,7 +819,7 @@ func eth_evm_bls12381_g1mul*(r: var openArray[byte], inputs: openarray[byte]): C
   r.toOpenArray(64, 128-1).marshal(aff.y, bigEndian)
   return cttEVM_Success
 
-func eth_evm_bls12381_g2mul*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_g2mul*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve scalar multiplication on BLS12-381 G2
   ##
   ## Name: BLS12_G2MUL
@@ -843,7 +843,7 @@ func eth_evm_bls12381_g2mul*(r: var openArray[byte], inputs: openarray[byte]): C
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
   if inputs.len != 288:
     return cttEVM_InvalidInputSize
 
@@ -891,7 +891,7 @@ func eth_evm_bls12381_g2mul*(r: var openArray[byte], inputs: openarray[byte]): C
   r.toOpenArray(192, 256-1).marshal(aff.y.c1, bigEndian)
   return cttEVM_Success
 
-func eth_evm_bls12381_g1msm*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_g1msm*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve addition on BLS12-381 G1
   ##
   ## Name: BLS12_G1MSM
@@ -917,7 +917,7 @@ func eth_evm_bls12381_g1msm*(r: var openArray[byte], inputs: openarray[byte]): C
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
   if inputs.len == 0 or inputs.len mod 160 != 0:
     return cttEVM_InvalidInputSize
 
@@ -974,7 +974,7 @@ func eth_evm_bls12381_g1msm*(r: var openArray[byte], inputs: openarray[byte]): C
   freeHeapAligned(points)
   freeHeapAligned(coefs_big)
 
-func eth_evm_bls12381_g2msm*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_g2msm*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic Curve addition on BLS12-381 G2
   ##
   ## Name: BLS12_G2MSM
@@ -1000,7 +1000,7 @@ func eth_evm_bls12381_g2msm*(r: var openArray[byte], inputs: openarray[byte]): C
   ##   cttEVM_IntLargerThanModulus
   ##   cttEVM_PointNotOnCurve
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
   if inputs.len == 0 or inputs.len mod 288 != 0:
     return cttEVM_InvalidInputSize
 
@@ -1061,7 +1061,7 @@ func eth_evm_bls12381_g2msm*(r: var openArray[byte], inputs: openarray[byte]): C
   freeHeapAligned(points)
   freeHeapAligned(coefs_big)
 
-func eth_evm_bls12381_pairingcheck*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_pairingcheck*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Elliptic curve pairing check on BLS12-381
   ##
   ## Name: BLS12_PAIRINGCHECK
@@ -1080,7 +1080,7 @@ func eth_evm_bls12381_pairingcheck*(r: var openArray[byte], inputs: openarray[by
   ##   cttEVM_PointNotOnCurve
   ##   cttEVM_PointNotInSubgroup
   ##
-  ## specs https://eips.ethereum.org/EIPS/eip-2537
+  ## specs https://sips.sila-chain.org/SIPS/sip-2537
   if r.len != 32:
     return cttEVM_InvalidOutputSize
 
@@ -1110,7 +1110,7 @@ func eth_evm_bls12381_pairingcheck*(r: var openArray[byte], inputs: openarray[by
       return statusP
 
     # Encoding order:
-    # Fp2 (a, b) <=> a+𝑖b (contrary to EIP-197)
+    # Fp2 (a, b) <=> a+𝑖b (contrary to SIP-197)
     let statusQ = Q.fromRawCoords(
       x0 = inputs.toOpenArray(pos+128, pos+192-1),
       x1 = inputs.toOpenArray(pos+192, pos+256-1),
@@ -1133,7 +1133,7 @@ func eth_evm_bls12381_pairingcheck*(r: var openArray[byte], inputs: openarray[by
     r[r.len-1] = byte 1
   return cttEVM_Success
 
-func eth_evm_bls12381_map_fp_to_g1*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_map_fp_to_g1*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Map a field element to G1
   ##
   ## Name: BLS12_MAP_FP_TO_G1
@@ -1151,7 +1151,7 @@ func eth_evm_bls12381_map_fp_to_g1*(r: var openArray[byte], inputs: openarray[by
   ##   cttEVM_InvalidOutputSize
   ##   cttEVM_IntLargerThanModulus
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
 
   if inputs.len != 64:
     return cttEVM_InvalidInputSize
@@ -1182,7 +1182,7 @@ func eth_evm_bls12381_map_fp_to_g1*(r: var openArray[byte], inputs: openarray[by
   r.toOpenArray(64, 128-1).marshal(aff.y, bigEndian)
   return cttEVM_Success
 
-func eth_evm_bls12381_map_fp2_to_g2*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
+func sila_evm_bls12381_map_fp2_to_g2*(r: var openArray[byte], inputs: openarray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Map an Fp2 extension field element to G2
   ##
   ## Name: BLS12_MAP_FP2_TO_G2
@@ -1200,7 +1200,7 @@ func eth_evm_bls12381_map_fp2_to_g2*(r: var openArray[byte], inputs: openarray[b
   ##   cttEVM_InvalidOutputSize
   ##   cttEVM_IntLargerThanModulus
   ##
-  ## Spec https://eips.ethereum.org/EIPS/eip-2537
+  ## Spec https://sips.sila-chain.org/SIPS/sip-2537
 
   if inputs.len != 128:
     return cttEVM_InvalidInputSize
@@ -1243,7 +1243,7 @@ func eth_evm_bls12381_map_fp2_to_g2*(r: var openArray[byte], inputs: openarray[b
   return cttEVM_Success
 
 proc kzg_to_versioned_hash(r: var array[32, byte], commitment_bytes: array[48, byte]) =
-  ## Spec: https://eips.ethereum.org/EIPS/sip-4844#helpers
+  ## Spec: https://sips.sila-chain.org/SIPS/sip-4844#helpers
   ## `return VERSIONED_HASH_VERSION_KZG + sha256(commitment)[1:]`
   const VERSIONED_HASH_VERSION_KZG = 0x01.byte
   var s {.noinit.}: sha256
@@ -1252,7 +1252,7 @@ proc kzg_to_versioned_hash(r: var array[32, byte], commitment_bytes: array[48, b
   s.finish(r)
   r[0] = VERSIONED_HASH_VERSION_KZG
 
-func eth_evm_kzg_point_evaluation*(ctx: ptr SilaKZGContext,
+func sila_evm_kzg_point_evaluation*(ctx: ptr SilaKZGContext,
                                    r: var openArray[byte],
                                    input: openArray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Verify `p(z) = y` given commitment that corresponds to the polynomial `p(x)` and a KZG proof.
@@ -1260,7 +1260,7 @@ func eth_evm_kzg_point_evaluation*(ctx: ptr SilaKZGContext,
   ## Returns `FIELD_ELEMENTS_PER_BLOB` and the BSL12-381 modulus as padded 32 byte big endian values,
   ## i.e. `r` must be 64 bytes long.
   ##
-  ## Spec: https://eips.ethereum.org/EIPS/sip-4844#point-evaluation-precompile
+  ## Spec: https://sips.sila-chain.org/SIPS/sip-4844#point-evaluation-precompile
   # The data is encoded as follows: versioned_hash | z | y | commitment | proof | with z and y being padded 32 byte big endian values
   if len(input) != 192:
     return cttEVM_InvalidInputSize
@@ -1297,7 +1297,7 @@ func eth_evm_kzg_point_evaluation*(ctx: ptr SilaKZGContext,
   result = cttEVM_Success
 
 import std / importutils # Alternatively make `r`, `s` visible or define setter or constructor
-func eth_evm_ecrecover*(r: var openArray[byte],
+func sila_evm_ecrecover*(r: var openArray[byte],
                         input: openArray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Attempts to recover the public key, which was used to sign the given `data`
   ## to obtain the given signature `sig`.

@@ -70,8 +70,8 @@ Constantine supports the following protocols in its public API.
 | Sila BLS signatures                                                |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Sila KZG commitments for SIP-4844                                  |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ethereum IPA commitments for Verkle Tries                              | :building_construction: |   :see_no_evil:    | :see_no_evil:      |   :see_no_evil:    |
-| Ethereum Virtual Machine BN254 Precompiles ECADD, ECMUL, ECPAIRING     |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| EVM BLS12-381 precompiles (EIP-2537)                                   |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Sila Virtual Machine BN254 Precompiles ECADD, ECMUL, ECPAIRING     |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| EVM BLS12-381 precompiles (SIP-2537)                                   |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | EVM Misc: SHA256, modexp                                               |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Zk Accel layer for Halo2 proof system (experimental)                   |     not applicable      |   not applicable   | :white_check_mark: |   not applicable   |
 

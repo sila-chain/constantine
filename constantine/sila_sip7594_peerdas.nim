@@ -64,7 +64,7 @@ import ./zoo_exports
 ## 5. **Recovery**: If ≥50% of cells available, recover all cells
 ##
 ## References:
-## - SIP-7594: https://eips.ethereum.org/EIPS/sip-7594
+## - SIP-7594: https://sips.sila-chain.org/SIPS/sip-7594
 ## - Spec: https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0-beta.1/specs/fulu/polynomial-commitments-sampling.md
 ## - FK20 Paper: https://eprint.iacr.org/2023/033
 

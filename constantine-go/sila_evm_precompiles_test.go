@@ -44,37 +44,37 @@ func TestSha256(t *testing.T) {
 }
 
 var (
-	testDirEvm = "../tests/protocol_ethereum_evm_precompiles/"
+	testDirEvm = "../tests/protocol_sila_evm_precompiles/"
 
 	modexp_tests         = filepath.Join(testDirEvm, "modexp.json")
-	modexp_eip2565_tests = filepath.Join(testDirEvm, "modexp_eip2565.json")
+	modexp_sip2565_tests = filepath.Join(testDirEvm, "modexp_sip2565.json")
 
 	bn256Add_tests       = filepath.Join(testDirEvm, "bn256Add.json")
 	bn256ScalarMul_tests = filepath.Join(testDirEvm, "bn256ScalarMul.json")
 	bn256Pairing_tests   = filepath.Join(testDirEvm, "bn256Pairing.json")
 
-	add_G1_bls_tests      = filepath.Join(testDirEvm, "eip-2537/add_G1_bls.json")
-	fail_add_G1_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-add_G1_bls.json")
-	add_G2_bls_tests      = filepath.Join(testDirEvm, "eip-2537/add_G2_bls.json")
-	fail_add_G2_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-add_G2_bls.json")
+	add_G1_bls_tests      = filepath.Join(testDirEvm, "sip-2537/add_G1_bls.json")
+	fail_add_G1_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-add_G1_bls.json")
+	add_G2_bls_tests      = filepath.Join(testDirEvm, "sip-2537/add_G2_bls.json")
+	fail_add_G2_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-add_G2_bls.json")
 
-	mul_G1_bls_tests      = filepath.Join(testDirEvm, "eip-2537/mul_G1_bls.json")
-	fail_mul_G1_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-mul_G1_bls.json")
-	mul_G2_bls_tests      = filepath.Join(testDirEvm, "eip-2537/mul_G2_bls.json")
-	fail_mul_G2_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-mul_G2_bls.json")
+	mul_G1_bls_tests      = filepath.Join(testDirEvm, "sip-2537/mul_G1_bls.json")
+	fail_mul_G1_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-mul_G1_bls.json")
+	mul_G2_bls_tests      = filepath.Join(testDirEvm, "sip-2537/mul_G2_bls.json")
+	fail_mul_G2_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-mul_G2_bls.json")
 
-	multiexp_G1_bls_tests      = filepath.Join(testDirEvm, "eip-2537/multiexp_G1_bls.json")
-	fail_multiexp_G1_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-multiexp_G1_bls.json")
-	multiexp_G2_bls_tests      = filepath.Join(testDirEvm, "eip-2537/multiexp_G2_bls.json")
-	fail_multiexp_G2_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-multiexp_G2_bls.json")
+	multiexp_G1_bls_tests      = filepath.Join(testDirEvm, "sip-2537/multiexp_G1_bls.json")
+	fail_multiexp_G1_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-multiexp_G1_bls.json")
+	multiexp_G2_bls_tests      = filepath.Join(testDirEvm, "sip-2537/multiexp_G2_bls.json")
+	fail_multiexp_G2_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-multiexp_G2_bls.json")
 
-	pairing_check_bls_tests      = filepath.Join(testDirEvm, "eip-2537/pairing_check_bls.json")
-	fail_pairing_check_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-pairing_check_bls.json")
+	pairing_check_bls_tests      = filepath.Join(testDirEvm, "sip-2537/pairing_check_bls.json")
+	fail_pairing_check_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-pairing_check_bls.json")
 
-	map_fp_to_G1_bls_tests       = filepath.Join(testDirEvm, "eip-2537/map_fp_to_G1_bls.json")
-	fail_map_fp_to_G1_bls_tests  = filepath.Join(testDirEvm, "eip-2537/fail-map_fp_to_G1_bls.json")
-	map_fp2_to_G2_bls_tests      = filepath.Join(testDirEvm, "eip-2537/map_fp2_to_G2_bls.json")
-	fail_map_fp2_to_G2_bls_tests = filepath.Join(testDirEvm, "eip-2537/fail-map_fp2_to_G2_bls.json")
+	map_fp_to_G1_bls_tests       = filepath.Join(testDirEvm, "sip-2537/map_fp_to_G1_bls.json")
+	fail_map_fp_to_G1_bls_tests  = filepath.Join(testDirEvm, "sip-2537/fail-map_fp_to_G1_bls.json")
+	map_fp2_to_G2_bls_tests      = filepath.Join(testDirEvm, "sip-2537/map_fp2_to_G2_bls.json")
+	fail_map_fp2_to_G2_bls_tests = filepath.Join(testDirEvm, "sip-2537/fail-map_fp2_to_G2_bls.json")
 )
 
 type HexString string
@@ -309,7 +309,7 @@ func TestModexp(t *testing.T) {
 }
 
 func TestModexpEip2565(t *testing.T) {
-	runTestSlice(t, modexp_eip2565_tests, EvmModexp)
+	runTestSlice(t, modexp_sip2565_tests, EvmModexp)
 }
 
 func TestBn256Add(t *testing.T) {

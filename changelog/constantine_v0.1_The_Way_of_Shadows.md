@@ -14,8 +14,8 @@ Today Constantine is focused on the Ethereum blockchain, tomorrow I hope it will
 
 It currently exposes the following high-level protocols:
 - BLS signatures for Sila
-- BLS Key derivation for Ethereum - SIP-2333
-- Optimized BigInt and Cryptographic Primitives for the Ethereum Virtual Machine
+- BLS Key derivation for Sila - SIP-2333
+- Optimized BigInt and Cryptographic Primitives for the Sila Virtual Machine
 - KZG commitment for SIP4844 for scaling Ethereum
 - SHA256 hash function
 - Exposing the operating system Cryptographically Secure RNG
@@ -27,7 +27,7 @@ Those high-level protocols hide a modular stack of generic math and cryptography
 This even includes a JIT assembler as macro for x86 and a code generator for Nvidia GPU assembly through LLVM IR, skipping Cuda and Nvidia toolchain woes.
 
 On the security side:
-- Constantine has been written to have zero-dependency, besides the Nim compiler. It doesn't depend on Nim runtime or even allocator (including exceptions or sequences). This eases using tools like sanitizers or Valgrind, significantly hinder supply chain attacks, reduces security audit scope and will allow end-users to use specialized allocators like jemalloc. Current proof systems may need more than 1TB of memory for hours for example when proving the Ethereum Virtual Machine which is very different from what Nim allocator was built for.
+- Constantine has been written to have zero-dependency, besides the Nim compiler. It doesn't depend on Nim runtime or even allocator (including exceptions or sequences). This eases using tools like sanitizers or Valgrind, significantly hinder supply chain attacks, reduces security audit scope and will allow end-users to use specialized allocators like jemalloc. Current proof systems may need more than 1TB of memory for hours for example when proving the Sila Virtual Machine which is very different from what Nim allocator was built for.
 - Constantine features as far as I know the largest test suite in the Nim ecosystem after the Nim compiler and Nimbus with 176 Nim files, 159 Json files and 253 yaml test vectors.
 - The tests use a custom RNG that trigger rare events like carries (2⁻⁶⁴ chance) with high probability
 - Constantine has had a fuzzing campaign sponsored by the Ethereum Foundation and has been added to Google OSS Fuzz: https://github.com/google/oss-fuzz/pull/10710

@@ -7,7 +7,7 @@
 # at your option. This file may not be copied, modified, or distributed except according to those terms.
 
 import
-  constantine/ethereum_evm_precompiles,
+  constantine/sila_evm_precompiles,
   std/unittest
 
 # Note: the input MUST be heap allocated or we get a cryptic error with GCC15 sanitizer
@@ -16,7 +16,7 @@ import
 #          if (NIM_UNLIKELY(*nimErr_)) goto <location>
 # which are inserted to handle goto-based exceptions
 
-suite "EVM ModExp precompile (EIP-198)":
+suite "EVM ModExp precompile (SIP-198)":
   test "Audit #5 - Fuzz failure with even modulus":
     let input = @[
 
@@ -44,7 +44,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](1)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r[0] == 0, ". Result was " & $r[0]
 
@@ -75,7 +75,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](1)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r[0] == 0, ". Result was " & $r[0]
 
@@ -106,7 +106,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](9)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 1, 45, 106, 227, 225, 162, 136], ". Result was " & $r
 
@@ -139,7 +139,7 @@ suite "EVM ModExp precompile (EIP-198)":
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     ]
     var r = newSeq[byte](0x2b)
-    let status = eth_evm_modexp(r, input)
+    let status = sila_evm_modexp(r, input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 10, 141, 74, 46, 2, 18, 2, 37, 247, 220, 246, 65, 109, 246, 7, 144, 85, 202, 194, 191, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], ". Result was " & $r
 
@@ -175,7 +175,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](56)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
 
   test "Audit #18 - Handling of inputs infinitely right-padded with zeros (read past buffers or stack overflow for temporaries)":
@@ -211,7 +211,7 @@ suite "EVM ModExp precompile (EIP-198)":
         0x50, 0x50, 0x50, 0x50, 0x50, 0x00, 0x00, 0x00,
         0xa0]
     var r = newSeq[byte](1)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success, "Failure status: " & $status
 
   test "Audit #6 - DOS Vector 1":
@@ -243,7 +243,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](32)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -280,7 +280,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](121)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51]
 
@@ -317,7 +317,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](121)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51]
 
@@ -354,7 +354,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](121)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 196, 178, 252, 11, 73, 111, 4, 209, 77, 144, 65]
 
@@ -391,7 +391,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](121)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 208, 241, 216, 60, 91]
 
@@ -428,7 +428,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](121)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 208, 241, 216, 60, 91]
 
@@ -459,7 +459,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](1)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r[0] == 0, ". Result was " & $r[0]
 
@@ -490,7 +490,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](1)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r[0] == 0, ". Result was " & $r[0]
 
@@ -521,7 +521,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](9)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 0, 0, 1, 45, 106, 227, 225, 162, 136], ". Result was " & $r
 
@@ -554,7 +554,7 @@ suite "EVM ModExp precompile (EIP-198)":
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     ]
     var r = newSeq[byte](0x2b)
-    let status = eth_evm_modexp(r, input)
+    let status = sila_evm_modexp(r, input)
     doAssert status == cttEVM_Success
     doAssert r == @[byte 10, 141, 74, 46, 2, 18, 2, 37, 247, 220, 246, 65, 109, 246, 7, 144, 85, 202, 194, 191, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], ". Result was " & $r
 
@@ -591,7 +591,7 @@ suite "EVM ModExp precompile (EIP-198)":
     ]
 
     var r = newSeq[byte](56)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success
 
   test "Audit #18 - Modified padded exponent":
@@ -630,5 +630,5 @@ suite "EVM ModExp precompile (EIP-198)":
 
         0xa0]
     var r = newSeq[byte](1)
-    let status = r.eth_evm_modexp(input)
+    let status = r.sila_evm_modexp(input)
     doAssert status == cttEVM_Success

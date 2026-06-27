@@ -1,5 +1,5 @@
 [package]
-name = "constantine-ethereum-evm-precompiles"
+name = "constantine-sila-evm-precompiles"
 version = "0.2.0"
 edition = "2021"
 

@@ -21,7 +21,7 @@ import
 # We choose not to use a type schema here, unlike with the other json-based tests
 # like:
 # - t_sila_bls_signatures
-# - t_ethereum_evm_precompiles
+# - t_sila_evm_precompiles
 #
 # They'll add a lot of verbosity due to all the KZG types
 # and failure modes (subgroups, ...)

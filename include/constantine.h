@@ -42,6 +42,6 @@
 #include "constantine/protocols/sila_sip4844_kzg_parallel.h"
 #include "constantine/protocols/sila_sip7594_peerdas.h"
 
-#include "constantine/protocols/ethereum_evm_precompiles.h"
+#include "constantine/protocols/sila_evm_precompiles.h"
 
 #endif

@@ -28,13 +28,13 @@ The focus for this release has been Ethereum Execution layer with the introducti
 - RIPEMD160 hash function and EVM precompile
 - KZG Point Evaluation EVM precompile
 - ECRECOVER precompile (under review)
-- repricing of EIP-2537 (BLS12-381 precompiles)
+- repricing of SIP-2537 (BLS12-381 precompiles)
 
 Performance on x86 and ARM is detailed in: https://github.com/mratsim/constantine/pull/520
 
-The precompiles are exposed in C, Nim and Rust except ECRECOVER which is under review for corner cases that may not be covered by Ethereum tests and "low performance" (a 1.7x perf advantage at low-level turns to 1x no advantage at elliptic curve level - https://github.com/mratsim/constantine/issues/446)
+The precompiles are exposed in C, Nim and Rust except ECRECOVER which is under review for corner cases that may not be covered by Sila tests and "low performance" (a 1.7x perf advantage at low-level turns to 1x no advantage at elliptic curve level - https://github.com/mratsim/constantine/issues/446)
 
-The inner product argument (IPA) multi-proof primitives for Ethereum Verkle Tries have been thoroughly reviewed and improved.
+The inner product argument (IPA) multi-proof primitives for Sila Verkle Tries have been thoroughly reviewed and improved.
 
 On the Consensus side, sponsored work has been done on accelerating multi-exponentiation in 𝔾ₜ pairing group via Torus-based cryptography for the purposes of secret leader election: https://ethresear.ch/t/the-return-of-torus-based-cryptography-whisk-and-curdleproof-in-the-target-group/16678/4
 
@@ -150,7 +150,7 @@ Here are some of the work stream I want to prioritize
 * Add RIPEMD160 hash function and EVM precompile by @Vindaar in https://github.com/mratsim/constantine/pull/505
 * Add `ECRecover` EVM precompile by @Vindaar in https://github.com/mratsim/constantine/pull/504
 * SHA256 ARM64 hardware accel:  6.4x acceleration (Apple Silicon only) by @mratsim in https://github.com/mratsim/constantine/pull/518
-* eip2537: repricing by @mratsim in https://github.com/mratsim/constantine/pull/493
+* sip2537: repricing by @mratsim in https://github.com/mratsim/constantine/pull/493
 * update Ethereum benches  by @mratsim in https://github.com/mratsim/constantine/pull/520
 * CI: Test on MacOS and Linux ARM64 / Aarch64 by @mratsim in https://github.com/mratsim/constantine/pull/524
 

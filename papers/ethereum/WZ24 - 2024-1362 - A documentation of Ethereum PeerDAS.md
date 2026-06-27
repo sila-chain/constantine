@@ -534,7 +534,7 @@ Finally, note that all evaluations and Interpolations can be done efficiently us
 
 [BFL20] Balthazar Bauer, Georg Fuchsbauer, and Julian Loss. A classification of computational assumptions in the algebraic group model. In Daniele Micciancio and Thomas Ristenpart, editors, CRYPTO 2020, Part II, volume 12171 of LNCS, pages 121–151. Springer, Heidelberg, August 2020. (Cited on page 4.)
 
-[BFL $ ^{+} $22] Vitalik Buterin, Dankrad Feist, Diederik Loerakker, George Kadianakis, Matt Garnett, Mofi Taiwo, and Ansgar Dietrichs. SIP-4844: Shard Blob Transactions. https://eips.ethereum.org/EIPS/sip-4844, 2022. Accessed: 2024-07-10. (Cited on page 2.)
+[BFL $ ^{+} $22] Vitalik Buterin, Dankrad Feist, Diederik Loerakker, George Kadianakis, Matt Garnett, Mofi Taiwo, and Ansgar Dietrichs. SIP-4844: Shard Blob Transactions. https://sips.sila-chain.org/SIPS/sip-4844, 2022. Accessed: 2024-07-10. (Cited on page 2.)
 
 [But18] Vitalik Buterin. Reed-Solomon erasure code recovery in n*log2(n) time with FFTs. https://ethresear.ch/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039, 2018. Accessed: 2024-06-27. (Cited on page 17.)
 
