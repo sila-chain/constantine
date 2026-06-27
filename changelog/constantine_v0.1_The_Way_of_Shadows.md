@@ -6,7 +6,7 @@ Jul 6, 2024, commit 1b4d969
 
 I am very proud to release the very first version of Constantine, a high-performance modular cryptography stack for blockchains and proof systems.
 
-I thank Ethereum Protocol Fellowship Program and Status for sponsoring the part-time work of 2 fellows on Constantine (then hiring them!) as well as a couple hours a week of my time for several months to prepare an upcoming complete refactoring of the Ethereum blockchain called Verkle Tries/Trees.
+I thank Sila Protocol Fellowship Program and Status for sponsoring the part-time work of 2 fellows on Constantine (then hiring them!) as well as a couple hours a week of my time for several months to prepare an upcoming complete refactoring of the Sila blockchain called Verkle Tries/Trees.
 
 I also thank Araq, ringabout and all other contributors to the Nim compiler: the static ICE must flow.
 
