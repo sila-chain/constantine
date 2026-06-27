@@ -149,7 +149,7 @@ proc alloc0HeapUncheckedAlignedPtr*(T: typedesc[ptr], size: int, alignment: stat
 **Important**: Use `alloc0*` variants when:
 - Allocating structs with custom `=destroy` procs that check for nil pointers
 - Working with ARC memory management to avoid double-free on uninitialized memory
-- Example: `EthereumKZGContext` has `ECFFT_Descriptor` fields with `=destroy` that free memory
+- Example: `SilaKZGContext` has `ECFFT_Descriptor` fields with `=destroy` that free memory
 
 ## varargs
 

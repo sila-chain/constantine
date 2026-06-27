@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Parse PeerDAS (EIP-7594) and EIP-4844 benchmark files and generate a single markdown comparison table.
+Parse PeerDAS (SIP-7594) and SIP-4844 benchmark files and generate a single markdown comparison table.
 
 Usage:
     python3 scripts/parse_peerdas_benchmarks.py
@@ -19,8 +19,8 @@ CKZG_PRECOMP_MEM = {
 }
 
 
-def parse_constantine_eip4844(filepath):
-    """Parse constantine EIP-4844 benchmark file (new format with 'serial' keyword)."""
+def parse_constantine_sip4844(filepath):
+    """Parse constantine SIP-4844 benchmark file (new format with 'serial' keyword)."""
     results = {}
     with open(filepath, 'r') as f:
         for line in f:
@@ -44,8 +44,8 @@ def parse_constantine_eip4844(filepath):
     return results
 
 
-def parse_constantine_eip7594(filepath):
-    """Parse constantine EIP-7594 (PeerDAS) benchmark file (new format)."""
+def parse_constantine_sip7594(filepath):
+    """Parse constantine SIP-7594 (PeerDAS) benchmark file (new format)."""
     results = {}
     compute_rows = []
     with open(filepath, 'r') as f:
@@ -89,8 +89,8 @@ def parse_constantine_eip7594(filepath):
     return results
 
 
-def parse_c_kzg_go_eip4844(filepath):
-    """Parse c-kzg-4844 Go bindings EIP-4844 benchmarks."""
+def parse_c_kzg_go_sip4844(filepath):
+    """Parse c-kzg-4844 Go bindings SIP-4844 benchmarks."""
     results = {}
     with open(filepath, 'r') as f:
         for line in f:
@@ -160,7 +160,7 @@ def calc_pct_diff(val1, val2):
     return ((val2 - val1) / val1) * 100
 
 
-def generate_report(const_eip4844, const_peerdas, ckzg_eip4844, ckzg_peerdas, output_path=None):
+def generate_report(const_sip4844, const_peerdas, ckzg_sip4844, ckzg_peerdas, output_path=None):
     """Generate single markdown table with all benchmarks."""
     EM = "\u2014"  # em dash
     lines = []
@@ -168,8 +168,8 @@ def generate_report(const_eip4844, const_peerdas, ckzg_eip4844, ckzg_peerdas, ou
     lines.append("| Benchmark              | Precompute          | c-kzg-4844 (serial) | constantine (serial) |   \u0394%    |")
     lines.append("|:-----------------------|:--------------------|:-------------------:|:--------------------:|:-------:|")
 
-    # EIP-4844 benchmarks (no precompute column needed)
-    eip4844_benches = [
+    # SIP-4844 benchmarks (no precompute column needed)
+    sip4844_benches = [
         ('blob_to_kzg_commitment', 'blob_to_kzg_commitment'),
         ('compute_kzg_proof', 'compute_kzg_proof'),
         ('compute_blob_kzg_proof', 'compute_blob_kzg_proof'),
@@ -185,9 +185,9 @@ def generate_report(const_eip4844, const_peerdas, ckzg_eip4844, ckzg_peerdas, ou
         ('precompute_load (L0)', 'precompute_load'),
     ]
 
-    for display_name, key in eip4844_benches:
-        ckzg_val = ckzg_eip4844.get(key)
-        const_val = const_eip4844.get(key)
+    for display_name, key in sip4844_benches:
+        ckzg_val = ckzg_sip4844.get(key)
+        const_val = const_sip4844.get(key)
 
         ckzg_str = f"{ns_to_ms(ckzg_val):.3f} ms" if ckzg_val else EM
         const_str = f"{ns_to_ms(const_val):.3f} ms" if const_val else EM
@@ -201,7 +201,7 @@ def generate_report(const_eip4844, const_peerdas, ckzg_eip4844, ckzg_peerdas, ou
         lines.append(f"| {display_name:<21} | {EM:<19} | {ckzg_str:>19} | {const_str:>20} | {pct_str:>8} |")
 
     # PeerDAS section header
-    lines.append("| **PeerDAS (EIP-7594)**     |                     |                     |                      |         |")
+    lines.append("| **PeerDAS (SIP-7594)**     |                     |                     |                      |         |")
 
     # compute_cells
     ckzg_val = ckzg_peerdas.get('compute_cells')
@@ -285,7 +285,7 @@ def generate_report(const_eip4844, const_peerdas, ckzg_eip4844, ckzg_peerdas, ou
     lines.append("## Source Files")
     lines.append("")
     lines.append("- c-kzg-4844: `benchmarks/ckzg4844_bench_i7_265K.txt`")
-    lines.append("- constantine EIP-4844: `benchmarks/ctt_kzg_bench.txt`")
+    lines.append("- constantine SIP-4844: `benchmarks/ctt_kzg_bench.txt`")
     lines.append("- constantine PeerDAS: `benchmarks/ctt_peerdas_bench.txt`")
 
     content = "\n".join(lines)
@@ -301,17 +301,17 @@ def main():
     ckzg_file = Path("benchmarks/ckzg4844_bench_i7_265K.txt")
     output_file = Path("bench-results.md")
 
-    print(f"Parsing constantine EIP-4844: {ctt_kzg_file}")
+    print(f"Parsing constantine SIP-4844: {ctt_kzg_file}")
     print(f"Parsing constantine PeerDAS: {ctt_peerdas_file}")
     print(f"Parsing c-kzg-4844: {ckzg_file}")
     print()
 
-    const_eip4844 = parse_constantine_eip4844(ctt_kzg_file)
-    const_peerdas = parse_constantine_eip7594(ctt_peerdas_file)
-    ckzg_eip4844 = parse_c_kzg_go_eip4844(ckzg_file)
+    const_sip4844 = parse_constantine_sip4844(ctt_kzg_file)
+    const_peerdas = parse_constantine_sip7594(ctt_peerdas_file)
+    ckzg_sip4844 = parse_c_kzg_go_sip4844(ckzg_file)
     ckzg_peerdas = parse_c_kzg_go_peerdas(ckzg_file)
 
-    content = generate_report(const_eip4844, const_peerdas, ckzg_eip4844, ckzg_peerdas, output_file)
+    content = generate_report(const_sip4844, const_peerdas, ckzg_sip4844, ckzg_peerdas, output_file)
     print(f"Report written to: {output_file}")
     print()
     print(content)

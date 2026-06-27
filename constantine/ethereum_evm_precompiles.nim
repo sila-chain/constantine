@@ -21,12 +21,12 @@ import
   ./math_arbitrary_precision/arithmetic/bigints_views,
   ./hash_to_curve/hash_to_curve,
   # For KZG point precompile
-  ./ethereum_eip4844_kzg,
+  ./sila_sip4844_kzg,
   # ECDSA for ECRecover
   ./ethereum_ecdsa_signatures
 
 # For KZG point precompile
-export EthereumKZGContext, TrustedSetupFormat, TrustedSetupStatus,
+export SilaKZGContext, TrustedSetupFormat, TrustedSetupStatus,
   new, new_with_precompute, delete
 
 # Technically not a precompile but reexport hashes
@@ -1243,7 +1243,7 @@ func eth_evm_bls12381_map_fp2_to_g2*(r: var openArray[byte], inputs: openarray[b
   return cttEVM_Success
 
 proc kzg_to_versioned_hash(r: var array[32, byte], commitment_bytes: array[48, byte]) =
-  ## Spec: https://eips.ethereum.org/EIPS/eip-4844#helpers
+  ## Spec: https://eips.ethereum.org/EIPS/sip-4844#helpers
   ## `return VERSIONED_HASH_VERSION_KZG + sha256(commitment)[1:]`
   const VERSIONED_HASH_VERSION_KZG = 0x01.byte
   var s {.noinit.}: sha256
@@ -1252,7 +1252,7 @@ proc kzg_to_versioned_hash(r: var array[32, byte], commitment_bytes: array[48, b
   s.finish(r)
   r[0] = VERSIONED_HASH_VERSION_KZG
 
-func eth_evm_kzg_point_evaluation*(ctx: ptr EthereumKZGContext,
+func eth_evm_kzg_point_evaluation*(ctx: ptr SilaKZGContext,
                                    r: var openArray[byte],
                                    input: openArray[byte]): CttEVMStatus {.libPrefix: prefix_ffi, meter.} =
   ## Verify `p(z) = y` given commitment that corresponds to the polynomial `p(x)` and a KZG proof.
@@ -1260,7 +1260,7 @@ func eth_evm_kzg_point_evaluation*(ctx: ptr EthereumKZGContext,
   ## Returns `FIELD_ELEMENTS_PER_BLOB` and the BSL12-381 modulus as padded 32 byte big endian values,
   ## i.e. `r` must be 64 bytes long.
   ##
-  ## Spec: https://eips.ethereum.org/EIPS/eip-4844#point-evaluation-precompile
+  ## Spec: https://eips.ethereum.org/EIPS/sip-4844#point-evaluation-precompile
   # The data is encoded as follows: versioned_hash | z | y | commitment | proof | with z and y being padded 32 byte big endian values
   if len(input) != 192:
     return cttEVM_InvalidInputSize
@@ -1286,7 +1286,7 @@ func eth_evm_kzg_point_evaluation*(ctx: ptr EthereumKZGContext,
     return cttEVM_VerificationFailure
 
   # Verify KZG proof with z and y in big endian format
-  if ctx.verify_kzg_proof(commitment_bytes, z, y, proof) != cttEthKzg_Success:
+  if ctx.verify_kzg_proof(commitment_bytes, z, y, proof) != cttSilaKzg_Success:
     return cttEVM_VerificationFailure
 
   # Reference:

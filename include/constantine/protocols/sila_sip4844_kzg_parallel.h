@@ -6,18 +6,18 @@
  *    * Apache v2 license (license terms in the root directory or at http://www.apache.org/licenses/LICENSE-2.0).
  *  at your option. This file may not be copied, modified, or distributed except according to those terms.
  */
-#ifndef __CTT_H_ETHEREUM_EIP4844_KZG_PARALLEL__
-#define __CTT_H_ETHEREUM_EIP4844_KZG_PARALLEL__
+#ifndef __CTT_H_SILA_SIP4844_KZG_PARALLEL__
+#define __CTT_H_SILA_SIP4844_KZG_PARALLEL__
 
 #include "constantine/core/datatypes.h"
 #include "constantine/core/threadpool.h"
-#include "constantine/protocols/ethereum_eip4844_kzg.h"
+#include "constantine/protocols/sila_sip4844_kzg.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Ethereum EIP-4844 KZG Interface
+// Sila SIP-4844 KZG Interface
 // ------------------------------------------------------------------------------------------------
 
 /** Compute a commitment to the `blob`.
@@ -37,11 +37,11 @@ extern "C" {
  *
  *    with proof = [(p(τ) - p(z)) / (τ-z)]₁
  */
-ctt_eth_kzg_status ctt_eth_kzg_blob_to_kzg_commitment_parallel(
+ctt_sila_kzg_status ctt_sila_kzg_blob_to_kzg_commitment_parallel(
         const ctt_threadpool* tp,
-        const ctt_eth_kzg_context* ctx,
-        ctt_eth_kzg_commitment* dst,
-        const ctt_eth_kzg_blob* blob
+        const ctt_sila_kzg_context* ctx,
+        ctt_sila_kzg_commitment* dst,
+        const ctt_sila_kzg_blob* blob
 ) __attribute__((warn_unused_result));
 
 /** Generate:
@@ -58,34 +58,34 @@ ctt_eth_kzg_status ctt_eth_kzg_blob_to_kzg_commitment_parallel(
  *    - at τ, p(τ) is the commitment
  *    - and at the verification opening_challenge z.
  */
-ctt_eth_kzg_status ctt_eth_kzg_compute_kzg_proof_parallel(
+ctt_sila_kzg_status ctt_sila_kzg_compute_kzg_proof_parallel(
         const ctt_threadpool* tp,
-        const ctt_eth_kzg_context* ctx,
-        ctt_eth_kzg_proof* proof,
-        ctt_eth_kzg_eval_at_challenge* y,
-        const ctt_eth_kzg_blob* blob,
-        const ctt_eth_kzg_opening_challenge* z
+        const ctt_sila_kzg_context* ctx,
+        ctt_sila_kzg_proof* proof,
+        ctt_sila_kzg_eval_at_challenge* y,
+        const ctt_sila_kzg_blob* blob,
+        const ctt_sila_kzg_opening_challenge* z
 ) __attribute__((warn_unused_result));
 
 /** Given a blob, return the KZG proof that is used to verify it against the commitment.
  *  This method does not verify that the commitment is correct with respect to `blob`.
  */
-ctt_eth_kzg_status ctt_eth_kzg_compute_blob_kzg_proof_parallel(
+ctt_sila_kzg_status ctt_sila_kzg_compute_blob_kzg_proof_parallel(
         const ctt_threadpool* tp,
-        const ctt_eth_kzg_context* ctx,
-        ctt_eth_kzg_proof* proof,
-        const ctt_eth_kzg_blob* blob,
-        const ctt_eth_kzg_commitment* commitment
+        const ctt_sila_kzg_context* ctx,
+        ctt_sila_kzg_proof* proof,
+        const ctt_sila_kzg_blob* blob,
+        const ctt_sila_kzg_commitment* commitment
 ) __attribute__((__warn_unused_result__));
 
 /** Given a blob and a KZG proof, verify that the blob data corresponds to the provided commitment.
  */
-ctt_eth_kzg_status ctt_eth_kzg_verify_blob_kzg_proof_parallel(
+ctt_sila_kzg_status ctt_sila_kzg_verify_blob_kzg_proof_parallel(
         const ctt_threadpool* tp,
-        const ctt_eth_kzg_context* ctx,
-        const ctt_eth_kzg_blob* blob,
-        const ctt_eth_kzg_commitment* commitment,
-        const ctt_eth_kzg_proof* proof
+        const ctt_sila_kzg_context* ctx,
+        const ctt_sila_kzg_blob* blob,
+        const ctt_sila_kzg_commitment* commitment,
+        const ctt_sila_kzg_proof* proof
 ) __attribute__((__warn_unused_result__));
 
 /** Verify `n` (blob, commitment, proof) sets efficiently
@@ -101,12 +101,12 @@ ctt_eth_kzg_status ctt_eth_kzg_verify_blob_kzg_proof_parallel(
  *  rogue commitments attacks due to homomorphic properties of pairings,
  *  i.e. commitments that are linear combination of others and sum would be zero.
  */
-ctt_eth_kzg_status ctt_eth_kzg_verify_blob_kzg_proof_batch_parallel(
+ctt_sila_kzg_status ctt_sila_kzg_verify_blob_kzg_proof_batch_parallel(
         const ctt_threadpool* tp,
-        const ctt_eth_kzg_context* ctx,
-        const ctt_eth_kzg_blob blobs[],
-        const ctt_eth_kzg_commitment commitments[],
-        const ctt_eth_kzg_proof proofs[],
+        const ctt_sila_kzg_context* ctx,
+        const ctt_sila_kzg_blob blobs[],
+        const ctt_sila_kzg_commitment commitments[],
+        const ctt_sila_kzg_proof proofs[],
         size_t n,
         const byte secure_random_bytes[32]
 ) __attribute__((__warn_unused_result__));
@@ -115,4 +115,4 @@ ctt_eth_kzg_status ctt_eth_kzg_verify_blob_kzg_proof_batch_parallel(
 }
 #endif
 
-#endif // __CTT_H_ETHEREUM_EIP4844_KZG_PARALLEL__
+#endif // __CTT_H_SILA_SIP4844_KZG_PARALLEL__

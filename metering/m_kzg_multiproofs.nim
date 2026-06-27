@@ -22,23 +22,23 @@ import
   constantine/math/[arithmetic, extension_fields, ec_shortweierstrass],
   constantine/math/polynomials/[polynomials, fft_fields, fft_ec],
   constantine/commitments/kzg_multiproofs,
-  constantine/commitments_setups/ethereum_kzg_srs,
+  constantine/commitments_setups/sila_kzg_srs,
   constantine/platforms/[abstractions, allocs, bithacks, views],
   constantine/platforms/metering/[reports, tracer],
   helpers/prng_unsafe
 
 const
-  # PeerDAS production parameters (from ethereum_kzg_srs)
-  N = ethereum_kzg_srs.FIELD_ELEMENTS_PER_BLOB       # 4096
-  L = ethereum_kzg_srs.FIELD_ELEMENTS_PER_CELL       # 64
-  CDS = ethereum_kzg_srs.CELLS_PER_EXT_BLOB          # 128
+  # PeerDAS production parameters (from sila_kzg_srs)
+  N = sila_kzg_srs.FIELD_ELEMENTS_PER_BLOB       # 4096
+  L = sila_kzg_srs.FIELD_ELEMENTS_PER_CELL       # 64
+  CDS = sila_kzg_srs.CELLS_PER_EXT_BLOB          # 128
 
   # Trusted setup path (same as benchmarks)
   TrustedSetupMainnet =
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
 var rng: RngState
 let seed = uint32(getTime().toUnix() and (1'i64 shl 32 - 1))
@@ -49,8 +49,8 @@ proc randomPoly(rng: var RngState): PolynomialCoef[N, Fr[BLS12_381]] =
   for i in 0 ..< N:
     result.coefs[i] = rng.random_unsafe(Fr[BLS12_381])
 
-proc loadTrustedSetup(): ptr EthereumKZGContext =
-  var ctx: ptr EthereumKZGContext
+proc loadTrustedSetup(): ptr SilaKZGContext =
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "Failed to load trusted setup: " & $tsStatus
   return ctx

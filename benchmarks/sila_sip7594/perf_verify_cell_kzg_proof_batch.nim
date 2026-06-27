@@ -6,18 +6,15 @@
 #   * Apache v2 license (license terms in the root directory or at http://www.apache.org/licenses/LICENSE-2.0).
 # at your option. This file may not be copied, modified, or distributed except according to those terms.
 
-## Run with
-##   nim c -r --cc:clang -d:danger --hints:off --warnings:off --outdir:build/wip --nimcache:nimcache/wip benchmarks/eth_eip7594/perf_compute_cells_and_kzg_proofs.nim
-##
-## Or via nimble:
-##   CC=clang nimble bench_eth_eip7594_perf_compute_cells_and_kzg_proofs
-
 import
   benchset_serialization,
-  constantine/eth_eip7594_peerdas,
-  constantine/platforms/primitives,
+  constantine/sila_sip7594_peerdas,
   constantine/platforms/views,
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/sila_sip4844_kzg_parallel,
+  constantine/named/algebras,
+  constantine/math/[ec_shortweierstrass, io/io_fields],
+  constantine/serialization/codecs_bls12_381,
+  constantine/csprngs/sysrand,
   ../bench_blueprint,
   std/[os, strutils, monotimes]
 
@@ -33,20 +30,45 @@ template bench(op: string, iters: int, body: untyped): untyped =
   measure(iters, startTime, stopTime, startClk, stopClk, body)
   report(op, startTime, stopTime, startClk, stopClk, iters)
 
-proc benchComputeCellsAndKZGProofs(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
-  var cells : ref array[CELLS_PER_EXT_BLOB, Cell]
-  var proofs : ref array[CELLS_PER_EXT_BLOB, KZGProofBytes]
-  new(cells)
-  new(proofs)
+proc benchVerifyCellKZGProofBatch_64Blobs(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
+  ## Verify 64 blobs with all 128 cells each (8192 total cells)
+  ## This is the main scaling benchmark for batch verification
 
-  bench("compute_cells_and_kzg_proofs", iters):
-    doAssert cttEthKzg_Success == ctx.compute_cells_and_kzg_proofs(
-      cells[].asUnchecked(),
-      proofs[].asUnchecked(),
-      b.blobs[0])
+  var secureRandomBytes {.noInit.}: array[32, byte]
+  doAssert sysrand(secureRandomBytes)
+
+  const MaxTotal = NumBlobs * CELLS_PER_EXT_BLOB  # 8192
+
+  var commitments_bytes: ref array[MaxTotal, array[48, byte]]
+  var cell_indices: ref array[MaxTotal, CellIndex]
+  var cells_array: ref array[MaxTotal, Cell]
+  var proofs_bytes: ref array[MaxTotal, KZGProofBytes]
+  new(commitments_bytes)
+  new(cell_indices)
+  new(cells_array)
+  new(proofs_bytes)
+
+  var idx = 0
+  for blobIdx in 0 ..< NumBlobs:
+    for cellIdx in 0 ..< CELLS_PER_EXT_BLOB:
+      commitments_bytes[idx] = b.commitments[blobIdx]
+      cell_indices[idx] = CellIndex(cellIdx)
+      cells_array[idx] = b.cells[blobIdx][cellIdx]
+      proofs_bytes[idx] = b.proofs[blobIdx][cellIdx]
+      inc idx
+
+  bench("verify_cell_kzg_proof_batch (" & $NumBlobs & " blobs, " & $MaxTotal & " cells)", iters):
+    discard verify_cell_kzg_proof_batch(
+      ctx,
+      commitments_bytes[].asUnchecked(),
+      cell_indices[].asUnchecked(),
+      cells_array[].asUnchecked(),
+      proofs_bytes[].asUnchecked(),
+      MaxTotal,
+      secureRandomBytes)
 
 proc main() =
-  echo "PeerDAS (EIP-7594) - compute_cells_and_kzg_proofs Benchmark"
+  echo "PeerDAS (SIP-7594) - verify_cell_kzg_proof_batch Benchmark"
   echo "Optimized for perf/VTune profiling (single benchmark, serialized data)\n"
 
   let benchsetFile = currentSourcePath.rsplit(DirSep, 1)[0] / "benchset.dat"
@@ -59,19 +81,19 @@ proc main() =
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess
 
   let b = BenchSet.load(benchsetFile)
 
-  echo "Running compute_cells_and_kzg_proofs benchmark (FK20 algorithm)..."
+  echo "Running verify_cell_kzg_proof_batch benchmark (64 blobs, 8192 cells)..."
   echo ""
 
-  const Iters = 10
-  benchComputeCellsAndKZGProofs(b, ctx, Iters)
+  const Iters = 5
+  benchVerifyCellKZGProofBatch_64Blobs(b, ctx, Iters)
 
   ctx.delete()
 

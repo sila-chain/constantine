@@ -8,9 +8,9 @@
 
 import
   # Internals
-  constantine/eth_eip7594_peerdas,
+  constantine/sila_sip7594_peerdas,
   constantine/commitments/kzg_multiproofs,
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/sila_sip4844_kzg_parallel,
   constantine/named/algebras,
   constantine/math/[ec_shortweierstrass, io/io_fields],
   constantine/serialization/codecs_bls12_381,

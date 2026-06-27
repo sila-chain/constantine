@@ -32,14 +32,14 @@ func TestThreadpool(t *testing.T) {
 	tp.Shutdown()
 }
 
-// Ethereum EIP-4844 KZG tests
+// Sila SIP-4844 KZG tests
 // ----------------------------------------------------------
 //
 // Source: https://github.com/ethereum/c-kzg-4844
 
 var (
-	trustedSetupFile             = "../constantine/commitments_setups/trusted_setup_ethereum_kzg4844_reference.dat"
-	testDir                      = "../tests/protocol_ethereum_eip4844_deneb_kzg"
+	trustedSetupFile             = "../constantine/commitments_setups/trusted_setup_sila_kzg4844_reference.dat"
+	testDir                      = "../tests/protocol_sila_sip4844_deneb_kzg"
 	blobToKZGCommitmentTests     = filepath.Join(testDir, "blob_to_kzg_commitment/*/*/*")
 	computeKZGProofTests         = filepath.Join(testDir, "compute_kzg_proof/*/*/*")
 	computeBlobKZGProofTests     = filepath.Join(testDir, "compute_blob_kzg_proof/*/*/*")
@@ -66,19 +66,19 @@ func fromHexImpl(dst []byte, input []byte) error {
 	return nil
 }
 
-func (dst *EthKzgCommitment) UnmarshalText(input []byte) error {
+func (dst *SilaKzgCommitment) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
-func (dst *EthKzgProof) UnmarshalText(input []byte) error {
+func (dst *SilaKzgProof) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
-func (dst *EthBlob) UnmarshalText(input []byte) error {
+func (dst *SilaBlob) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
-func (dst *EthKzgChallenge) UnmarshalText(input []byte) error {
+func (dst *SilaKzgChallenge) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
-func (dst *EthKzgEvalAtChallenge) UnmarshalText(input []byte) error {
+func (dst *SilaKzgEvalAtChallenge) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
 
@@ -88,10 +88,10 @@ func TestBlobToKzgCommitment(t *testing.T) {
 		Input struct {
 			Blob string `yaml:"blob"`
 		}
-		Output *EthKzgCommitment `yaml:"output"`
+		Output *SilaKzgCommitment `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -108,7 +108,7 @@ func TestBlobToKzgCommitment(t *testing.T) {
 			require.NoError(t, testFile.Close())
 			require.NoError(t, err)
 
-			var blob EthBlob
+			var blob SilaBlob
 			err = blob.UnmarshalText([]byte(test.Input.Blob))
 			if err != nil {
 				require.Nil(t, test.Output)
@@ -136,7 +136,7 @@ func TestComputeKzgProof(t *testing.T) {
 		Output *[]string `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -153,14 +153,14 @@ func TestComputeKzgProof(t *testing.T) {
 			require.NoError(t, testFile.Close())
 			require.NoError(t, err)
 
-			var blob EthBlob
+			var blob SilaBlob
 			err = blob.UnmarshalText([]byte(test.Input.Blob))
 			if err != nil {
 				require.Nil(t, test.Output)
 				return
 			}
 
-			var z EthKzgChallenge
+			var z SilaKzgChallenge
 			err = z.UnmarshalText([]byte(test.Input.Z))
 			if err != nil {
 				require.Nil(t, test.Output)
@@ -170,11 +170,11 @@ func TestComputeKzgProof(t *testing.T) {
 			proof, y, err := ctx.ComputeKzgProof(blob, z)
 			if err == nil {
 				require.NotNil(t, test.Output)
-				var expectedProof EthKzgProof
+				var expectedProof SilaKzgProof
 				err = expectedProof.UnmarshalText([]byte((*test.Output)[0]))
 				require.NoError(t, err)
 				require.Equal(t, expectedProof[:], proof[:])
-				var expectedY EthKzgEvalAtChallenge
+				var expectedY SilaKzgEvalAtChallenge
 				err = expectedY.UnmarshalText([]byte((*test.Output)[1]))
 				require.NoError(t, err)
 				require.Equal(t, expectedY[:], y[:])
@@ -197,7 +197,7 @@ func TestVerifyKzgProof(t *testing.T) {
 		Output *bool `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -214,28 +214,28 @@ func TestVerifyKzgProof(t *testing.T) {
 			require.NoError(t, testFile.Close())
 			require.NoError(t, err)
 
-			var commitment EthKzgCommitment
+			var commitment SilaKzgCommitment
 			err = commitment.UnmarshalText([]byte(test.Input.Commitment))
 			if err != nil {
 				require.Nil(t, test.Output)
 				return
 			}
 
-			var z EthKzgChallenge
+			var z SilaKzgChallenge
 			err = z.UnmarshalText([]byte(test.Input.Z))
 			if err != nil {
 				require.Nil(t, test.Output)
 				return
 			}
 
-			var y EthKzgEvalAtChallenge
+			var y SilaKzgEvalAtChallenge
 			err = y.UnmarshalText([]byte(test.Input.Y))
 			if err != nil {
 				require.Nil(t, test.Output)
 				return
 			}
 
-			var proof EthKzgProof
+			var proof SilaKzgProof
 			err = proof.UnmarshalText([]byte(test.Input.Proof))
 			if err != nil {
 				require.Nil(t, test.Output)
@@ -262,10 +262,10 @@ func TestComputeBlobKzgProof(t *testing.T) {
 			Blob       string `yaml:"blob"`
 			Commitment string `yaml:"commitment"`
 		}
-		Output *EthKzgProof `yaml:"output"`
+		Output *SilaKzgProof `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -282,14 +282,14 @@ func TestComputeBlobKzgProof(t *testing.T) {
 			require.NoError(t, testFile.Close())
 			require.NoError(t, err)
 
-			var blob EthBlob
+			var blob SilaBlob
 			err = blob.UnmarshalText([]byte(test.Input.Blob))
 			if err != nil {
 				require.Nil(t, test.Output)
 				return
 			}
 
-			var commitment EthKzgCommitment
+			var commitment SilaKzgCommitment
 			err = commitment.UnmarshalText([]byte(test.Input.Commitment))
 			if err != nil {
 				require.Nil(t, test.Output)
@@ -318,7 +318,7 @@ func TestVerifyBlobKzgProof(t *testing.T) {
 		Output *bool `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -335,21 +335,21 @@ func TestVerifyBlobKzgProof(t *testing.T) {
 			require.NoError(t, testFile.Close())
 			require.NoError(t, err)
 
-			var blob EthBlob
+			var blob SilaBlob
 			err = blob.UnmarshalText([]byte(test.Input.Blob))
 			if err != nil {
 				require.Nil(t, test.Output)
 				return
 			}
 
-			var commitment EthKzgCommitment
+			var commitment SilaKzgCommitment
 			err = commitment.UnmarshalText([]byte(test.Input.Commitment))
 			if err != nil {
 				require.Nil(t, test.Output)
 				return
 			}
 
-			var proof EthKzgProof
+			var proof SilaKzgProof
 			err = proof.UnmarshalText([]byte(test.Input.Proof))
 			if err != nil {
 				require.Nil(t, test.Output)
@@ -380,7 +380,7 @@ func TestVerifyBlobKzgProofBatch(t *testing.T) {
 		Output *bool `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -400,9 +400,9 @@ func TestVerifyBlobKzgProofBatch(t *testing.T) {
 			require.NoError(t, testFile.Close())
 			require.NoError(t, err)
 
-			var blobs []EthBlob
+			var blobs []SilaBlob
 			for _, b := range test.Input.Blobs {
-				var blob EthBlob
+				var blob SilaBlob
 				err = blob.UnmarshalText([]byte(b))
 				if err != nil {
 					require.Nil(t, test.Output)
@@ -411,9 +411,9 @@ func TestVerifyBlobKzgProofBatch(t *testing.T) {
 				blobs = append(blobs, blob)
 			}
 
-			var commitments []EthKzgCommitment
+			var commitments []SilaKzgCommitment
 			for _, c := range test.Input.Commitments {
-				var commitment EthKzgCommitment
+				var commitment SilaKzgCommitment
 				err = commitment.UnmarshalText([]byte(c))
 				if err != nil {
 					require.Nil(t, test.Output)
@@ -422,9 +422,9 @@ func TestVerifyBlobKzgProofBatch(t *testing.T) {
 				commitments = append(commitments, commitment)
 			}
 
-			var proofs []EthKzgProof
+			var proofs []SilaKzgProof
 			for _, p := range test.Input.Proofs {
-				var proof EthKzgProof
+				var proof SilaKzgProof
 				err = proof.UnmarshalText([]byte(p))
 				if err != nil {
 					require.Nil(t, test.Output)
@@ -446,7 +446,7 @@ func TestVerifyBlobKzgProofBatch(t *testing.T) {
 	}
 }
 
-// Ethereum EIP-4844 KZG tests - Parallel
+// Sila SIP-4844 KZG tests - Parallel
 // ----------------------------------------------------------
 
 func createTestThreadpool(t *testing.T) Threadpool {
@@ -471,10 +471,10 @@ func TestBlobToKzgCommitmentParallel(t *testing.T) {
 		Input struct {
 			Blob string `yaml:"blob"`
 		}
-		Output *EthKzgCommitment `yaml:"output"`
+		Output *SilaKzgCommitment `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -494,7 +494,7 @@ func TestBlobToKzgCommitmentParallel(t *testing.T) {
 		require.NoError(t, testFile.Close())
 		require.NoError(t, err)
 
-		var blob EthBlob
+		var blob SilaBlob
 		err = blob.UnmarshalText([]byte(test.Input.Blob))
 		if err != nil {
 			require.Nil(t, test.Output)
@@ -521,7 +521,7 @@ func TestComputeKzgProofParallel(t *testing.T) {
 		Output *[]string `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -541,14 +541,14 @@ func TestComputeKzgProofParallel(t *testing.T) {
 		require.NoError(t, testFile.Close())
 		require.NoError(t, err)
 
-		var blob EthBlob
+		var blob SilaBlob
 		err = blob.UnmarshalText([]byte(test.Input.Blob))
 		if err != nil {
 			require.Nil(t, test.Output)
 			continue
 		}
 
-		var z EthKzgChallenge
+		var z SilaKzgChallenge
 		err = z.UnmarshalText([]byte(test.Input.Z))
 		if err != nil {
 			require.Nil(t, test.Output)
@@ -558,11 +558,11 @@ func TestComputeKzgProofParallel(t *testing.T) {
 		proof, y, err := ctx.ComputeKzgProofParallel(blob, z)
 		if err == nil {
 			require.NotNil(t, test.Output)
-			var expectedProof EthKzgProof
+			var expectedProof SilaKzgProof
 			err = expectedProof.UnmarshalText([]byte((*test.Output)[0]))
 			require.NoError(t, err)
 			require.Equal(t, expectedProof[:], proof[:])
-			var expectedY EthKzgEvalAtChallenge
+			var expectedY SilaKzgEvalAtChallenge
 			err = expectedY.UnmarshalText([]byte((*test.Output)[1]))
 			require.NoError(t, err)
 			require.Equal(t, expectedY[:], y[:])
@@ -579,10 +579,10 @@ func TestComputeBlobKzgProofParallel(t *testing.T) {
 			Blob       string `yaml:"blob"`
 			Commitment string `yaml:"commitment"`
 		}
-		Output *EthKzgProof `yaml:"output"`
+		Output *SilaKzgProof `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -602,14 +602,14 @@ func TestComputeBlobKzgProofParallel(t *testing.T) {
 		require.NoError(t, testFile.Close())
 		require.NoError(t, err)
 
-		var blob EthBlob
+		var blob SilaBlob
 		err = blob.UnmarshalText([]byte(test.Input.Blob))
 		if err != nil {
 			require.Nil(t, test.Output)
 			continue
 		}
 
-		var commitment EthKzgCommitment
+		var commitment SilaKzgCommitment
 		err = commitment.UnmarshalText([]byte(test.Input.Commitment))
 		if err != nil {
 			require.Nil(t, test.Output)
@@ -637,7 +637,7 @@ func TestVerifyBlobKzgProofParallel(t *testing.T) {
 		Output *bool `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -657,21 +657,21 @@ func TestVerifyBlobKzgProofParallel(t *testing.T) {
 		require.NoError(t, testFile.Close())
 		require.NoError(t, err)
 
-		var blob EthBlob
+		var blob SilaBlob
 		err = blob.UnmarshalText([]byte(test.Input.Blob))
 		if err != nil {
 			require.Nil(t, test.Output)
 			continue
 		}
 
-		var commitment EthKzgCommitment
+		var commitment SilaKzgCommitment
 		err = commitment.UnmarshalText([]byte(test.Input.Commitment))
 		if err != nil {
 			require.Nil(t, test.Output)
 			continue
 		}
 
-		var proof EthKzgProof
+		var proof SilaKzgProof
 		err = proof.UnmarshalText([]byte(test.Input.Proof))
 		if err != nil {
 			require.Nil(t, test.Output)
@@ -701,7 +701,7 @@ func TestVerifyBlobKzgProofBatchParallel(t *testing.T) {
 		Output *bool `yaml:"output"`
 	}
 
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -724,9 +724,9 @@ func TestVerifyBlobKzgProofBatchParallel(t *testing.T) {
 		require.NoError(t, testFile.Close())
 		require.NoError(t, err)
 
-		var blobs []EthBlob
+		var blobs []SilaBlob
 		for _, b := range test.Input.Blobs {
-			var blob EthBlob
+			var blob SilaBlob
 			err = blob.UnmarshalText([]byte(b))
 			if err != nil {
 				require.Nil(t, test.Output)
@@ -735,9 +735,9 @@ func TestVerifyBlobKzgProofBatchParallel(t *testing.T) {
 			blobs = append(blobs, blob)
 		}
 
-		var commitments []EthKzgCommitment
+		var commitments []SilaKzgCommitment
 		for _, c := range test.Input.Commitments {
-			var commitment EthKzgCommitment
+			var commitment SilaKzgCommitment
 			err = commitment.UnmarshalText([]byte(c))
 			if err != nil {
 				require.Nil(t, test.Output)
@@ -746,9 +746,9 @@ func TestVerifyBlobKzgProofBatchParallel(t *testing.T) {
 			commitments = append(commitments, commitment)
 		}
 
-		var proofs []EthKzgProof
+		var proofs []SilaKzgProof
 		for _, p := range test.Input.Proofs {
-			var proof EthKzgProof
+			var proof SilaKzgProof
 			err = proof.UnmarshalText([]byte(p))
 			if err != nil {
 				require.Nil(t, test.Output)

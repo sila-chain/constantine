@@ -8,10 +8,10 @@
 
 import
   benchset_serialization,
-  constantine/eth_eip7594_peerdas,
+  constantine/sila_sip7594_peerdas,
   constantine/platforms/primitives,
   constantine/platforms/views,
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/sila_sip4844_kzg_parallel,
   ../bench_blueprint,
   std/[os, strutils, monotimes]
 
@@ -27,14 +27,14 @@ template bench(op: string, iters: int, body: untyped): untyped =
   measure(iters, startTime, stopTime, startClk, stopClk, body)
   report(op, startTime, stopTime, startClk, stopClk, iters)
 
-proc benchRecoverCellsAndKZGProofs(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchRecoverCellsAndKZGProofs(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
   bench("recover_cells_and_kzg_proofs (50% availability)", iters):
     var recovered_cells: ref array[CELLS_PER_EXT_BLOB, Cell]
     var recovered_proofs: ref array[CELLS_PER_EXT_BLOB, KZGProofBytes]
     new(recovered_cells)
     new(recovered_proofs)
 
-    doAssert cttEthKzg_Success == recover_cells_and_kzg_proofs(
+    doAssert cttSilaKzg_Success == recover_cells_and_kzg_proofs(
       ctx,
       recovered_cells[].asUnchecked(),
       recovered_proofs[].asUnchecked(),
@@ -43,7 +43,7 @@ proc benchRecoverCellsAndKZGProofs(b: BenchSet, ctx: ptr EthereumKZGContext, ite
       b.halfCells[0].len)
 
 proc main() =
-  echo "PeerDAS (EIP-7594) - recover_cells_and_kzg_proofs Benchmark"
+  echo "PeerDAS (SIP-7594) - recover_cells_and_kzg_proofs Benchmark"
   echo "Optimized for perf/VTune profiling (single benchmark, serialized data)\n"
 
   let benchsetFile = currentSourcePath.rsplit(DirSep, 1)[0] / "benchset.dat"
@@ -56,9 +56,9 @@ proc main() =
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess
 

@@ -22,10 +22,10 @@ import
   # Protocols
   constantine/ethereum_bls_signatures,
   constantine/ethereum_bls_signatures_parallel,
-  constantine/commitments_setups/ethereum_kzg_srs,
-  constantine/ethereum_eip4844_kzg,
-  constantine/ethereum_eip4844_kzg_parallel,
-  constantine/eth_eip7594_peerdas,
+  constantine/commitments_setups/sila_kzg_srs,
+  constantine/sila_sip4844_kzg,
+  constantine/sila_sip4844_kzg_parallel,
+  constantine/sila_sip7594_peerdas,
 
   constantine/ethereum_evm_precompiles,
 

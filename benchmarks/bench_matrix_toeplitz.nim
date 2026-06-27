@@ -25,7 +25,7 @@ import
   constantine/math/polynomials/[fft_fields, fft_ec],
   constantine/math/polynomials/polynomials,
   # Trusted setup (for roots of unity)
-  constantine/commitments_setups/ethereum_kzg_srs {.all.},
+  constantine/commitments_setups/sila_kzg_srs {.all.},
   # PRNG
   helpers/prng_unsafe,
   # Math types
@@ -72,7 +72,7 @@ proc generateTestPoly(size: int): seq[F] =
 proc createFFTDescriptors(size: int): tuple[frDesc: FrFFT_Descriptor[F], ecDesc: ECFFT_Descriptor[EC_G1]] =
   ## Create FFT descriptors for given size
   let scale = log2_vartime(uint32 size)
-  let omega = ctt_eth_kzg4844_fr_pow2_roots_of_unity[scale]
+  let omega = ctt_sila_kzg4844_fr_pow2_roots_of_unity[scale]
 
   result.frDesc = FrFFT_Descriptor[F].new(order = size, generatorRootOfUnity = omega)
   result.ecDesc = ECFFT_Descriptor[EC_G1].new(order = size, generatorRootOfUnity = omega)

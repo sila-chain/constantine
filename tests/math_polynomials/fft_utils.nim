@@ -68,7 +68,7 @@ func createFFTDescriptor*(EC: typedesc, F: typedesc[Fr], orderSize: int): ECFFT_
   ECFFT_Descriptor[EC].new(order = orderSize, generatorRootOfUnity = root)
 
 when isMainModule:
-  const ctt_eth_kzg_fr_pow2_roots_of_unity = [
+  const ctt_sila_kzg_fr_pow2_roots_of_unity = [
     # primitive_root⁽ᵐᵒᵈᵘˡᵘˢ⁻¹⁾/⁽²^ⁱ⁾ for i in [0, 32)
     # The primitive root chosen is 7
     Fr[BLS12_381].fromHex"0x1",
@@ -117,11 +117,11 @@ when isMainModule:
         echo "  scale ", scale, " (2^", scale, "): ", root.toHex()
 
     block:
-      echo "\nVerifying against ethereum_kzg_testing_setups_generator values:"
+      echo "\nVerifying against sila_kzg_testing_setups_generator values:"
       var allMatch = true
       for scale in 0 .. 13:
         let computed = getRootOfUnityForScale(F, scale)
-        let expected = ctt_eth_kzg_fr_pow2_roots_of_unity[scale]
+        let expected = ctt_sila_kzg_fr_pow2_roots_of_unity[scale]
         if bool(computed != expected):
           echo "  MISMATCH at scale ", scale, ":"
           echo "    computed: ", computed.toHex()

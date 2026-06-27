@@ -339,14 +339,14 @@ proc benchBls12MsmG2(msmCtx: seq[byte], size, iters: int) =
   bench(&"BLS12_G2MSM {size:>3}", gasBls12MsmG2(size, gasSchedule["BLS12_G2MUL"]), iters):
     discard output.eth_evm_bls12381_g2msm(inputs)
 
-# EIP-4844
+# SIP-4844
 # -----------------------------------------------------------------------------------------------------
 
 const TrustedSetupMainnet =
   currentSourcePath.rsplit(DirSep, 1)[0] /
   ".." / "constantine" /
   "commitments_setups" /
-  "trusted_setup_ethereum_kzg4844_reference.dat"
+  "trusted_setup_sila_kzg4844_reference.dat"
 
 proc benchKzgPointEvaluation(iters: int) =
   let inputhex = "01e798154708fe7789429634053cbf9f99b619f9f084048927333fce637f549b564c0a11a0f704f4fc3e8acfe0f8245f0ad1347b378fbf96e206da11a5d3630624d25032e67a7e6a4910df5834b8fe70e6bcfeeac0352434196bdf4b2485d5a18f59a8d2a1a625a17f3fea0fe5eb8c896db3764f3185481bc22f91b4aaffcca25f26936857bc3a7c2539ea8ec3a952b7873033e038326e87ed3e1276fd140253fa08e9fc25fb2d9a98527fc22a2c9612fbeafdad446cbc7bcdbdcd780af2c16a"
@@ -354,7 +354,7 @@ proc benchKzgPointEvaluation(iters: int) =
   input.paddedFromHex(inputhex, bigEndian)
   var output = newSeq[byte](64)
 
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let status = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert status == tsSuccess, "\n[Trusted Setup Error] " & $status
 

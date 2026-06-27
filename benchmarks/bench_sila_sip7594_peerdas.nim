@@ -7,17 +7,17 @@
 # at your option. This file may not be copied, modified, or distributed except according to those terms.
 
 ## Run with
-##   nim c -r --cc:clang -d:danger --hints:off --warnings:off --outdir:build/wip --nimcache:nimcache/wip benchmarks/bench_eth_eip7594_peerdas.nim
+##   nim c -r --cc:clang -d:danger --hints:off --warnings:off --outdir:build/wip --nimcache:nimcache/wip benchmarks/bench_sila_sip7594_peerdas.nim
 ##
 ## Or via nimble:
-##   CC=clang nimble bench_eth_eip7594_peerdas
+##   CC=clang nimble bench_sila_sip7594_peerdas
 
 import
   # Internals
-  constantine/eth_eip7594_peerdas {.all.},
+  constantine/sila_sip7594_peerdas {.all.},
   constantine/commitments/kzg_multiproofs,
-  constantine/commitments_setups/ethereum_kzg_srs {.all.},
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/commitments_setups/sila_kzg_srs {.all.},
+  constantine/sila_sip4844_kzg_parallel,
   constantine/named/algebras,
   constantine/math/[ec_shortweierstrass, io/io_fields, elliptic/ec_multi_scalar_mul_precomp],
   constantine/serialization/codecs_bls12_381,
@@ -69,7 +69,7 @@ proc randomize(rng: var RngState, blob: var Blob) =
         .marshal(t, bigEndian)
 
 proc computeBlobParallel(
-  ctx: ptr EthereumKZGContext,
+  ctx: ptr SilaKZGContext,
   tempBlobs: ptr Blob,
   tempCommitments: ptr array[48, byte],
   tempCells: ptr array[CELLS_PER_EXT_BLOB, Cell],
@@ -81,15 +81,15 @@ proc computeBlobParallel(
   rng[].randomize(tempBlobs[])
 
   # Compute commitment
-  doAssert cttEthKzg_Success == ctx.blob_to_kzg_commitment(tempCommitments[], tempBlobs[])
+  doAssert cttSilaKzg_Success == ctx.blob_to_kzg_commitment(tempCommitments[], tempBlobs[])
 
   # Compute all cells and proofs (this is the expensive part!)
-  doAssert cttEthKzg_Success == ctx.compute_cells_and_kzg_proofs(
+  doAssert cttSilaKzg_Success == ctx.compute_cells_and_kzg_proofs(
     tempCells[].asUnchecked(),
     tempProofs[].asUnchecked(),
     tempBlobs[])
 
-proc new(T: type BenchSet, ctx: ptr EthereumKZGContext): T =
+proc new(T: type BenchSet, ctx: ptr SilaKZGContext): T =
   new(result)
 
   echo "Initializing benchmark data (this may take a while)..."
@@ -163,7 +163,7 @@ proc new(T: type BenchSet, ctx: ptr EthereumKZGContext): T =
   let initTime = (initStop - initStart).inNanoseconds() div 1_000_000
   echo &"Initialization complete in {initTime} ms ({float(initTime)/1000.0:.2f} seconds)\n"
 
-proc benchComputeCells(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchComputeCells(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
   ## Compute cells without proofs (half-FFT optimization)
   ## Corresponds to:
   ## - go-eth-kzg: ComputeCells benchmark
@@ -173,9 +173,9 @@ proc benchComputeCells(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
   var cells: ref array[CELLS_PER_EXT_BLOB, Cell]
   new(cells)
   bench("compute_cells (half-FFT optimization)", iters):
-    doAssert cttEthKzg_Success == ctx.compute_cells(cells[], b.blobs[0])
+    doAssert cttSilaKzg_Success == ctx.compute_cells(cells[], b.blobs[0])
 
-proc benchComputeCellsAndKZGProofsNoPrecomp(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchComputeCellsAndKZGProofsNoPrecomp(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
   ## Compute cells and proofs together using FK20 algorithm
   ## Corresponds to:
   ## - go-eth-kzg: ComputeCellsAndKZGProofs benchmark
@@ -190,12 +190,12 @@ proc benchComputeCellsAndKZGProofsNoPrecomp(b: BenchSet, ctx: ptr EthereumKZGCon
   new(proofs)
 
   bench("compute_cells_and_kzg_proofs (no precompute, 1.8 MiB)", iters):
-    doAssert cttEthKzg_Success == ctx.compute_cells_and_kzg_proofs(
+    doAssert cttSilaKzg_Success == ctx.compute_cells_and_kzg_proofs(
       cells[].asUnchecked(),
       proofs[].asUnchecked(),
       b.blobs[0])
 
-proc benchComputeCellsAndKZGProofsWithPrecomp(b: BenchSet, ctx: ptr EthereumKZGContext, t, bitWidth, iters: int) =
+proc benchComputeCellsAndKZGProofsWithPrecomp(b: BenchSet, ctx: ptr SilaKZGContext, t, bitWidth, iters: int) =
   ## Compute cells and proofs together using FK20 algorithm
   ## Corresponds to:
   ## - go-eth-kzg: ComputeCellsAndKZGProofs benchmark
@@ -216,12 +216,12 @@ proc benchComputeCellsAndKZGProofsWithPrecomp(b: BenchSet, ctx: ptr EthereumKZGC
   new(proofs)
 
   bench(fmt"compute_cells_and_kzg_proofs (t={t:>3}, b={bitWidth:>2}, ~{memMiB:>7.1f} MiB)", iters):
-    doAssert cttEthKzg_Success == ctx.compute_cells_and_kzg_proofs(
+    doAssert cttSilaKzg_Success == ctx.compute_cells_and_kzg_proofs(
       cells[].asUnchecked(),
       proofs[].asUnchecked(),
       b.blobs[0])
 
-proc benchVerifyCellKZGProofBatch_SingleBlob(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchVerifyCellKZGProofBatch_SingleBlob(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
   ## Verify cells from a single blob with varying batch sizes
   ## Corresponds to:
   ## - go-eth-kzg: VerifyCellKZGProofBatch(count=1,8,32,64,128) benchmarks
@@ -258,7 +258,7 @@ proc benchVerifyCellKZGProofBatch_SingleBlob(b: BenchSet, ctx: ptr EthereumKZGCo
         count,
         secureRandomBytes)
 
-proc benchVerifyCellKZGProofBatch_MultiBlob(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchVerifyCellKZGProofBatch_MultiBlob(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
   ## Verify cells from multiple blobs (scaling by number of blobs)
   ## Corresponds to:
   ## - go-eth-kzg: Not directly tested (single blob only)
@@ -300,7 +300,7 @@ proc benchVerifyCellKZGProofBatch_MultiBlob(b: BenchSet, ctx: ptr EthereumKZGCon
 
     i *= 2
 
-proc benchRecoverCellsAndKZGProofs_WorstCase(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int, labelSuffix = "") =
+proc benchRecoverCellsAndKZGProofs_WorstCase(b: BenchSet, ctx: ptr SilaKZGContext, iters: int, labelSuffix = "") =
   ## Recover from exactly 50% of cells (worst case)
   ## Corresponds to:
   ## - go-eth-kzg: RecoverCellsAndComputeKZGProofs benchmark
@@ -313,7 +313,7 @@ proc benchRecoverCellsAndKZGProofs_WorstCase(b: BenchSet, ctx: ptr EthereumKZGCo
   new(recovered_proofs)
 
   bench(&"recover_cells_and_kzg_proofs (50% cells) {labelSuffix}", iters):
-    doAssert cttEthKzg_Success == recover_cells_and_kzg_proofs(
+    doAssert cttSilaKzg_Success == recover_cells_and_kzg_proofs(
       ctx,
       recovered_cells[].asUnchecked(),
       recovered_proofs[].asUnchecked(),
@@ -321,7 +321,7 @@ proc benchRecoverCellsAndKZGProofs_WorstCase(b: BenchSet, ctx: ptr EthereumKZGCo
       b.halfCells[0].asUnchecked(),
       b.halfCells[0].len)
 
-proc benchRecoverCellsAndKZGProofs_VaryingAvailability(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int, labelSuffix = "") =
+proc benchRecoverCellsAndKZGProofs_VaryingAvailability(b: BenchSet, ctx: ptr SilaKZGContext, iters: int, labelSuffix = "") =
   ## Recover with varying cell availability (50%, 75%, 87.5%)
   ## Corresponds to:
   ## - go-eth-kzg: Not tested (only 50%)
@@ -346,7 +346,7 @@ proc benchRecoverCellsAndKZGProofs_VaryingAvailability(b: BenchSet, ctx: ptr Eth
 
     bench(&"recover_cells_and_kzg_proofs ({availability}% availability, {numCells} cells) {labelSuffix}", iters):
       # Take first numCells cells (seq is fine for variable-size input)
-      doAssert cttEthKzg_Success == recover_cells_and_kzg_proofs(
+      doAssert cttSilaKzg_Success == recover_cells_and_kzg_proofs(
         ctx,
         recovered_cells[].asUnchecked(),
         recovered_proofs[].asUnchecked(),
@@ -354,7 +354,7 @@ proc benchRecoverCellsAndKZGProofs_VaryingAvailability(b: BenchSet, ctx: ptr Eth
         cells.asUnchecked(),
         numCells)
 
-proc benchBatchVerification_ChallengeComputation(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchBatchVerification_ChallengeComputation(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
   ## Fiat-Shamir challenge computation for batch verification
   ## Corresponds to:
   ## - go-eth-kzg: Internal to VerifyCellKZGProofBatch
@@ -385,7 +385,7 @@ proc benchBatchVerification_ChallengeComputation(b: BenchSet, ctx: ptr EthereumK
   # Deserialize cells to coset evaluations
   for i in 0 ..< 128:
     let status = cellToCosetEvals(cosets_evals[i], b.cells[0][i])
-    doAssert status == cttEthKzg_Success
+    doAssert status == cttSilaKzg_Success
 
   bench("compute_verify_cell_kzg_proof_batch_challenge (128 cells)", iters):
     discard compute_verify_cell_kzg_proof_batch_challenge(
@@ -400,13 +400,13 @@ const TrustedSetupMainnet =
   currentSourcePath.rsplit(DirSep, 1)[0] /
   ".." / "constantine" /
   "commitments_setups" /
-  "trusted_setup_ethereum_kzg4844_reference.dat"
+  "trusted_setup_sila_kzg4844_reference.dat"
 
-proc trusted_setup*(): ptr EthereumKZGContext =
+proc trusted_setup*(): ptr SilaKZGContext =
   ## This is a convenience function for the Ethereum mainnet testing trusted setups.
   ## It is insecure and will be replaced once the KZG ceremony is done.
 
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus
   echo "Trusted Setup loaded successfully"
@@ -414,7 +414,7 @@ proc trusted_setup*(): ptr EthereumKZGContext =
 
 const Iters = 3
 proc main() =
-  echo "PeerDAS (EIP-7594) Benchmarks"
+  echo "PeerDAS (SIP-7594) Benchmarks"
   echo "Note: Benchmarks are serial, but initialization is parallelized"
   echo ""
 

@@ -16,7 +16,7 @@ Warning ⚠️:
         - [BLS signatures](#bls-signatures)
             - [Performance](#performance)
         - [BLS12-381 Key Derivation for wallets](#bls12-381-key-derivation-for-wallets)
-        - [KZG commitments for EIP-4844](#kzg-commitments-for-eip-4844)
+        - [KZG commitments for SIP-4844](#kzg-commitments-for-sip-4844)
             - [Performance](#performance)
     - [Ethereum Execution Layer](#ethereum-execution-layer)
         - [Ethereum Virtual Machine](#ethereum-virtual-machine)
@@ -47,9 +47,9 @@ source, serial bench from https://github.com/mratsim/constantine/pull/279#issuec
 Specs:
 - https://eips.ethereum.org/EIPS/eip-2333
 
-### KZG commitments for EIP-4844
+### KZG commitments for SIP-4844
 
-Constantine implements the full Ethereum KZG API in Nim, C, Rust, Go for CL clients.
+Constantine implements the full Sila KZG API in Nim, C, Rust, Go for CL clients.
 It is also fully parallelized.
 
 Specs:

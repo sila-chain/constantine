@@ -38,7 +38,7 @@ template bench*(op, typ: string, size, iters: int, body: untyped): untyped =
     measure(iters, startTime, stopTime, startClk, stopClk, body)
     report(op, typ, size, startTime, stopTime, startClk, stopClk, iters)
 
-const ctt_eth_kzg_fr_pow2_roots_of_unity = [
+const ctt_sila_kzg_fr_pow2_roots_of_unity = [
   Fr[BLS12_381].fromHex"0x1",
   Fr[BLS12_381].fromHex"0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000000",
   Fr[BLS12_381].fromHex"0x8d51ccce760304d0ec030002760300000001000000000000",
@@ -94,7 +94,7 @@ proc bench_EC_FFT_NN_Recursive*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -115,7 +115,7 @@ proc bench_EC_FFT_NR_Iterative_DIF*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -136,7 +136,7 @@ proc bench_EC_FFT_RN_Iterative_DIT*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -160,7 +160,7 @@ proc bench_EC_FFT_NR_via_Recursive_and_BitRev*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -182,7 +182,7 @@ proc bench_EC_FFT_NN_via_Iterative_DIF_and_BitRev*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -203,7 +203,7 @@ proc bench_EC_FFT_NN_via_BitRev_and_Iterative_DIT*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -224,7 +224,7 @@ proc bench_EC_FFT_NN_Dispatch*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -245,7 +245,7 @@ proc bench_EC_FFT_NR_Dispatch*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -266,7 +266,7 @@ proc bench_EC_IFFT_NN_Dispatch*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -290,7 +290,7 @@ proc bench_EC_IFFT_RN_Iterative_DIT*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()
@@ -313,7 +313,7 @@ proc bench_EC_IFFT_NN_via_BitRev_and_Iterative_DIT*() =
 
   for scale in countup(3, 13, 2):
     let order = 1 shl scale
-    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_eth_kzg_fr_pow2_roots_of_unity[scale])
+    let fftDesc = ECFFT_Descriptor[EC_G1].new(order = order, ctt_sila_kzg_fr_pow2_roots_of_unity[scale])
 
     var data = newSeq[EC_G1](order)
     data[0].setGenerator()

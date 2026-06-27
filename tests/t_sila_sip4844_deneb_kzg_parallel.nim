@@ -12,8 +12,8 @@ import
   # Internals
   constantine/hashes,
   constantine/serialization/codecs,
-  constantine/ethereum_eip4844_kzg,
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/sila_sip4844_kzg,
+  constantine/sila_sip4844_kzg_parallel,
   constantine/threadpool/threadpool,
   # Test utilities
   ./testutils/eth_consensus_utils
@@ -32,7 +32,7 @@ import
 
 const
   TestVectorsDir =
-    currentSourcePath.rsplit(DirSep, 1)[0] / "protocol_ethereum_eip4844_deneb_kzg"
+    currentSourcePath.rsplit(DirSep, 1)[0] / "protocol_sila_sip4844_deneb_kzg"
 
 TestVectorsDir.testGenPar(blob_to_kzg_commitment, "kzg-mainnet", testVector):
   parseAssign(testVector, blob, BYTES_PER_BLOB, testVector["input"]["blob"].content)
@@ -42,7 +42,7 @@ TestVectorsDir.testGenPar(blob_to_kzg_commitment, "kzg-mainnet", testVector):
   let status = tp.blob_to_kzg_commitment_parallel(ctx, commitment, blob[])
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     parseAssign(testVector, expectedCommit, BYTES_PER_COMMITMENT, testVector["output"].content)
     doAssert bool(commitment == expectedCommit[]), block:
       "\ncommitment: " & commitment.toHex() &
@@ -60,7 +60,7 @@ TestVectorsDir.testGenPar(compute_kzg_proof, "kzg-mainnet", testVector):
   let status = compute_kzg_proof_parallel(tp, ctx, proof, y, blob[], z[])
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     parseAssign(testVector, expectedEvalAtChallenge, BYTES_PER_FIELD_ELEMENT, testVector["output"][1].content)
     parseAssign(testVector, expectedProof, BYTES_PER_PROOF, testVector["output"][0].content)
 
@@ -83,9 +83,9 @@ TestVectorsDir.testGenPar(compute_kzg_proof, "kzg-mainnet", testVector):
 #   let status = ctx.verify_kzg_proof(commitment[], z[], y[], proof[])
 #   stdout.write "[" & $status & "]\n"
 #
-#   if status == cttEthKzg_Success:
+#   if status == cttSilaKzg_Success:
 #     doAssert testVector["output"].content == "true"
-#   elif status == cttEthKzg_VerificationFailure:
+#   elif status == cttSilaKzg_VerificationFailure:
 #     doAssert testVector["output"].content == "false"
 #   else:
 #     doAssert testVector["output"].content == "null"
@@ -99,7 +99,7 @@ TestVectorsDir.testGenPar(compute_blob_kzg_proof, "kzg-mainnet", testVector):
   let status = compute_blob_kzg_proof_parallel(tp, ctx, proof, blob[], commitment[])
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     parseAssign(testVector, expectedProof, BYTES_PER_PROOF, testVector["output"].content)
 
     doAssert bool(proof == expectedProof[]), block:
@@ -116,9 +116,9 @@ TestVectorsDir.testGenPar(verify_blob_kzg_proof, "kzg-mainnet", testVector):
   let status = verify_blob_kzg_proof_parallel(tp, ctx, blob[], commitment[], proof[])
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     doAssert testVector["output"].content == "true"
-  elif status == cttEthKzg_VerificationFailure:
+  elif status == cttSilaKzg_VerificationFailure:
     doAssert testVector["output"].content == "false"
   else:
     doAssert testVector["output"].content == "null"
@@ -157,15 +157,15 @@ TestVectorsDir.testGenPar(verify_blob_kzg_proof_batch, "kzg-mainnet", testVector
                  randomBlinding)
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     doAssert testVector["output"].content == "true"
-  elif status == cttEthKzg_VerificationFailure:
+  elif status == cttSilaKzg_VerificationFailure:
     doAssert testVector["output"].content == "false"
   else:
     doAssert testVector["output"].content == "null"
 
 block:
-  suite "Ethereum Deneb Hardfork / EIP-4844 / Proto-Danksharding / KZG Polynomial Commitments (Parallel)":
+  suite "Ethereum Deneb Hardfork / SIP-4844 / Proto-Danksharding / KZG Polynomial Commitments (Parallel)":
     let ctx = getTrustedSetup()
     let tp = Threadpool.new()
 

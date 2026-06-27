@@ -12,17 +12,17 @@ import
   constantine/math/[arithmetic, ec_shortweierstrass],
   constantine/math/io/io_fields,
   constantine/platforms/[bithacks, views],
-  constantine/ethereum_eip4844_kzg,
-  constantine/eth_eip7594_peerdas
+  constantine/sila_sip4844_kzg,
+  constantine/sila_sip7594_peerdas
 
 const TrustedSetupMainnet =
   currentSourcePath.rsplit(DirSep, 1)[0] /
   ".." / ".." / "constantine" /
   "commitments_setups" /
-  "trusted_setup_ethereum_kzg4844_reference.dat"
+  "trusted_setup_sila_kzg4844_reference.dat"
 
-proc trusted_setup*(): ptr EthereumKZGContext =
-  var ctx: ptr EthereumKZGContext
+proc trusted_setup*(): ptr SilaKZGContext =
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus
   echo "Trusted Setup loaded successfully"
@@ -40,7 +40,7 @@ func build_test_blob*(): Blob =
     for j in 0 ..< 32:
       result[start + j] = chunk[j]
 
-proc test_recover_from_64_cells*(ctx: ptr EthereumKZGContext) =
+proc test_recover_from_64_cells*(ctx: ptr SilaKZGContext) =
   echo "Testing recovery from exactly 64 cells (minimum threshold)..."
 
   let blob = build_test_blob()
@@ -49,7 +49,7 @@ proc test_recover_from_64_cells*(ctx: ptr EthereumKZGContext) =
   var cells: array[CELLS_PER_EXT_BLOB, Cell]
   let status = ctx.compute_cells(cells, blob)
   echo "  compute_cells status: ", status
-  doAssert status == cttEthKzg_Success
+  doAssert status == cttSilaKzg_Success
 
   var available_indices: seq[CellIndex]
   var available_cells: seq[Cell]
@@ -70,7 +70,7 @@ proc test_recover_from_64_cells*(ctx: ptr EthereumKZGContext) =
     available_cells.asUnchecked(),
     available_cells.len
   )
-  doAssert recover_status == cttEthKzg_Success
+  doAssert recover_status == cttSilaKzg_Success
 
   for i in 0 ..< CELLS_PER_EXT_BLOB:
     doAssert recovered_cells[i] == cells[i],
@@ -78,14 +78,14 @@ proc test_recover_from_64_cells*(ctx: ptr EthereumKZGContext) =
 
   echo "  ✓ Recovery from 64 cells PASSED"
 
-proc test_recover_from_65_cells*(ctx: ptr EthereumKZGContext) =
+proc test_recover_from_65_cells*(ctx: ptr SilaKZGContext) =
   echo "Testing recovery from 65 cells (above threshold)..."
 
   let blob = build_test_blob()
 
   var cells: array[CELLS_PER_EXT_BLOB, Cell]
   let status = ctx.compute_cells(cells, blob)
-  doAssert status == cttEthKzg_Success
+  doAssert status == cttSilaKzg_Success
 
   var available_indices: seq[CellIndex]
   var available_cells: seq[Cell]
@@ -106,7 +106,7 @@ proc test_recover_from_65_cells*(ctx: ptr EthereumKZGContext) =
     available_cells.asUnchecked(),
     available_cells.len
   )
-  doAssert recover_status == cttEthKzg_Success
+  doAssert recover_status == cttSilaKzg_Success
 
   for i in 0 ..< CELLS_PER_EXT_BLOB:
     doAssert recovered_cells[i] == cells[i],
@@ -114,14 +114,14 @@ proc test_recover_from_65_cells*(ctx: ptr EthereumKZGContext) =
 
   echo "  ✓ Recovery from 65 cells PASSED"
 
-proc test_recover_from_all_cells*(ctx: ptr EthereumKZGContext) =
+proc test_recover_from_all_cells*(ctx: ptr SilaKZGContext) =
   echo "Testing recovery when all cells available..."
 
   let blob = build_test_blob()
 
   var cells: array[CELLS_PER_EXT_BLOB, Cell]
   let status = ctx.compute_cells(cells, blob)
-  doAssert status == cttEthKzg_Success
+  doAssert status == cttSilaKzg_Success
 
   var available_indices: seq[CellIndex]
   var available_cells: seq[Cell]
@@ -139,7 +139,7 @@ proc test_recover_from_all_cells*(ctx: ptr EthereumKZGContext) =
     available_cells.asUnchecked(),
     available_cells.len
   )
-  doAssert recover_status == cttEthKzg_Success
+  doAssert recover_status == cttSilaKzg_Success
 
   for i in 0 ..< CELLS_PER_EXT_BLOB:
     doAssert recovered_cells[i] == cells[i],
@@ -147,14 +147,14 @@ proc test_recover_from_all_cells*(ctx: ptr EthereumKZGContext) =
 
   echo "  ✓ Recovery from all cells PASSED"
 
-proc test_recover_alternate_indices*(ctx: ptr EthereumKZGContext) =
+proc test_recover_alternate_indices*(ctx: ptr SilaKZGContext) =
   echo "Testing recovery with alternate cell indices (0, 2, 4, ...)..."
 
   let blob = build_test_blob()
 
   var cells: array[CELLS_PER_EXT_BLOB, Cell]
   let status = ctx.compute_cells(cells, blob)
-  doAssert status == cttEthKzg_Success
+  doAssert status == cttSilaKzg_Success
 
   var available_indices: seq[CellIndex]
   var available_cells: seq[Cell]
@@ -173,7 +173,7 @@ proc test_recover_alternate_indices*(ctx: ptr EthereumKZGContext) =
     available_cells.asUnchecked(),
     available_cells.len
   )
-  doAssert recover_status == cttEthKzg_Success
+  doAssert recover_status == cttSilaKzg_Success
 
   for i in 0 ..< CELLS_PER_EXT_BLOB:
     doAssert recovered_cells[i] == cells[i],
@@ -181,14 +181,14 @@ proc test_recover_alternate_indices*(ctx: ptr EthereumKZGContext) =
 
   echo "  ✓ Recovery with alternate indices PASSED"
 
-proc test_too_few_cells_error*(ctx: ptr EthereumKZGContext) =
+proc test_too_few_cells_error*(ctx: ptr SilaKZGContext) =
   echo "Testing that recovery fails with too few cells..."
 
   let blob = build_test_blob()
 
   var cells: array[CELLS_PER_EXT_BLOB, Cell]
   let status = ctx.compute_cells(cells, blob)
-  doAssert status == cttEthKzg_Success
+  doAssert status == cttSilaKzg_Success
 
   var available_indices: seq[CellIndex]
   var available_cells: seq[Cell]
@@ -206,18 +206,18 @@ proc test_too_few_cells_error*(ctx: ptr EthereumKZGContext) =
     available_cells.asUnchecked(),
     available_cells.len
   )
-  doAssert recover_status == cttEthKzg_InputsLengthsMismatch
+  doAssert recover_status == cttSilaKzg_InputsLengthsMismatch
 
   echo "  ✓ Too few cells error handling PASSED"
 
-proc test_duplicate_indices_error*(ctx: ptr EthereumKZGContext) =
+proc test_duplicate_indices_error*(ctx: ptr SilaKZGContext) =
   echo "Testing that recovery fails with duplicate indices..."
 
   let blob = build_test_blob()
 
   var cells: array[CELLS_PER_EXT_BLOB, Cell]
   let status = ctx.compute_cells(cells, blob)
-  doAssert status == cttEthKzg_Success
+  doAssert status == cttSilaKzg_Success
 
   var available_indices: seq[CellIndex]
   var available_cells: seq[Cell]
@@ -237,7 +237,7 @@ proc test_duplicate_indices_error*(ctx: ptr EthereumKZGContext) =
     available_cells.asUnchecked(),
     available_cells.len
   )
-  doAssert recover_status == cttEthKzg_CellIndicesNotAscending
+  doAssert recover_status == cttSilaKzg_CellIndicesNotAscending
 
   echo "  ✓ Duplicate indices error handling PASSED"
 

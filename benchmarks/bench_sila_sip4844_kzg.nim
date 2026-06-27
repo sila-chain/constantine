@@ -8,7 +8,7 @@
 
 import
   # Internals
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/sila_sip4844_kzg_parallel,
   constantine/named/algebras,
   constantine/math/io/io_fields,
   constantine/threadpool/threadpool,
@@ -50,7 +50,7 @@ proc randomize(rng: var RngState, blob: var Blob) =
     blob.toOpenArray(offset, offset+BYTES_PER_FIELD_ELEMENT-1)
         .marshal(t, bigEndian)
 
-proc new(T: type BenchSet, ctx: ptr EthereumKZGContext): T =
+proc new(T: type BenchSet, ctx: ptr SilaKZGContext): T =
   new(result)
   for i in 0 ..< result.N:
     rng.randomize(result.blobs[i])
@@ -63,13 +63,13 @@ proc new(T: type BenchSet, ctx: ptr EthereumKZGContext): T =
   discard result.opening_challenge.marshal(opening_challenge, bigEndian)
   discard result.eval_at_challenge.marshal(eval_at_challenge, bigEndian)
 
-proc benchBlobToKzgCommitment(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchBlobToKzgCommitment(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
 
   let startSerial = getMonotime()
   block:
     bench("blob_to_kzg_commitment", "serial", iters):
       var commitment {.noInit.}: array[48, byte]
-      doAssert cttEthKzg_Success == ctx.blob_to_kzg_commitment(commitment, b.blobs[0])
+      doAssert cttSilaKzg_Success == ctx.blob_to_kzg_commitment(commitment, b.blobs[0])
   let stopSerial = getMonotime()
 
   ## We require `tp` to be unintialized as even idle threads somehow reduce perf of serial benches
@@ -80,7 +80,7 @@ proc benchBlobToKzgCommitment(b: BenchSet, ctx: ptr EthereumKZGContext, iters: i
   block:
     bench("blob_to_kzg_commitment", $tp.numThreads & " threads", iters):
       var commitment {.noInit.}: array[48, byte]
-      doAssert cttEthKzg_Success == tp.blob_to_kzg_commitment_parallel(ctx, commitment, b.blobs[0])
+      doAssert cttSilaKzg_Success == tp.blob_to_kzg_commitment_parallel(ctx, commitment, b.blobs[0])
   let stopParallel = getMonotime()
 
   tp.shutdown()
@@ -91,14 +91,14 @@ proc benchBlobToKzgCommitment(b: BenchSet, ctx: ptr EthereumKZGContext, iters: i
   let parallelSpeedup = float(perfSerial) / float(perfParallel)
   echo &"Speedup ratio parallel {numThreads} threads over serial: {parallelSpeedup:>6.3f}x"
 
-proc benchComputeKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchComputeKzgProof(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
 
   let startSerial = getMonotime()
   block:
     bench("compute_kzg_proof", "serial", iters):
       var proof {.noInit.}: array[48, byte]
       var eval_at_challenge {.noInit.}: array[32, byte]
-      doAssert cttEthKzg_Success == ctx.compute_kzg_proof(proof, eval_at_challenge, b.blobs[0], b.opening_challenge)
+      doAssert cttSilaKzg_Success == ctx.compute_kzg_proof(proof, eval_at_challenge, b.blobs[0], b.opening_challenge)
   let stopSerial = getMonotime()
 
   ## We require `tp` to be unintialized as even idle threads somehow reduce perf of serial benches
@@ -110,7 +110,7 @@ proc benchComputeKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) 
     bench("compute_kzg_proof", $tp.numThreads & " threads", iters):
       var proof {.noInit.}: array[48, byte]
       var eval_at_challenge {.noInit.}: array[32, byte]
-      doAssert cttEthKzg_Success == tp.compute_kzg_proof_parallel(ctx, proof, eval_at_challenge, b.blobs[0], b.opening_challenge)
+      doAssert cttSilaKzg_Success == tp.compute_kzg_proof_parallel(ctx, proof, eval_at_challenge, b.blobs[0], b.opening_challenge)
   let stopParallel = getMonotime()
 
   tp.shutdown()
@@ -121,13 +121,13 @@ proc benchComputeKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) 
   let parallelSpeedup = float(perfSerial) / float(perfParallel)
   echo &"Speedup ratio parallel {numThreads} threads over serial: {parallelSpeedup:>6.3f}x"
 
-proc benchComputeBlobKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchComputeBlobKzgProof(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
 
   let startSerial = getMonotime()
   block:
     bench("compute_blob_kzg_proof", "serial", iters):
       var proof {.noInit.}: array[48, byte]
-      doAssert cttEthKzg_Success == ctx.compute_blob_kzg_proof(proof, b.blobs[0], b.commitments[0])
+      doAssert cttSilaKzg_Success == ctx.compute_blob_kzg_proof(proof, b.blobs[0], b.commitments[0])
   let stopSerial = getMonotime()
 
   ## We require `tp` to be unintialized as even idle threads somehow reduce perf of serial benches
@@ -138,7 +138,7 @@ proc benchComputeBlobKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: i
   block:
     bench("compute_blob_kzg_proof", $tp.numThreads & " threads", iters):
       var proof {.noInit.}: array[48, byte]
-      doAssert cttEthKzg_Success == tp.compute_blob_kzg_proof_parallel(ctx, proof, b.blobs[0], b.commitments[0])
+      doAssert cttSilaKzg_Success == tp.compute_blob_kzg_proof_parallel(ctx, proof, b.blobs[0], b.commitments[0])
   let stopParallel = getMonotime()
 
   tp.shutdown()
@@ -149,14 +149,14 @@ proc benchComputeBlobKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: i
   let parallelSpeedup = float(perfSerial) / float(perfParallel)
   echo &"Speedup ratio parallel {numThreads} threads over serial: {parallelSpeedup:>6.3f}x"
 
-proc benchVerifyKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchVerifyKzgProof(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
 
   bench("verify_kzg_proof", "serial", iters):
     discard ctx.verify_kzg_proof(b.commitments[0], b.opening_challenge, b.eval_at_challenge, b.proofs[0])
 
   echo "verify_kzg_proof is always serial"
 
-proc benchVerifyBlobKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchVerifyBlobKzgProof(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
 
   let startSerial = getMonotime()
   block:
@@ -182,7 +182,7 @@ proc benchVerifyBlobKzgProof(b: BenchSet, ctx: ptr EthereumKZGContext, iters: in
   let parallelSpeedup = float(perfSerial) / float(perfParallel)
   echo &"Speedup ratio parallel {numThreads} threads over serial: {parallelSpeedup:>6.3f}x"
 
-proc benchVerifyBlobKzgProofBatch(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchVerifyBlobKzgProofBatch(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
 
   var secureRandomBytes {.noInit.}: array[32, byte]
   discard sysrand(secureRandomBytes)
@@ -234,13 +234,13 @@ const TrustedSetupMainnet =
   currentSourcePath.rsplit(DirSep, 1)[0] /
   ".." / "constantine" /
   "commitments_setups" /
-  "trusted_setup_ethereum_kzg4844_reference.dat"
+  "trusted_setup_sila_kzg4844_reference.dat"
 
-proc trusted_setup*(): ptr EthereumKZGContext =
+proc trusted_setup*(): ptr SilaKZGContext =
   ## This is a convenience function for the Ethereum mainnet testing trusted setups.
   ## It is insecure and will be replaced once the KZG ceremony is done.
 
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus
   echo "Trusted Setup loaded successfully"

@@ -10,7 +10,7 @@
 #define __CTT_H_ETHEREUM_EVM_PRECOMPILES__
 
 #include "constantine/core/datatypes.h"
-#include "constantine/protocols/ethereum_eip4844_kzg.h"
+#include "constantine/protocols/sila_sip4844_kzg.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -498,7 +498,7 @@ ctt_evm_status ctt_eth_evm_bls12381_map_fp2_to_g2(
 ) __attribute__((warn_unused_result));
 
 /**
-  *  EIP-4844 Blobs KZG point evaluation
+  *  SIP-4844 Blobs KZG point evaluation
   *
   *  Name: POINT_EVALUATION
   *
@@ -517,17 +517,17 @@ ctt_evm_status ctt_eth_evm_bls12381_map_fp2_to_g2(
   *  Output
   *  - Output buffer MUST be of length 64 bytes
   *  - On success, returns:
-  *      - 32 bytes, the number of field elements per EIP-4844 blobs, encoded in big-endian
+  *      - 32 bytes, the number of field elements per SIP-4844 blobs, encoded in big-endian
   *      - 32 bytes, the 255-bit BLS12-381 scalar field modulus (i.e. curve order r), encoded in big endian
   *  - Status code:
   *    cttEVM_Success
   *    cttEVM_InvalidInputSize
   *    cttEVM_VerificationFailure
   *
-  *  Spec https://eips.ethereum.org/EIPS/eip-4844
+  *  Spec https://eips.ethereum.org/EIPS/sip-4844
   */
 ctt_evm_status ctt_eth_evm_kzg_point_evaluation(
-    const ctt_eth_kzg_context* ctx,
+    const ctt_sila_kzg_context* ctx,
     byte* r, size_t r_len,
     const byte* inputs, size_t inputs_len
 ) __attribute__((warn_unused_result));

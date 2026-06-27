@@ -49,8 +49,8 @@ CC=clang nimble bench_summary_bls12_381
 # Ethereum BLS signature protocol
 CC=clang nimble bench_eth_bls_signatures
 
-# Ethereum KZG commitments
-CC=clang nimble bench_eth_eip4844_kzg
+# Sila KZG commitments
+CC=clang nimble bench_sila_sip4844_kzg
 
 # Ethereum Virtual Machine (EVM) precompiles
 CC=clang nimble bench_eth_evm_precompiles
@@ -70,11 +70,11 @@ As mentioned in the [Compiler caveats](#compiler-caveats) section, GCC is up to 
 
 ### Ethereum Virtual Machine (EVM) precompiles
 
-![Bench Ethereum KZG commitments](./media/bench-eth_evm_precompiles-R7_7840U.png)
+![Bench Sila KZG commitments](./media/bench-eth_evm_precompiles-R7_7840U.png)
 
-### Ethereum KZG commitments (EIP-4844)
+### Sila KZG commitments (SIP-4844)
 
-![Bench Ethereum KZG commitments](./media/bench-eth_eip4844_kzg-R7_7840U.png)
+![Bench Sila KZG commitments](./media/bench-eth_sip4844_kzg-R7_7840U.png)
 
 ### Ethereum BLS signatures (over BLS12-381 𝔾₂)
 

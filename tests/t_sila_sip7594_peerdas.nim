@@ -12,20 +12,20 @@ import
   # 3rd party
   pkg/yaml,
   # Internals
-  constantine/eth_eip7594_peerdas {.all.},
-  constantine/ethereum_eip4844_kzg,
+  constantine/sila_sip7594_peerdas {.all.},
+  constantine/sila_sip4844_kzg,
   constantine/serialization/[codecs, codecs_bls12_381],
   constantine/math/[arithmetic, ec_shortweierstrass],
   constantine/math/io/io_fields,
   constantine/math/io/io_bigints,
   constantine/named/algebras,
-  constantine/commitments_setups/ethereum_kzg_srs,
+  constantine/commitments_setups/sila_kzg_srs,
   # Test utilities
   ./testutils/eth_consensus_utils
 
 const
   TestVectorsDir =
-    currentSourcePath.rsplit(DirSep, 1)[0] / "protocol_ethereum_eip7594_fulu_peerdas"
+    currentSourcePath.rsplit(DirSep, 1)[0] / "protocol_sila_sip7594_fulu_peerdas"
 
 TestVectorsDir.testGen(compute_cells, "kzg-mainnet", testVector):
   parseAssign(testVector, blob, BYTES_PER_BLOB, testVector["input"]["blob"].content)
@@ -34,7 +34,7 @@ TestVectorsDir.testGen(compute_cells, "kzg-mainnet", testVector):
   let status = compute_cells(ctx, cells, blob[])
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     parseAssignList(testVector, expectedCells, BYTES_PER_CELL, testVector["output"])
     doAssert cells.len == expectedCells.len, block:
       "\nExpected cells count: " & $expectedCells.len &
@@ -52,7 +52,7 @@ TestVectorsDir.testGen(compute_cells_and_kzg_proofs, "kzg-mainnet", testVector):
   let status = compute_cells_and_kzg_proofs(ctx, cells.asUnchecked(), proofs.asUnchecked(), blob[])
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     parseAssignList(testVector, expectedCells, BYTES_PER_CELL, testVector["output"][0])
     parseAssignList(testVector, expectedProofs, BYTES_PER_PROOF, testVector["output"][1])
     doAssert @cells == expectedCells
@@ -70,7 +70,7 @@ TestVectorsDir.testGen(recover_cells_and_kzg_proofs, "kzg-mainnet", testVector):
 
   # Input length mismatch (cells vs cell_indices) = invalid input
   if cellIndices.len != cells.len:
-    stdout.write "[ cttEthKzg_InputsLengthsMismatch]\n"
+    stdout.write "[ cttSilaKzg_InputsLengthsMismatch]\n"
     doAssert testVector["output"].content == "null",
       "Expected null output for length mismatch"
     return
@@ -81,7 +81,7 @@ TestVectorsDir.testGen(recover_cells_and_kzg_proofs, "kzg-mainnet", testVector):
   let status = recover_cells_and_kzg_proofs(ctx, recoveredCells.asUnchecked(), recoveredProofs.asUnchecked(), cellIndices.asUnchecked(), cells.asUnchecked(), cellIndices.len)
   stdout.write "[" & $status & "]\n"
 
-  if status == cttEthKzg_Success:
+  if status == cttSilaKzg_Success:
     parseAssignList(testVector, expectedCells, BYTES_PER_CELL, testVector["output"][0])
     parseAssignList(testVector, expectedProofs, BYTES_PER_PROOF, testVector["output"][1])
     doAssert @recoveredCells == expectedCells
@@ -105,7 +105,7 @@ TestVectorsDir.testGen(verify_cell_kzg_proof_batch, "kzg-mainnet", testVector):
   if commitmentsBytes.len != cellIndices.len or
      commitmentsBytes.len != cells.len or
      commitmentsBytes.len != proofsBytes.len:
-    stdout.write "[ cttEthKzg_InputsLengthsMismatch]\n"
+    stdout.write "[ cttSilaKzg_InputsLengthsMismatch]\n"
     doAssert testVector["output"].content == "null",
       "\nTest case: " & file &
       "\nExpected: invalid input error (output=\"null\")" &
@@ -131,20 +131,20 @@ TestVectorsDir.testGen(verify_cell_kzg_proof_batch, "kzg-mainnet", testVector):
   # Check output - tri-state: "true" (success), "false" (verification failure), "null" (invalid input)
   let outputStr = testVector["output"].content
   if outputStr == "true":
-    doAssert status == cttEthKzg_Success, block:
+    doAssert status == cttSilaKzg_Success, block:
       "\nTest case: " & file &
       "\nExpected: verification success (output=\"true\")" &
       "\nActual:   status=" & $status & "\n"
   elif outputStr == "false":
     # Verification failure - some proofs/cells/commitments are incorrect
-    doAssert status == cttEthKzg_VerificationFailure, block:
+    doAssert status == cttSilaKzg_VerificationFailure, block:
       "\nTest case: " & file &
       "\nExpected: verification failure (output=\"false\")" &
       "\nActual:   status=" & $status & "\n"
   elif outputStr == "null":
     # Invalid input (malformed data, length mismatch, deserialization errors)
-    # Note: Empty input is valid per EIP-7594 spec (returns Success), so should not be labeled "null"
-    doAssert status != cttEthKzg_Success and status != cttEthKzg_VerificationFailure, block:
+    # Note: Empty input is valid per SIP-7594 spec (returns Success), so should not be labeled "null"
+    doAssert status != cttSilaKzg_Success and status != cttSilaKzg_VerificationFailure, block:
       "\nTest case: " & file &
       "\nExpected: invalid input error (output=\"null\")" &
       "\nActual:   status=" & $status &
@@ -315,17 +315,17 @@ block:
   # to exercise both kNoPrecompute and kPrecompute code paths in polyphaseSpectrumBank.
   for (label, ctx) in [
     ("no-precompute", block:
-      var c: ptr EthereumKZGContext
+      var c: ptr SilaKZGContext
       let st = c.new(TrustedSetupMainnet, kReferenceCKzg4844)
       doAssert st == tsSuccess
       c),
     ("precompute (t=256, b=8)", block:
-      var c: ptr EthereumKZGContext
+      var c: ptr SilaKZGContext
       let st = c.new_with_precompute(TrustedSetupMainnet, kReferenceCKzg4844, 256, 8)
       doAssert st == tsSuccess
       c)
   ]:
-    suite "Ethereum Fulu Hardfork / EIP-7594 / PeerDAS / " & label:
+    suite "Ethereum Fulu Hardfork / SIP-7594 / PeerDAS / " & label:
       defer: ctx.delete()
     
       test "compute_cells":

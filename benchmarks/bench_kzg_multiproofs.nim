@@ -8,7 +8,7 @@
 
 # ############################################################
 #
-#          KZG Multiproof Benchmarks (PeerDAS EIP-7594)
+#          KZG Multiproof Benchmarks (PeerDAS SIP-7594)
 #
 # ############################################################
 #
@@ -20,7 +20,7 @@ import
   # Benchmark infrastructure
   ./bench_blueprint,
   # Trusted setup
-  constantine/commitments_setups/ethereum_kzg_srs,
+  constantine/commitments_setups/sila_kzg_srs,
   # Functions being benched
   constantine/commitments/kzg_multiproofs,
   constantine/math/matrix/toeplitz,
@@ -33,17 +33,17 @@ import
   std/[os, strutils, monotimes, importutils]
 
 const
-  # PeerDAS production parameters (from ethereum_kzg_srs)
-  N = ethereum_kzg_srs.FIELD_ELEMENTS_PER_BLOB       # 4096
-  L = ethereum_kzg_srs.FIELD_ELEMENTS_PER_CELL       # 64
-  CDS = ethereum_kzg_srs.CELLS_PER_EXT_BLOB          # 128
+  # PeerDAS production parameters (from sila_kzg_srs)
+  N = sila_kzg_srs.FIELD_ELEMENTS_PER_BLOB       # 4096
+  L = sila_kzg_srs.FIELD_ELEMENTS_PER_CELL       # 64
+  CDS = sila_kzg_srs.CELLS_PER_EXT_BLOB          # 128
 
   # Trusted setup path
   TrustedSetupMainnet =
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
   # Benchmark iterations
   ItersFK20 = 10
@@ -61,9 +61,9 @@ proc generateTestPoly(): PolynomialCoef[N, Fr[BLS12_381]] =
 
   rng.random_unsafe(result.coefs)
 
-proc loadTrustedSetup(): ptr EthereumKZGContext =
+proc loadTrustedSetup(): ptr SilaKZGContext =
   ## Load trusted setup from file
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "Failed to load trusted setup: " & $tsStatus
   return ctx
@@ -93,7 +93,7 @@ proc benchPolyphasePrecomputation(srs_monomial_g1: PolynomialCoef[N, EC_ShortW_A
 
   bench("computePolyphaseDecompositionFourier", CDS*L, iters):
     computePolyphaseDecompositionFourier(polyphaseSpectrumBank[], srs_monomial_g1, ecfft_desc)
-proc benchFK20_Phase1_Full(ctx: ptr EthereumKZGContext,
+proc benchFK20_Phase1_Full(ctx: ptr SilaKZGContext,
                            poly: PolynomialCoef[N, Fr[BLS12_381]],
                            iters: int) =
   ## Complete FK20 Phase 1: 64 iterations of ToeplitzAccumulator accumulate+finish
@@ -137,7 +137,7 @@ proc benchFK20_Phase2(u: var array[CDS, EC_ShortW_Jac[Fp[BLS12_381], G1]],
     let status = ecfft_desc.ec_fft_nr(proofsJac, u)
     doAssert status == FFT_Success
 
-proc benchKZGCosetProve_FK20(ctx: ptr EthereumKZGContext,
+proc benchKZGCosetProve_FK20(ctx: ptr SilaKZGContext,
                              poly: PolynomialCoef[N, Fr[BLS12_381]],
                              iters: int) =
   ## Complete FK20 proving (kzg_coset_prove)
@@ -156,7 +156,7 @@ proc benchKZGCosetProve_FK20(ctx: ptr EthereumKZGContext,
         proofs, poly.coefs, ctx.fft_desc_ext, ctx.ecfft_desc_ext,
         ctx.polyphaseSpectrumBank.precompPoints)
 
-proc benchKZGCosetProve_Naive(ctx: ptr EthereumKZGContext,
+proc benchKZGCosetProve_Naive(ctx: ptr SilaKZGContext,
                               poly: PolynomialCoef[N, Fr[BLS12_381]],
                               iters: int) =
   ## Naive O(n²) KZG multiproof proving (kzg_coset_prove_naive)
@@ -175,7 +175,7 @@ proc benchKZGCosetProve_Naive(ctx: ptr EthereumKZGContext,
     )
 
 proc main() =
-  echo "KZG Multiproof Benchmarks (PeerDAS EIP-7594)"
+  echo "KZG Multiproof Benchmarks (PeerDAS SIP-7594)"
   echo "N=4096, L=64, CDS=128"
   echo "Random polynomial with seed=", RngSeed
   echo ""

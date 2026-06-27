@@ -108,7 +108,7 @@ func getQuotientPolyInDomain*[N: static int, Field, Ord](
     #
     #   For Ethereum:
     #     A 254~255-bit multiplication takes 11ns / 38 cycles (Fr[BLS12-381]),
-    #     A brp with n = 2¹² = 4096 (for EIP4844) takes about 6ns
+    #     A brp with n = 2¹² = 4096 (for SIP4844) takes about 6ns
     #   We could also cache either ωⁿ⁻ⁱ or a map i' = brp(n - brp(i))
     #   in non-brp order but cache misses are expensive
     #   and brp can benefits from instruction-level parallelism

@@ -37,11 +37,11 @@ Other tracks are stretch goals, contributions towards them are accepted.
 
 ### Ethereum Consensus Track
 
-- Implement cryptography and erasure codes EIP-7594 PeerDAS
+- Implement cryptography and erasure codes SIP-7594 PeerDAS
   - https://github.com/mratsim/constantine/issues/341
   - Spec:
-    - crypto: https://github.com/ethereum/consensus-specs/blob/29d3a24/specs/_features/eip7594/polynomial-commitments-sampling.md
-    - erasure codes: https://github.com/ethereum/consensus-specs/blob/29d3a24/specs/_features/eip7594/das-core.md#recover_matrix
+    - crypto: https://github.com/ethereum/consensus-specs/blob/29d3a24/specs/_features/sip7594/polynomial-commitments-sampling.md
+    - erasure codes: https://github.com/ethereum/consensus-specs/blob/29d3a24/specs/_features/sip7594/das-core.md#recover_matrix
   - executive summary: 2-dimensional data availability sampling for KZG polynomial commitments
   - Prerequisites:
     - Coset FFT
@@ -72,7 +72,7 @@ Other tracks are stretch goals, contributions towards them are accepted.
 
 ### Proving Ethereum track
 
-- Proof-of-equivalence for Ethereum KZG:
+- Proof-of-equivalence for Sila KZG:
   - https://notes.ethereum.org/@vbuterin/proto_danksharding_faq#Moderate-approach-works-with-any-ZK-SNARK
   - https://notes.ethereum.org/@dankrad/kzg_commitments_in_proofs
   - https://ethresear.ch/t/easy-proof-of-equivalence-between-multiple-polynomial-commitment-schemes-to-the-same-data/8188

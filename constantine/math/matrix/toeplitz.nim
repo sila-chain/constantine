@@ -100,7 +100,7 @@ proc makeCirculantMatrix*[F](
   ## This builds the circulant vector from polynomial coefficients
   ## with a given stride and offset. Matches c-kzg-4844.
   ##
-  ## For EIP-7594:
+  ## For SIP-7594:
   ##   n = FIELD_ELEMENTS_PER_BLOB = 4096
   ##   r = CELLS_PER_BLOB = 64
   ##   l = stride = FIELD_ELEMENTS_PER_CELL = 64
@@ -227,7 +227,7 @@ proc init*[EC, ECaff, F](
   ##   - `coeffs`:      `[size * L]` field elements  (~32 bytes each)
   ##   - `scratchScalars`: `[max(size, L)]` field elements (reusable scratch buffer)
   ##
-  ## For EIP-7594 the buffer is (size=128, L=64).
+  ## For SIP-7594 the buffer is (size=128, L=64).
   ## The scratch buffer is typed as `F` but re-interpreted as `F.getBigInt()`
   ## in `finish` via type-punning (requires `sizeof(F) == sizeof(F.getBigInt())`).
   ##

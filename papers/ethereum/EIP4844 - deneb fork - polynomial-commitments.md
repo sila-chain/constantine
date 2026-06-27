@@ -46,7 +46,7 @@
 ## Introduction
 
 This document specifies basic polynomial operations and KZG polynomial
-commitment operations that are essential for the implementation of the EIP-4844
+commitment operations that are essential for the implementation of the SIP-4844
 feature in the Deneb specification. The implementations are not optimized for
 performance, but readability. All practical implementations should optimize the
 polynomial operations.

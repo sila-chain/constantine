@@ -218,7 +218,7 @@ func kzg_coset_verify*[L: static int, Name: static Algebra](
 # - L: coset size
 # - CDS (Circulant Domain Size): Extended domain size = 2 * N/L
 #
-# For EIP-7594 PeerDAS:
+# For SIP-7594 PeerDAS:
 #   N = 4096 (FIELD_ELEMENTS_PER_BLOB),
 #   L = 64 (FIELD_ELEMENTS_PER_CELL)
 #   N/L = CELLS_PER_BLOB, 64 blobs with each 64 cells
@@ -260,7 +260,7 @@ func computePolyphaseDecompositionFourierOffset[N, CDS: static int, Name: static
   ##
   ## The result is one column of the polyphase filter bank (setup spectrum for phase i).
   ##
-  ## For EIP-7594 PeerDAS:
+  ## For SIP-7594 PeerDAS:
   ##   N = FIELD_ELEMENTS_PER_BLOB = 4096
   ##   L = FIELD_ELEMENTS_PER_CELL = 64
   ##   CDS = 2 * CELLS_PER_BLOB = 128
@@ -329,7 +329,7 @@ func computePolyphaseDecompositionFourier*[N, L, CDS: static int, Name: static A
   ## The result is a bank of L precomputed spectra used for fast Toeplitz matrix-vector
   ## multiplication. This corresponds to the "analysis filter bank" in multirate DSP.
   ##
-  ## For EIP-7594 PeerDAS:
+  ## For SIP-7594 PeerDAS:
   ##   N = FIELD_ELEMENTS_PER_BLOB = 4096
   ##   L = FIELD_ELEMENTS_PER_CELL = 64
   ##   CDS = 2 * CELLS_PER_BLOB = 128
@@ -376,7 +376,7 @@ template kzg_coset_prove_impl[L, CDS: static int, Name: static Algebra](
   fr_fft_desc: FrFFT_Descriptor[Fr[Name]],
   ec_fft_desc: ECFFT_Descriptor[EC_ShortW_Jac[Fp[Name], G1]],
   polyphaseSpectrumBank: typed) =
-  ## Compute KZG multi-proofs for EIP-7594 cell proofs using FK20 algorithm.
+  ## Compute KZG multi-proofs for SIP-7594 cell proofs using FK20 algorithm.
   ##
   ## This implements the FK20 amortized KZG proofs from c-kzg-4844.
   ## Uses Toeplitz matrix-vector multiplication with FFT for O(n log n) performance.
@@ -390,7 +390,7 @@ template kzg_coset_prove_impl[L, CDS: static int, Name: static Algebra](
   ##   poly                      Filter coefficients            Toeplitz kernel f_i
   ##   proofs                    Output evaluations             Convolution result
   ##
-  ## For EIP-7594 PeerDAS:
+  ## For SIP-7594 PeerDAS:
   ##   N = FIELD_ELEMENTS_PER_BLOB = 4096 (polynomial size)
   ##   L = FIELD_ELEMENTS_PER_CELL = 64 (stride/loop count, evaluations per cell)
   ##   CDS = 2 * CELLS_PER_BLOB = 128 (output proof count)

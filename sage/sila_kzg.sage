@@ -86,7 +86,7 @@ def dumpRoots(vec):
 
 if __name__ == "__main__":
 
-  with open(f'ethereum_kzg_constants.nim', 'w') as f:
+  with open(f'sila_kzg_constants.nim', 'w') as f:
 
     f.write(copyright())
     f.write('\n\n')
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     r = Curves['BLS12_381']['field']['order']
     Fr = GF(r)
     f.write(dumpConst(
-      'ctt_eth_kzg_bls12_381_fr_pow2_roots_of_unity',
+      'ctt_sila_kzg_bls12_381_fr_pow2_roots_of_unity',
       dumpRoots(gen_pow2_roots_of_unity(Fr, 32))
     ))
     f.write('\n\n')

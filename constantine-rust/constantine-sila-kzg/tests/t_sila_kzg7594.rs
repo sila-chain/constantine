@@ -21,7 +21,7 @@ use serde_yaml;
 
 macro_rules! test_dir {
     () => {
-        "../../tests/protocol_ethereum_eip7594_fulu_peerdas/"
+        "../../tests/protocol_sila_sip7594_fulu_peerdas/"
     };
 }
 
@@ -33,9 +33,9 @@ const RECOVER_CELLS_AND_KZG_PROOFS_TESTS: &str =
     concat!(test_dir!(), "recover_cells_and_kzg_proofs/kzg-mainnet/*/data.yaml");
 
 const SRS_PATH: &str =
-    "../../constantine/commitments_setups/trusted_setup_ethereum_kzg4844_reference.dat";
+    "../../constantine/commitments_setups/trusted_setup_sila_kzg4844_reference.dat";
 
-// OptRawBytes / OptBytes pattern from t_eth_kzg4844.rs
+// OptRawBytes / OptBytes pattern from t_sila_kzg4844.rs
 struct OptRawBytes<const N: usize>(Option<Box<[u8; N]>>);
 
 impl<const N: usize> hex::FromHex for OptRawBytes<N> {

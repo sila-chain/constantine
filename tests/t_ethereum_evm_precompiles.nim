@@ -39,15 +39,15 @@ const
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
 proc loadVectors(TestType: typedesc, filename: string): TestType =
   let content = readFile(TestVectorsDir/filename)
   result = content.fromJson(TestType)
 
-proc trusted_setup*(): ptr EthereumKZGContext =
+proc trusted_setup*(): ptr SilaKZGContext =
 
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus
   echo "Trusted Setup loaded successfully"
@@ -195,6 +195,6 @@ runPrecompileTests("eip-2537/fail-map_fp_to_G1_bls.json", eth_evm_bls12381_map_f
 runPrecompileTests("eip-2537/map_fp2_to_G2_bls.json", eth_evm_bls12381_map_fp2_to_g2, 256)
 runPrecompileTests("eip-2537/fail-map_fp2_to_G2_bls.json", eth_evm_bls12381_map_fp2_to_g2, 256)
 
-runPrecompileTests("eip-4844/pointEvaluation.json", eth_evm_kzg_point_evaluation, 64, true)
+runPrecompileTests("sip-4844/pointEvaluation.json", eth_evm_kzg_point_evaluation, 64, true)
 
 runPrecompileTests("ecRecover.json", eth_evm_ecrecover, 32)

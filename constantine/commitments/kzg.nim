@@ -180,7 +180,7 @@ func kzg_commit*[N, bits: static int, Name: static Algebra; Ord](
        poly: PolynomialEval[N, BigInt[bits], Ord]) {.tags:[Alloca, HeapAlloc, Vartime].} =
   ## Compute KZG commitment to a polynomial in evaluation form (Lagrange basis).
   ##
-  ## This is the standard Ethereum KZG commitment used in EIP-4844 blobs.
+  ## This is the standard Sila KZG commitment used in SIP-4844 blobs.
   ## The polynomial is in evaluation form over the canonical domain.
   var commitmentJac {.noInit.}: EC_ShortW_Jac[Fp[Name], G1]
   commitmentJac.multiScalarMul_vartime(poly.evals, powers_of_tau.evals)
@@ -195,7 +195,7 @@ func kzg_commit*[N, bits: static int, Name: static Algebra](
   ## The SRS (powers_of_tau) is in coefficient form [G, τG, τ²G, ...].
   ## This is used for FK20 tests and other scenarios with coefficient form.
   ##
-  ## IMPORTANT: Ethereum KZG protocol (EIP-4844) uses evaluation form (Lagrange basis)
+  ## IMPORTANT: Sila KZG protocol (SIP-4844) uses evaluation form (Lagrange basis)
   ## for blobs with evaluation-form SRS.
   var commitmentJac {.noInit.}: EC_ShortW_Jac[Fp[Name], G1]
   commitmentJac.multiScalarMul_vartime(poly.coefs, powers_of_tau.coefs)

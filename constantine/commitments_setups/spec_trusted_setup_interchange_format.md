@@ -1,8 +1,8 @@
 # Trusted Setup Interchange Format
 
 An implementation of reading and writing the TSIF format is available:
-- Reading: https://github.com/mratsim/constantine/blob/a77bb64/constantine/trusted_setups/ethereum_kzg_srs.nim#L113
-- Writing: https://github.com/mratsim/constantine/blob/a77bb64/constantine/trusted_setups/ethereum_kzg_testing_setups_generator.nim#L150
+- Reading: https://github.com/mratsim/constantine/blob/a77bb64/constantine/trusted_setups/sila_kzg_srs.nim#L113
+- Writing: https://github.com/mratsim/constantine/blob/a77bb64/constantine/trusted_setups/sila_kzg_testing_setups_generator.nim#L150
 
 ## Table of contents
 

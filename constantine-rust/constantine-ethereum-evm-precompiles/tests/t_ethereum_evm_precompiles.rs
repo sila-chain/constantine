@@ -58,9 +58,9 @@ const MAP_FP2_TO_G2_BLS_TESTS: &str = concat!(test_dir!(), "eip-2537/map_fp2_to_
 const FAIL_MAP_FP2_TO_G2_BLS_TESTS: &str =
     concat!(test_dir!(), "eip-2537/fail-map_fp2_to_G2_bls.json");
 
-const POINT_EVALUATION_TESTS: &str = concat!(test_dir!(), "eip-4844/pointEvaluation.json");
+const POINT_EVALUATION_TESTS: &str = concat!(test_dir!(), "sip-4844/pointEvaluation.json");
 const SRS_PATH: &str =
-    "../../constantine/commitments_setups/trusted_setup_ethereum_kzg4844_reference.dat";
+    "../../constantine/commitments_setups/trusted_setup_sila_kzg4844_reference.dat";
 
 type HexString = String;
 
@@ -260,7 +260,7 @@ fn t_fail_map_fp2_to_g2_bls_tests() {
 }
 
 fn evm_kzg_point_evaluation_with_ctx(message: &[u8]) -> Result<[u8; 64], ctt_evm_status> {
-    let ctx = EthKzgContext::load_trusted_setup(Path::new(SRS_PATH))
+    let ctx = SilaKzgContext::load_trusted_setup(Path::new(SRS_PATH))
         .expect("Trusted setup should be loaded without error.");
     evm_kzg_point_evaluation(&ctx, message)
 }

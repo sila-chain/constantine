@@ -16,16 +16,16 @@ import
 
 ## ############################################################
 ##
-##          EIP-7594 PeerDAS - Generic Internal Implementation
+##          SIP-7594 PeerDAS - Generic Internal Implementation
 ##
 ## ############################################################
 ##
 ## This module contains the generic internal implementation of PeerDAS.
 ## It operates on validated inputs and does not deal with serialization.
-## No EthereumKZGContext is used here - only raw polynomials, domains, FFTs.
+## No SilaKZGContext is used here - only raw polynomials, domains, FFTs.
 ##
 ## This module deals ONLY with cosets operations.
-## Cell<->coset conversions and serialization are in eth_eip7594_peerdas.nim.
+## Cell<->coset conversions and serialization are in sila_sip7594_peerdas.nim.
 ##
 ## NOTE: There is a similar but separate generic recovery implementation in
 ##       constantine/erasure_codes/recovery.nim (recoverPolyFromSamples).
@@ -39,7 +39,7 @@ import
 ## Relationship: CDS * L = 2 * N
 ## Given any two, the third can be derived.
 ##
-## For EIP-7594 PeerDAS:
+## For SIP-7594 PeerDAS:
 ##   N = 4096, L = 64, CDS = 128
 
 {.push checks:off, raises:[].}

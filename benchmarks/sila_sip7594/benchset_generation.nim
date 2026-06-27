@@ -8,10 +8,10 @@
 
 import
   benchset_serialization,
-  constantine/eth_eip7594_peerdas,
+  constantine/sila_sip7594_peerdas,
   constantine/platforms/primitives,
   constantine/platforms/views,
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/sila_sip4844_kzg_parallel,
   constantine/threadpool/threadpool,
   constantine/platforms/allocs,
   constantine/named/algebras,
@@ -24,10 +24,10 @@ const TrustedSetupMainnet =
   currentSourcePath.rsplit(DirSep, 1)[0] /
   ".." / ".." / "constantine" /
   "commitments_setups" /
-  "trusted_setup_ethereum_kzg4844_reference.dat"
+  "trusted_setup_sila_kzg4844_reference.dat"
 
-proc trusted_setup*(): ptr EthereumKZGContext =
-  var ctx: ptr EthereumKZGContext
+proc trusted_setup*(): ptr SilaKZGContext =
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus
   echo "Trusted Setup loaded successfully"
@@ -41,7 +41,7 @@ proc randomize(rng: var RngState, blob: var Blob) =
         .marshal(t, bigEndian)
 
 proc computeBlobParallel(
-  ctx: ptr EthereumKZGContext,
+  ctx: ptr SilaKZGContext,
   tempBlobs: ptr Blob,
   tempCommitments: ptr array[48, byte],
   tempCells: ptr array[CELLS_PER_EXT_BLOB, Cell],
@@ -49,13 +49,13 @@ proc computeBlobParallel(
   rng: ptr RngState
 ) {.raises: [].} =
   rng[].randomize(tempBlobs[])
-  doAssert cttEthKzg_Success == ctx.blob_to_kzg_commitment(tempCommitments[], tempBlobs[])
-  doAssert cttEthKzg_Success == ctx.compute_cells_and_kzg_proofs(
+  doAssert cttSilaKzg_Success == ctx.blob_to_kzg_commitment(tempCommitments[], tempBlobs[])
+  doAssert cttSilaKzg_Success == ctx.compute_cells_and_kzg_proofs(
     tempCells[].asUnchecked(),
     tempProofs[].asUnchecked(),
     tempBlobs[])
 
-proc new*(T: type BenchSet, ctx: ptr EthereumKZGContext): T =
+proc new*(T: type BenchSet, ctx: ptr SilaKZGContext): T =
   result = newBenchSet()
 
   echo "Initializing benchmark data (this may take a while)..."
@@ -121,7 +121,7 @@ proc new*(T: type BenchSet, ctx: ptr EthereumKZGContext): T =
   echo &"Initialization complete in {initTime} ms ({float(initTime)/1000.0:.2f} seconds)\n"
 
 proc main() =
-  echo "PeerDAS (EIP-7594) BenchSet Generator"
+  echo "PeerDAS (SIP-7594) BenchSet Generator"
   echo "Creating BenchSet[64] for perf/VTune profiling\n"
 
   let ctx = trusted_setup()

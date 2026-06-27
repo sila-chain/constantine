@@ -6,8 +6,8 @@
  *    * Apache v2 license (license terms in the root directory or at http://www.apache.org/licenses/LICENSE-2.0).
  *  at your option. This file may not be copied, modified, or distributed except according to those terms.
  */
-#ifndef __CTT_H_ETHEREUM_EIP4844_KZG__
-#define __CTT_H_ETHEREUM_EIP4844_KZG__
+#ifndef __CTT_H_SILA_SIP4844_KZG__
+#define __CTT_H_SILA_SIP4844_KZG__
 
 #include "constantine/core/datatypes.h"
 
@@ -15,75 +15,75 @@
 extern "C" {
 #endif
 
-// Ethereum EIP-4844 KZG types
+// Sila SIP-4844 KZG types
 // ------------------------------------------------------------------------------------------------
 
-typedef struct ctt_eth_kzg_context_struct ctt_eth_kzg_context;
+typedef struct ctt_sila_kzg_context_struct ctt_sila_kzg_context;
 
-typedef struct { byte raw[48]; }        ctt_eth_kzg_commitment;
-typedef struct { byte raw[48]; }        ctt_eth_kzg_proof;
-typedef struct { byte raw[4096 * 32]; } ctt_eth_kzg_blob;
-typedef struct { byte raw[32]; }        ctt_eth_kzg_opening_challenge;
-typedef struct { byte raw[32]; }        ctt_eth_kzg_eval_at_challenge;
+typedef struct { byte raw[48]; }        ctt_sila_kzg_commitment;
+typedef struct { byte raw[48]; }        ctt_sila_kzg_proof;
+typedef struct { byte raw[4096 * 32]; } ctt_sila_kzg_blob;
+typedef struct { byte raw[32]; }        ctt_sila_kzg_opening_challenge;
+typedef struct { byte raw[32]; }        ctt_sila_kzg_eval_at_challenge;
 
 typedef enum __attribute__((__packed__)) {
-    cttEthKzg_Success,
-    cttEthKzg_VerificationFailure,
-    cttEthKzg_InputsLengthsMismatch,
-    cttEthKzg_ScalarZero,
-    cttEthKzg_ScalarLargerThanCurveOrder,
-    cttEthKzg_EccInvalidEncoding,
-    cttEthKzg_EccCoordinateGreaterThanOrEqualModulus,
-    cttEthKzg_EccPointNotOnCurve,
-    cttEthKzg_EccPointNotInSubgroup,
-    cttEthKzg_CellIndicesNotAscending,
-} ctt_eth_kzg_status;
+    cttSilaKzg_Success,
+    cttSilaKzg_VerificationFailure,
+    cttSilaKzg_InputsLengthsMismatch,
+    cttSilaKzg_ScalarZero,
+    cttSilaKzg_ScalarLargerThanCurveOrder,
+    cttSilaKzg_EccInvalidEncoding,
+    cttSilaKzg_EccCoordinateGreaterThanOrEqualModulus,
+    cttSilaKzg_EccPointNotOnCurve,
+    cttSilaKzg_EccPointNotInSubgroup,
+    cttSilaKzg_CellIndicesNotAscending,
+} ctt_sila_kzg_status;
 
-static const char* ctt_eth_kzg_status_to_string(ctt_eth_kzg_status status) {
+static const char* ctt_sila_kzg_status_to_string(ctt_sila_kzg_status status) {
   static const char* const statuses[] = {
-    "cttEthKzg_Success",
-    "cttEthKzg_VerificationFailure",
-    "cttEthKzg_InputsLengthsMismatch",
-    "cttEthKzg_ScalarZero",
-    "cttEthKzg_ScalarLargerThanCurveOrder",
-    "cttEthKzg_EccInvalidEncoding",
-    "cttEthKzg_EccCoordinateGreaterThanOrEqualModulus",
-    "cttEthKzg_EccPointNotOnCurve",
-    "cttEthKzg_EccPointNotInSubgroup",
-    "cttEthKzg_CellIndicesNotAscending",
+    "cttSilaKzg_Success",
+    "cttSilaKzg_VerificationFailure",
+    "cttSilaKzg_InputsLengthsMismatch",
+    "cttSilaKzg_ScalarZero",
+    "cttSilaKzg_ScalarLargerThanCurveOrder",
+    "cttSilaKzg_EccInvalidEncoding",
+    "cttSilaKzg_EccCoordinateGreaterThanOrEqualModulus",
+    "cttSilaKzg_EccPointNotOnCurve",
+    "cttSilaKzg_EccPointNotInSubgroup",
+    "cttSilaKzg_CellIndicesNotAscending",
   };
   size_t length = sizeof statuses / sizeof *statuses;
   if (0 <= status && status < length) {
     return statuses[status];
   }
-  return "cttEthKzg_InvalidStatusCode";
+  return "cttSilaKzg_InvalidStatusCode";
 }
 
 typedef enum __attribute__((__packed__)) {
-    cttEthTS_Success,
-    cttEthTS_MissingOrInaccessibleFile,
-    cttEthTS_InvalidFile
-} ctt_eth_trusted_setup_status;
+    cttSilaTS_Success,
+    cttSilaTS_MissingOrInaccessibleFile,
+    cttSilaTS_InvalidFile
+} ctt_sila_trusted_setup_status;
 
-static const char* ctt_eth_trusted_setup_status_to_string(ctt_eth_trusted_setup_status status) {
+static const char* ctt_sila_trusted_setup_status_to_string(ctt_sila_trusted_setup_status status) {
   static const char* const statuses[] = {
-    "cttEthTS_Success",
-    "cttEthTS_MissingOrInaccessibleFile",
-    "cttEthTS_InvalidFile",
+    "cttSilaTS_Success",
+    "cttSilaTS_MissingOrInaccessibleFile",
+    "cttSilaTS_InvalidFile",
   };
   size_t length = sizeof statuses / sizeof *statuses;
   if (0 <= status && status < length) {
     return statuses[status];
   }
-  return "cttEthTS_InvalidFileStatusCode";
+  return "cttSilaTS_InvalidFileStatusCode";
 }
 
 typedef enum __attribute__((__packed__)) {
-    cttEthTSFormat_ckzg4844,
-} ctt_eth_trusted_setup_format;
+    cttSilaTSFormat_ckzg4844,
+} ctt_sila_trusted_setup_format;
 
 
-// Ethereum EIP-4844 KZG Interface
+// Sila SIP-4844 KZG Interface
 // ------------------------------------------------------------------------------------------------
 
 /** Compute a commitment to the `blob`.
@@ -103,10 +103,10 @@ typedef enum __attribute__((__packed__)) {
  *
  *    with proof = [(p(τ) - p(z)) / (τ-z)]₁
  */
-ctt_eth_kzg_status ctt_eth_kzg_blob_to_kzg_commitment(
-        const ctt_eth_kzg_context* ctx,
-        ctt_eth_kzg_commitment* dst,
-        const ctt_eth_kzg_blob* blob
+ctt_sila_kzg_status ctt_sila_kzg_blob_to_kzg_commitment(
+        const ctt_sila_kzg_context* ctx,
+        ctt_sila_kzg_commitment* dst,
+        const ctt_sila_kzg_blob* blob
 ) __attribute__((warn_unused_result));
 
 /** Generate:
@@ -123,12 +123,12 @@ ctt_eth_kzg_status ctt_eth_kzg_blob_to_kzg_commitment(
  *    - at τ, p(τ) is the commitment
  *    - and at the verification opening challenge z.
  */
-ctt_eth_kzg_status ctt_eth_kzg_compute_kzg_proof(
-        const ctt_eth_kzg_context* ctx,
-        ctt_eth_kzg_proof* proof,
-        ctt_eth_kzg_eval_at_challenge* y,
-        const ctt_eth_kzg_blob* blob,
-        const ctt_eth_kzg_opening_challenge* z
+ctt_sila_kzg_status ctt_sila_kzg_compute_kzg_proof(
+        const ctt_sila_kzg_context* ctx,
+        ctt_sila_kzg_proof* proof,
+        ctt_sila_kzg_eval_at_challenge* y,
+        const ctt_sila_kzg_blob* blob,
+        const ctt_sila_kzg_opening_challenge* z
 ) __attribute__((warn_unused_result));
 
 /** Verify KZG proof
@@ -139,31 +139,31 @@ ctt_eth_kzg_status ctt_eth_kzg_compute_kzg_proof(
  *    - [proof]₁ = [(p(τ) - p(z)) / (τ-z)]₁, ensure that p(z) evaluation was correct
  *      without needing access to the polynomial p itself.
  */
-ctt_eth_kzg_status ctt_eth_kzg_verify_kzg_proof(
-        const ctt_eth_kzg_context* ctx,
-        const ctt_eth_kzg_commitment* commitment,
-        const ctt_eth_kzg_opening_challenge* z,
-        const ctt_eth_kzg_eval_at_challenge* y,
-        const ctt_eth_kzg_proof* proof
+ctt_sila_kzg_status ctt_sila_kzg_verify_kzg_proof(
+        const ctt_sila_kzg_context* ctx,
+        const ctt_sila_kzg_commitment* commitment,
+        const ctt_sila_kzg_opening_challenge* z,
+        const ctt_sila_kzg_eval_at_challenge* y,
+        const ctt_sila_kzg_proof* proof
 ) __attribute__((__warn_unused_result__));
 
 /** Given a blob, return the KZG proof that is used to verify it against the commitment.
  *  This method does not verify that the commitment is correct with respect to `blob`.
  */
-ctt_eth_kzg_status ctt_eth_kzg_compute_blob_kzg_proof(
-        const ctt_eth_kzg_context* ctx,
-        ctt_eth_kzg_proof* proof,
-        const ctt_eth_kzg_blob* blob,
-        const ctt_eth_kzg_commitment* commitment
+ctt_sila_kzg_status ctt_sila_kzg_compute_blob_kzg_proof(
+        const ctt_sila_kzg_context* ctx,
+        ctt_sila_kzg_proof* proof,
+        const ctt_sila_kzg_blob* blob,
+        const ctt_sila_kzg_commitment* commitment
 ) __attribute__((__warn_unused_result__));
 
 /** Given a blob and a KZG proof, verify that the blob data corresponds to the provided commitment.
  */
-ctt_eth_kzg_status ctt_eth_kzg_verify_blob_kzg_proof(
-        const ctt_eth_kzg_context* ctx,
-        const ctt_eth_kzg_blob* blob,
-        const ctt_eth_kzg_commitment* commitment,
-        const ctt_eth_kzg_proof* proof
+ctt_sila_kzg_status ctt_sila_kzg_verify_blob_kzg_proof(
+        const ctt_sila_kzg_context* ctx,
+        const ctt_sila_kzg_blob* blob,
+        const ctt_sila_kzg_commitment* commitment,
+        const ctt_sila_kzg_proof* proof
 ) __attribute__((__warn_unused_result__));
 
 /** Verify `n` (blob, commitment, proof) sets efficiently
@@ -179,31 +179,31 @@ ctt_eth_kzg_status ctt_eth_kzg_verify_blob_kzg_proof(
  *  rogue commitments attacks due to homomorphic properties of pairings,
  *  i.e. commitments that are linear combination of others and sum would be zero.
  */
-ctt_eth_kzg_status ctt_eth_kzg_verify_blob_kzg_proof_batch(
-        const ctt_eth_kzg_context* ctx,
-        const ctt_eth_kzg_blob blobs[],
-        const ctt_eth_kzg_commitment commitments[],
-        const ctt_eth_kzg_proof proofs[],
+ctt_sila_kzg_status ctt_sila_kzg_verify_blob_kzg_proof_batch(
+        const ctt_sila_kzg_context* ctx,
+        const ctt_sila_kzg_blob blobs[],
+        const ctt_sila_kzg_commitment commitments[],
+        const ctt_sila_kzg_proof proofs[],
         size_t n,
         const byte secure_random_bytes[32]
 ) __attribute__((__warn_unused_result__));
 
 
-// Ethereum EIP-4844 KZG context management
+// Sila SIP-4844 KZG context management
 // ------------------------------------------------------------------------------------------------
 
 /** Create a new KZG context from trusted setup file.
  *  Loads SRS, computes polyphase decomposition as raw affine points,
  *  and sets the context to kNoPrecompute mode (~1.8 MiB).
  */
-ctt_eth_trusted_setup_status ctt_eth_kzg_context_new(
-    ctt_eth_kzg_context** ctx,
+ctt_sila_trusted_setup_status ctt_sila_kzg_context_new(
+    ctt_sila_kzg_context** ctx,
     const char* filepath,
-    ctt_eth_trusted_setup_format format
+    ctt_sila_trusted_setup_format format
     ) __attribute__((__warn_unused_result__));
 
 /** Create a new KZG context with precomputed MSM tables.
- *  Same as ctt_eth_kzg_context_new but also builds PrecomputedMSM lookup
+ *  Same as ctt_sila_kzg_context_new but also builds PrecomputedMSM lookup
  *  tables for FK20 proofs (PeerDAS).
  *
  *  @param t  base groups (stride between precomputed layers)
@@ -229,20 +229,20 @@ ctt_eth_trusted_setup_status ctt_eth_kzg_context_new(
  *  Larger t = fewer doublings but more precomputed layers.
  *  Recommended (t=256, b=8): ~98 ms/blob proving, ~24 MiB total memory.
  */
-ctt_eth_trusted_setup_status ctt_eth_kzg_context_new_with_precompute(
-    ctt_eth_kzg_context** ctx,
+ctt_sila_trusted_setup_status ctt_sila_kzg_context_new_with_precompute(
+    ctt_sila_kzg_context** ctx,
     const char* filepath,
-    ctt_eth_trusted_setup_format format,
+    ctt_sila_trusted_setup_format format,
     int t,
     int b
     ) __attribute__((__warn_unused_result__));
 
 /** Destroy a KZG context
  */
-void ctt_eth_kzg_context_delete(ctt_eth_kzg_context* ctx);
+void ctt_sila_kzg_context_delete(ctt_sila_kzg_context* ctx);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // __CTT_H_ETHEREUM_EIP4844_KZG__
+#endif // __CTT_H_SILA_SIP4844_KZG__

@@ -10,7 +10,7 @@
 #
 # These tests verify the coset FFT functions used in:
 # - Layer 1: Polynomial recovery (avoiding division by zero)
-# - EIP-7594 PeerDAS: Data availability sampling
+# - SIP-7594 PeerDAS: Data availability sampling
 #
 # Coset FFT shifts the domain so polynomials that vanish at certain points
 # don't cause issues during division operations.

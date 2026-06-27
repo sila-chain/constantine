@@ -12,8 +12,8 @@ import
   constantine/math/arithmetic/[finite_fields, limbs_montgomery],
   constantine/math/io/[io_bigints, io_fields],
   constantine/platforms/[primitives, views, allocs],
-  constantine/commitments_setups/ethereum_kzg_srs,
-  constantine/ethereum_eip4844_kzg {.all.},
+  constantine/commitments_setups/sila_kzg_srs,
+  constantine/sila_sip4844_kzg {.all.},
   constantine/serialization/[codecs_status_codes, codecs_bls12_381, endians],
   constantine/data_availability_sampling/eth_peerdas,
   constantine/commitments/kzg_multiproofs,
@@ -23,12 +23,12 @@ import
   # stdlib - compile-time only
   std/typetraits
 
-const prefix_eth_kzg = "ctt_eth_kzg_"
+const prefix_sila_kzg = "ctt_sila_kzg_"
 import ./zoo_exports
 
 ## ############################################################
 ##
-##          EIP-7594 PeerDAS - Data Availability Sampling
+##          SIP-7594 PeerDAS - Data Availability Sampling
 ##
 ## ############################################################
 ##
@@ -64,7 +64,7 @@ import ./zoo_exports
 ## 5. **Recovery**: If ≥50% of cells available, recover all cells
 ##
 ## References:
-## - EIP-7594: https://eips.ethereum.org/EIPS/eip-7594
+## - SIP-7594: https://eips.ethereum.org/EIPS/sip-7594
 ## - Spec: https://github.com/ethereum/consensus-specs/blob/v1.4.0-beta.1/specs/fulu/polynomial-commitments-sampling.md
 ## - FK20 Paper: https://eprint.iacr.org/2023/033
 
@@ -73,11 +73,11 @@ import ./zoo_exports
 
 const RANDOM_CHALLENGE_KZG_CELL_BATCH_DOMAIN* = asBytes"RCKZGCBATCH__V1_"
 
-# Re-export PeerDAS constants from canonical source (ethereum_kzg_srs.nim)
-export ethereum_kzg_srs.FIELD_ELEMENTS_PER_CELL
-export ethereum_kzg_srs.CELLS_PER_EXT_BLOB
-export ethereum_kzg_srs.BYTES_PER_CELL
-export ethereum_kzg_srs.CELLS_PER_BLOB
+# Re-export PeerDAS constants from canonical source (sila_kzg_srs.nim)
+export sila_kzg_srs.FIELD_ELEMENTS_PER_CELL
+export sila_kzg_srs.CELLS_PER_EXT_BLOB
+export sila_kzg_srs.BYTES_PER_CELL
+export sila_kzg_srs.CELLS_PER_BLOB
 
 type
   Cell* = array[BYTES_PER_CELL, byte]
@@ -119,11 +119,11 @@ func bytesToBlsField(dst: var Fr[BLS12_381], src: array[32, byte]): CttCodecScal
 
 func cellToCosetEvals(
        evals: var array[FIELD_ELEMENTS_PER_CELL, Fr[BLS12_381]],
-       cell: openArray[byte]): cttEthKzgStatus =
+       cell: openArray[byte]): cttSilaKzgStatus =
   ## Convert cell bytes to coset evaluations (field elements).
   ## Input:  L * 32 bytes
   ## Output: L field elements in big-endian format
-  ## Returns: cttEthKzg_Success on success, error status otherwise
+  ## Returns: cttSilaKzg_Success on success, error status otherwise
   for i in 0 ..< FIELD_ELEMENTS_PER_CELL:
     let start = i * 32
     var chunk: array[32, byte]
@@ -131,8 +131,8 @@ func cellToCosetEvals(
       chunk[j] = cell[start + j]
     let status = bytesToBlsField(evals[i], chunk)
     if status != cttCodecScalar_Success:
-      return cttEthKzg_ScalarLargerThanCurveOrder
-  return cttEthKzg_Success
+      return cttSilaKzg_ScalarLargerThanCurveOrder
+  return cttSilaKzg_Success
 
 func cosetEvalsToCell(
        cell: var openArray[byte],
@@ -153,16 +153,16 @@ func cosetEvalsToCell(
 #
 # ============================================================
 
-template `?`(status: cttEthKzgStatus): untyped {.dirty.} =
+template `?`(status: cttSilaKzgStatus): untyped {.dirty.} =
   ## Check KZG operation status and return early on error
-  if status != cttEthKzg_Success:
+  if status != cttSilaKzg_Success:
     return status
 
 func compute_cells_impl(
-      ctx: ptr EthereumKZGContext,
+      ctx: ptr SilaKZGContext,
       cells: var array[CELLS_PER_EXT_BLOB, Cell],
       poly_eval_brp: PolynomialEval[FIELD_ELEMENTS_PER_BLOB, Fr[BLS12_381], kBitReversed],
-      poly_coef_nat: PolynomialCoef[FIELD_ELEMENTS_PER_BLOB, Fr[BLS12_381]]): cttEthKzgStatus =
+      poly_coef_nat: PolynomialCoef[FIELD_ELEMENTS_PER_BLOB, Fr[BLS12_381]]): cttSilaKzgStatus =
   ## Compute all cells for an extended blob.
   ## poly_eval_brp: evaluation form (for first 64 cells)
   ## poly_coef_nat: coefficient form (for second 64 cells, no IFFT needed)
@@ -202,12 +202,12 @@ func compute_cells_impl(
   for i in 0 ..< CDS:
     cosetEvalsToCell(cells[i], cells_evals[i])
 
-  return cttEthKzg_Success
+  return cttSilaKzg_Success
 
 func compute_cells*(
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        cells: var array[CELLS_PER_EXT_BLOB, Cell],
-       blob: Blob): cttEthKzgStatus =
+       blob: Blob): cttSilaKzgStatus =
   ## Compute all cells for an extended blob using the half-FFT optimization.
   ## This is the MOST efficient known method for computing cells.
   ##
@@ -268,10 +268,10 @@ func compute_cells*(
   return compute_cells_impl(ctx, cells, poly_eval_brp[], poly_coef_nat[])
 
 func compute_cells_and_kzg_proofs*(
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        cells: ptr UncheckedArray[Cell],
        proofs: ptr UncheckedArray[KZGProofBytes],
-       blob: Blob): cttEthKzgStatus {.libPrefix: prefix_eth_kzg, raises: [].} =
+       blob: Blob): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg, raises: [].} =
   ## Compute all cells and proofs for an extended blob using FK20 algorithm.
   ##
   ## Algorithm:
@@ -283,7 +283,7 @@ func compute_cells_and_kzg_proofs*(
 
   # Validate FFI pointers before dereferencing
   if ctx.isNil or cells.isNil or proofs.isNil:
-    return cttEthKzg_InputsLengthsMismatch
+    return cttSilaKzg_InputsLengthsMismatch
 
   # Step 1: Deserialize blob to polynomial (Lagrange form)
   ## Compute all cells and proofs for an extended blob using FK20 algorithm.
@@ -337,7 +337,7 @@ func compute_cells_and_kzg_proofs*(
     ?serialize_g1_compressed(proofs[i], proofsAff[i])
 
 
-  return cttEthKzg_Success
+  return cttSilaKzg_Success
 
 func deduplicateCommitments(
     commitmentIdx: var openArray[int],
@@ -351,7 +351,7 @@ func deduplicateCommitments(
   ##
   ## This implementation is **O(N × M)** where:
   ## - N = number of input commitments (cells in batch)
-  ## - M = number of unique commitments (blobs, max 64 per EIP-7594)
+  ## - M = number of unique commitments (blobs, max 64 per SIP-7594)
   ##
   ## The Ethereum spec reference uses `list.index()` which scans the entire
   ## input list for each element, resulting in **O(N²)** complexity.
@@ -510,35 +510,35 @@ func compute_verify_cell_kzg_proof_batch_challenge(
   result.fromDigest(hashTmp)
 
 func verify_cell_kzg_proof_batch*(
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        commitments_bytes: ptr UncheckedArray[array[BYTES_PER_COMMITMENT, byte]],
        cell_indices: ptr UncheckedArray[CellIndex],
        cells: ptr UncheckedArray[Cell],
        proofs_bytes: ptr UncheckedArray[KZGProofBytes],
        n: int,
-       secureRandomBytes: array[32, byte]): cttEthKzgStatus {.libPrefix: prefix_eth_kzg, raises: [].} =
+       secureRandomBytes: array[32, byte]): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg, raises: [].} =
   ## Verify that a set of cells belong to their corresponding commitments.
   ##
   ## This implements the universal verification equation from:
   ## https://ethresear.ch/t/a-universal-verification-equation-for-data-availability-sampling/13240
   ##
-  ## Public method following the EIP-7594 spec.
+  ## Public method following the SIP-7594 spec.
 
   # Edge case: n < 0 is malformed input, n == 0 is trivially valid
   if n < 0:
-    return cttEthKzg_InputsLengthsMismatch
+    return cttSilaKzg_InputsLengthsMismatch
   if ctx.isNil:
-    return cttEthKzg_InputsLengthsMismatch
+    return cttSilaKzg_InputsLengthsMismatch
   if n == 0:
-    return cttEthKzg_Success
+    return cttSilaKzg_Success
   # Validate FFI pointers before dereferencing
   if ctx.isNil or commitments_bytes.isNil or cell_indices.isNil or cells.isNil or proofs_bytes.isNil:
-    return cttEthKzg_InputsLengthsMismatch
+    return cttSilaKzg_InputsLengthsMismatch
 
   # Validate cell indices are in bounds
   for i in 0 ..< n:
     if cell_indices[i] >= CELLS_PER_EXT_BLOB:
-      return cttEthKzg_InputsLengthsMismatch
+      return cttSilaKzg_InputsLengthsMismatch
   # Deduplicate commitments FIRST (on raw bytes, before deserialization)
   # This is faster: byte comparison exits early, and we only deserialize uniques
   let commitmentIdx = allocHeapArrayAligned(int, n, alignment = 64)
@@ -614,17 +614,17 @@ func verify_cell_kzg_proof_batch*(
       tau_pow_L_g2 = ctx.srs_monomial_g2.coefs[FIELD_ELEMENTS_PER_CELL],
       N = FIELD_ELEMENTS_PER_EXT_BLOB
     )
-    result = if verifyStatus: cttEthKzg_Success else: cttEthKzg_VerificationFailure
+    result = if verifyStatus: cttSilaKzg_Success else: cttSilaKzg_VerificationFailure
 
   return result
 
 func recover_cells_and_kzg_proofs*(
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        recovered_cells: ptr UncheckedArray[Cell],
        recovered_proofs: ptr UncheckedArray[KZGProofBytes],
        cell_indices: ptr UncheckedArray[CellIndex],
        cells: ptr UncheckedArray[Cell],
-       n: int): cttEthKzgStatus {.libPrefix: prefix_eth_kzg, raises: [].} =
+       n: int): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg, raises: [].} =
   ## Given at least 50% of cells for a blob, recover all cells/proofs.
   ## This is the main entry point for recovery with serialization.
   ##
@@ -638,29 +638,29 @@ func recover_cells_and_kzg_proofs*(
 
   # Validate FFI pointers before dereferencing
   if ctx.isNil or recovered_cells.isNil or recovered_proofs.isNil or cell_indices.isNil or cells.isNil:
-    return cttEthKzg_InputsLengthsMismatch
+    return cttSilaKzg_InputsLengthsMismatch
 
   # Step 1: Validation
   if n < CELLS_PER_EXT_BLOB div 2:
-    return cttEthKzg_InputsLengthsMismatch
+    return cttSilaKzg_InputsLengthsMismatch
 
   if n > CELLS_PER_EXT_BLOB:
-    return cttEthKzg_InputsLengthsMismatch
+    return cttSilaKzg_InputsLengthsMismatch
 
   # Validate bounds and uniqueness (strict ordering enforces both)
   for i in 0 ..< n:
     if uint64(cell_indices[i]) >= uint64(CELLS_PER_EXT_BLOB):
-      return cttEthKzg_InputsLengthsMismatch
+      return cttSilaKzg_InputsLengthsMismatch
   for i in 1 ..< n:
     if uint64(cell_indices[i-1]) >= uint64(cell_indices[i]):
-      return cttEthKzg_CellIndicesNotAscending
+      return cttSilaKzg_CellIndicesNotAscending
 
   # Step 2: Convert cells to coset evaluations [Deserialization]
   var cosets_evals = allocHeapArrayAligned(array[FIELD_ELEMENTS_PER_CELL, Fr[BLS12_381]], n, alignment = 64)
   defer: freeHeapAligned(cosets_evals)
   for i in 0 ..< n:
     let status = cellToCosetEvals(cosets_evals[i], cells[i])
-    if status != cttEthKzg_Success:
+    if status != cttSilaKzg_Success:
       return status
 
   # Step 3: Recover polynomial coefficient form
@@ -718,4 +718,4 @@ func recover_cells_and_kzg_proofs*(
   for i in 0 ..< CELLS_PER_EXT_BLOB:
     ?serialize_g1_compressed(recovered_proofs[i], proofsAff[i])
 
-  return cttEthKzg_Success
+  return cttSilaKzg_Success

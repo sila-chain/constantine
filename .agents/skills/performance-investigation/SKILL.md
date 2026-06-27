@@ -23,7 +23,7 @@ Use this skill when:
 
 1. **Implementation is slower than expected** (e.g., 50% slower than reference)
 2. **Need to identify hotspots** in cryptographic algorithms (FK20, FFT, MSM, pairings)
-3. **Optimizing critical paths** in PeerDAS (EIP-7594) or KZG (EIP-4844) code
+3. **Optimizing critical paths** in PeerDAS (SIP-7594) or KZG (SIP-4844) code
 4. **Validating algorithmic complexity** (e.g., O(n log n) vs O(n²))
 5. **Comparing optimization strategies** (fixed-base vs variable-base MSM)
 

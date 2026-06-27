@@ -20,19 +20,19 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Ethereum EIP-7594 PeerDAS tests
+// Sila SIP-7594 PeerDAS tests
 // ----------------------------------------------------------
 //
 // Source: https://github.com/ethereum/consensus-spec-tests
 
 var (
-	peerdasTestDir             = "../tests/protocol_ethereum_eip7594_fulu_peerdas"
+	peerdasTestDir             = "../tests/protocol_sila_sip7594_fulu_peerdas"
 	computeCellsAndProofsTests = filepath.Join(peerdasTestDir, "compute_cells_and_kzg_proofs/kzg-mainnet/*/data.yaml")
 	verifyCellKzgProofTests    = filepath.Join(peerdasTestDir, "verify_cell_kzg_proof_batch/kzg-mainnet/*/data.yaml")
 	recoverCellsAndProofsTests = filepath.Join(peerdasTestDir, "recover_cells_and_kzg_proofs/kzg-mainnet/*/data.yaml")
 )
 
-func (dst *EthKzgCell) UnmarshalText(input []byte) error {
+func (dst *SilaKzgCell) UnmarshalText(input []byte) error {
 	return fromHexImpl(dst[:], input)
 }
 
@@ -47,7 +47,7 @@ type computeTest struct {
 	Output *[][]string       `yaml:"output"` // [[cells...], [proofs...]]
 }
 
-func runComputeCellsTest(t *testing.T, ctx EthKzgContext) {
+func runComputeCellsTest(t *testing.T, ctx SilaKzgContext) {
 	tests, err := filepath.Glob(computeCellsAndProofsTests)
 	require.NoError(t, err)
 	require.NotEmpty(t, tests)
@@ -66,7 +66,7 @@ func runComputeCellsTest(t *testing.T, ctx EthKzgContext) {
 			continue
 		}
 
-		var blob EthBlob
+		var blob SilaBlob
 		if err := fromHexImpl(blob[:], []byte(*test.Input.Blob)); err != nil {
 			require.Nil(t, test.Output, "expected no output for invalid blob in %s", testName)
 			continue
@@ -100,13 +100,13 @@ func TestComputeCellsAndKzgProofs(t *testing.T) {
 	// Exercise both kNoPrecompute and kPrecompute code paths in polyphaseSpectrumBank.
 	// t=256, b=8 is the recommended precompute setting (~98 ms/blob, ~24 MiB).
 	t.Run("no-precompute", func(t *testing.T) {
-		ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+		ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 		require.NoError(t, tsErr)
 		defer ctx.Delete()
 		runComputeCellsTest(t, ctx)
 	})
 	t.Run("precompute (t=256, b=8)", func(t *testing.T) {
-		ctx, tsErr := EthKzgContextNewWithPrecompute(trustedSetupFile, 256, 8)
+		ctx, tsErr := SilaKzgContextNewWithPrecompute(trustedSetupFile, 256, 8)
 		require.NoError(t, tsErr)
 		defer ctx.Delete()
 		runComputeCellsTest(t, ctx)
@@ -116,7 +116,7 @@ func TestComputeCellsAndKzgProofs(t *testing.T) {
 // ---- verify_cell_kzg_proof_batch ----
 
 func TestVerifyCellKzgProofBatch(t *testing.T) {
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
@@ -170,7 +170,7 @@ func TestVerifyCellKzgProofBatch(t *testing.T) {
 		// Don't short-circuit; let the implementation handle it
 
 		// Decode commitments
-		commitmentsDec := make([]EthKzgCommitment, len(commitments))
+		commitmentsDec := make([]SilaKzgCommitment, len(commitments))
 		badCommitment := false
 		for i, c := range commitments {
 			if err := fromHexImpl(commitmentsDec[i][:], []byte(c)); err != nil {
@@ -184,7 +184,7 @@ func TestVerifyCellKzgProofBatch(t *testing.T) {
 		}
 
 		// Decode cells
-		cellsDec := make([]EthKzgCell, len(cellsRaw))
+		cellsDec := make([]SilaKzgCell, len(cellsRaw))
 		badCell := false
 		for i, c := range cellsRaw {
 			if err := fromHexImpl(cellsDec[i][:], []byte(c)); err != nil {
@@ -198,7 +198,7 @@ func TestVerifyCellKzgProofBatch(t *testing.T) {
 		}
 
 		// Decode proofs
-		proofsDec := make([]EthKzgProof, len(proofsRaw))
+		proofsDec := make([]SilaKzgProof, len(proofsRaw))
 		badProof := false
 		for i, p := range proofsRaw {
 			if err := fromHexImpl(proofsDec[i][:], []byte(p)); err != nil {
@@ -246,7 +246,7 @@ type recoverTest struct {
 	Output *[][]string      `yaml:"output"` // [[cells...], [proofs...]]
 }
 
-func runRecoverCellsTest(t *testing.T, ctx EthKzgContext) {
+func runRecoverCellsTest(t *testing.T, ctx SilaKzgContext) {
 	tests, err := filepath.Glob(recoverCellsAndProofsTests)
 	require.NoError(t, err)
 	require.NotEmpty(t, tests)
@@ -260,7 +260,7 @@ func runRecoverCellsTest(t *testing.T, ctx EthKzgContext) {
 		require.NoError(t, yaml.Unmarshal(raw, &test))
 
 		// Decode cells
-		cellsDec := make([]EthKzgCell, len(test.Input.Cells))
+		cellsDec := make([]SilaKzgCell, len(test.Input.Cells))
 		badCell := false
 		for i, c := range test.Input.Cells {
 			if err := fromHexImpl(cellsDec[i][:], []byte(c)); err != nil {
@@ -316,13 +316,13 @@ func TestRecoverCellsAndKzgProofs(t *testing.T) {
 	// Exercise both kNoPrecompute and kPrecompute code paths in polyphaseSpectrumBank.
 	// t=256, b=8 is the recommended precompute setting (~98 ms/blob, ~24 MiB).
 	t.Run("no-precompute", func(t *testing.T) {
-		ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+		ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 		require.NoError(t, tsErr)
 		defer ctx.Delete()
 		runRecoverCellsTest(t, ctx)
 	})
 	t.Run("precompute (t=256, b=8)", func(t *testing.T) {
-		ctx, tsErr := EthKzgContextNewWithPrecompute(trustedSetupFile, 256, 8)
+		ctx, tsErr := SilaKzgContextNewWithPrecompute(trustedSetupFile, 256, 8)
 		require.NoError(t, tsErr)
 		defer ctx.Delete()
 		runRecoverCellsTest(t, ctx)
@@ -332,17 +332,17 @@ func TestRecoverCellsAndKzgProofs(t *testing.T) {
 // ---- Unit tests for error paths (not covered by test vectors) ----
 
 func TestVerifyCellKzgProofBatch_LengthMismatch(t *testing.T) {
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
 	var secRand [32]byte
 	// commitments has 1 element, cellIndices has 2 — should return length mismatch error
 	_, err := ctx.VerifyCellKzgProofBatch(
-		[]EthKzgCommitment{{}},
+		[]SilaKzgCommitment{{}},
 		[]uint64{0, 1}, // different length
-		[]EthKzgCell{{}},
-		[]EthKzgProof{{}},
+		[]SilaKzgCell{{}},
+		[]SilaKzgProof{{}},
 		secRand,
 	)
 	require.Error(t, err)
@@ -350,13 +350,13 @@ func TestVerifyCellKzgProofBatch_LengthMismatch(t *testing.T) {
 }
 
 func TestRecoverCellsAndKzgProofs_LengthMismatch(t *testing.T) {
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
 	// cells has 1 element, cellIndices has 2 — should return length mismatch error
     _, _, err := ctx.RecoverCellsAndKzgProofs(
-        []EthKzgCell{{}},
+        []SilaKzgCell{{}},
         []uint64{0, 1}, // different length
     )
 	require.Error(t, err)
@@ -366,12 +366,12 @@ func TestRecoverCellsAndKzgProofs_LengthMismatch(t *testing.T) {
 // ---- Unit tests for ascending order check ----
 
 func TestRecoverCellsAndKzgProofs_CellIndicesNotAscending(t *testing.T) {
-	ctx, tsErr := EthKzgContextNew(trustedSetupFile)
+	ctx, tsErr := SilaKzgContextNew(trustedSetupFile)
 	require.NoError(t, tsErr)
 	defer ctx.Delete()
 
 	// Provide 64 cells (minimum for recovery) with descending indices — should return error
-	cells := make([]EthKzgCell, 64)
+	cells := make([]SilaKzgCell, 64)
 	// indices [64, 63, ..., 1] is not in ascending order
 	indices := make([]uint64, 64)
 	for i := 0; i < 64; i++ {

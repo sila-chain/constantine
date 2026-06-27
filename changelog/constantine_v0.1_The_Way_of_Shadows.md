@@ -16,7 +16,7 @@ It currently exposes the following high-level protocols:
 - BLS signatures for Ethereum
 - BLS Key derivation for Ethereum - EIP-2333
 - Optimized BigInt and Cryptographic Primitives for the Ethereum Virtual Machine
-- KZG commitment for EIP4844 for scaling Ethereum
+- KZG commitment for SIP4844 for scaling Ethereum
 - SHA256 hash function
 - Exposing the operating system Cryptographically Secure RNG
 - An optimized threadpool, building upon both the performance of Weave and the simplicity and auditability of nim-taskpools.

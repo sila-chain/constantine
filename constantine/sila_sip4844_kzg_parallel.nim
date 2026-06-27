@@ -6,8 +6,8 @@
 #   * Apache v2 license (license terms in the root directory or at http://www.apache.org/licenses/LICENSE-2.0).
 # at your option. This file may not be copied, modified, or distributed except according to those terms.
 
-import ethereum_eip4844_kzg {.all.}
-export ethereum_eip4844_kzg
+import sila_sip4844_kzg {.all.}
+export sila_sip4844_kzg
 
 import
   constantine/named/algebras,
@@ -41,7 +41,7 @@ import
 ## - Audited reference implementation
 ##   https://github.com/ethereum/c-kzg-4844
 
-const prefix_eth_kzg = "ctt_eth_kzg_"
+const prefix_sila_kzg = "ctt_sila_kzg_"
 import ./zoo_exports
 
 proc blob_to_bigint_polynomial_parallel(
@@ -111,7 +111,7 @@ proc blob_to_field_polynomial_parallel_async(
 
   return globalStatus
 
-# Ethereum KZG public API
+# Sila KZG public API
 # ------------------------------------------------------------
 #
 # We use a simple goto state machine to handle errors and cleanup (if allocs were done)
@@ -119,14 +119,14 @@ proc blob_to_field_polynomial_parallel_async(
 # - Either we are in "HappyPath" section that shortcuts to resource cleanup on error
 # - or there are no resources to clean and we can early return from a function.
 
-func kzgifyStatus(status: CttCodecScalarStatus or CttCodecEccStatus): cttEthKzgStatus {.inline.} =
+func kzgifyStatus(status: CttCodecScalarStatus or CttCodecEccStatus): cttSilaKzgStatus {.inline.} =
   ?status
 
 proc blob_to_kzg_commitment_parallel*(
        tp: Threadpool,
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        dst: var array[48, byte],
-       blob: Blob): cttEthKzgStatus {.libPrefix: prefix_eth_kzg.} =
+       blob: Blob): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg.} =
   ## Compute a commitment to the `blob`.
   ## The commitment can be verified without needing the full `blob`
   ##
@@ -153,18 +153,18 @@ proc blob_to_kzg_commitment_parallel*(
     tp.kzg_commit_parallel(ctx.srs_lagrange_brp_g1, r, poly[])
     discard dst.serialize_g1_compressed(r)
 
-    result = cttEthKzg_Success
+    result = cttSilaKzg_Success
 
   freeHeapAligned(poly)
   return result
 
 proc compute_kzg_proof_parallel*(
        tp: Threadpool,
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        proof_bytes: var array[48, byte],
        y_bytes: var array[32, byte],
        blob: Blob,
-       z_bytes: array[32, byte]): cttEthKzgStatus {.libPrefix: prefix_eth_kzg.} =
+       z_bytes: array[32, byte]): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg.} =
   ## Generate:
   ## - A proof of correct evaluation.
   ## - y = p(z), the evaluation of p at the opening challenge z, with p being the Blob interpreted as a polynomial.
@@ -202,17 +202,17 @@ proc compute_kzg_proof_parallel*(
 
     discard proof_bytes.serialize_g1_compressed(proof) # cannot fail
     y_bytes.marshal(y, bigEndian) # cannot fail
-    result = cttEthKzg_Success
+    result = cttSilaKzg_Success
 
   freeHeapAligned(poly)
   return result
 
 proc compute_blob_kzg_proof_parallel*(
        tp: Threadpool,
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        proof_bytes: var array[48, byte],
        blob: Blob,
-       commitment_bytes: array[48, byte]): cttEthKzgStatus {.libPrefix: prefix_eth_kzg.} =
+       commitment_bytes: array[48, byte]): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg.} =
   ## Given a blob, return the KZG proof that is used to verify it against the commitment.
   ## This method does not verify that the commitment is correct with respect to `blob`.
 
@@ -246,17 +246,17 @@ proc compute_blob_kzg_proof_parallel*(
 
     proof_bytes.serialize_g1_compressed(proof)
 
-    result = cttEthKzg_Success
+    result = cttSilaKzg_Success
 
   freeHeapAligned(poly)
   return result
 
 proc verify_blob_kzg_proof_parallel*(
        tp: Threadpool,
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        blob: Blob,
        commitment_bytes: array[48, byte],
-       proof_bytes: array[48, byte]): cttEthKzgStatus {.libPrefix: prefix_eth_kzg.} =
+       proof_bytes: array[48, byte]): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg.} =
   ## Given a blob and a KZG proof, verify that the blob data corresponds to the provided commitment.
 
   var commitment {.noInit.}: KZGCommitment
@@ -289,21 +289,21 @@ proc verify_blob_kzg_proof_parallel*(
                           EC_ShortW_Aff[Fp[BLS12_381], G1](proof),
                           ctx.srs_monomial_g2.coefs[1])
     if verif:
-      result =  cttEthKzg_Success
+      result =  cttSilaKzg_Success
     else:
-      result = cttEthKzg_VerificationFailure
+      result = cttSilaKzg_VerificationFailure
 
   freeHeapAligned(poly)
   return result
 
 proc verify_blob_kzg_proof_batch_parallel*(
        tp: Threadpool,
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        blobs: ptr UncheckedArray[Blob],
        commitments_bytes: ptr UncheckedArray[array[48, byte]],
        proof_bytes: ptr UncheckedArray[array[48, byte]],
        n: int,
-       secureRandomBytes: array[32, byte]): cttEthKzgStatus {.libPrefix: prefix_eth_kzg.} =
+       secureRandomBytes: array[32, byte]): cttSilaKzgStatus {.libPrefix: prefix_sila_kzg.} =
   ## Verify `n` (blob, commitment, proof) sets efficiently
   ##
   ## `n` is the number of verifications set
@@ -320,9 +320,9 @@ proc verify_blob_kzg_proof_batch_parallel*(
   mixin globalStatus
 
   if n < 0:
-    return cttEthKzg_VerificationFailure
+    return cttSilaKzg_VerificationFailure
   if n == 0:
-    return cttEthKzg_Success
+    return cttSilaKzg_Success
 
   let commitments = allocHeapArrayAligned(KZGCommitment, n, alignment = 64)
   let opening_challenges = allocHeapArrayAligned(Fr[BLS12_381], n, alignment = 64)
@@ -337,18 +337,18 @@ proc verify_blob_kzg_proof_batch_parallel*(
                  polys, blobs,
                  opening_challenges, evals_at_challenges,
                  proofs, proof_bytes}
-      reduceInto(globalStatus: Flowvar[cttEthKzgStatus]):
+      reduceInto(globalStatus: Flowvar[cttSilaKzgStatus]):
         prologue:
-          var workerStatus = cttEthKzg_Success
+          var workerStatus = cttSilaKzg_Success
         forLoop:
           let polyStatusFut = tp.blob_to_field_polynomial_parallel_async(polys[i].addr, blobs[i])
           let challengeStatusFut = tp.spawnAwaitable opening_challenges[i].addr.fiatShamirChallenge(blobs[i], commitments_bytes[i])
 
           let commitmentStatus = kzgifyStatus commitments[i].bytes_to_kzg_commitment(commitments_bytes[i])
-          if workerStatus == cttEthKzg_Success:
+          if workerStatus == cttSilaKzg_Success:
             workerStatus = commitmentStatus
           let polyStatus = kzgifyStatus sync(polyStatusFut)
-          if workerStatus == cttEthKzg_Success:
+          if workerStatus == cttSilaKzg_Success:
             workerStatus = polyStatus
           discard sync(challengeStatusFut)
 
@@ -361,19 +361,19 @@ proc verify_blob_kzg_proof_batch_parallel*(
           evals_at_challenges[i].fromField(eval_at_challenge_fr)
 
           let proofStatus = kzgifyStatus proofs[i].bytes_to_kzg_proof(proof_bytes[i])
-          if workerStatus == cttEthKzg_Success:
+          if workerStatus == cttSilaKzg_Success:
             workerStatus = proofStatus
 
-        merge(remoteStatusFut: Flowvar[cttEthKzgStatus]):
+        merge(remoteStatusFut: Flowvar[cttSilaKzgStatus]):
           let remoteStatus = sync(remoteStatusFut)
-          if workerStatus == cttEthKzg_Success:
+          if workerStatus == cttSilaKzg_Success:
             workerStatus = remoteStatus
         epilogue:
           return workerStatus
 
 
     result = sync(globalStatus)
-    if result != cttEthKzg_Success:
+    if result != cttSilaKzg_Success:
       break HappyPath
 
     var randomBlindingFr {.noInit.}: Fr[BLS12_381]
@@ -407,9 +407,9 @@ proc verify_blob_kzg_proof_batch_parallel*(
                   n,
                   ctx.srs_monomial_g2.coefs[1])
     if verif:
-      result =  cttEthKzg_Success
+      result =  cttSilaKzg_Success
     else:
-      result = cttEthKzg_VerificationFailure
+      result = cttSilaKzg_VerificationFailure
 
     freeHeapAligned(linearIndepRandNumbers)
 

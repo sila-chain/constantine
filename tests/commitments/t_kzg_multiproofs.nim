@@ -90,7 +90,7 @@ proc testFK20SingleProofs() =
   echo "✓ FK20 single proofs test PASSED"
 
 proc testFK20MultiProofs(L: static int) =
-  ## Test FK20 multi-proof with L > 1 (EIP-7594 pattern)
+  ## Test FK20 multi-proof with L > 1 (SIP-7594 pattern)
   ## Uses c-kzg convention: domain of order 2*N for proof gen, bit-reversed proofs/ys
   ## Constraint: N == L * (CDS/2), so for given L we need appropriate N and CDS
   echo "Testing FK20 multi-proofs (L = ", L, ")..."
@@ -141,7 +141,7 @@ proc testFK20MultiProofs(L: static int) =
 
     var ys: array[L, Fr[BLS12_381]]
     ys.computeEvalsAtCoset(setup.testPoly, h, setup.rootsOfUnity)
-    ys.bit_reversal_permutation() # EIP-7594 convention, blobs are bit-reversed evaluations
+    ys.bit_reversal_permutation() # SIP-7594 convention, blobs are bit-reversed evaluations
 
     let ok = fr_fft_desc.kzg_coset_verify(
       commitmentAff,
@@ -215,7 +215,7 @@ proc testNonOptimizedCosetProofs*(L: static int) =
 
     var ys: array[L, Fr[BLS12_381]]
     ys.computeEvalsAtCoset(setup.testPoly, h, setup.rootsOfUnity)
-    ys.bit_reversal_permutation() # EIP-7594 convention, blobs are bit-reversed evaluations
+    ys.bit_reversal_permutation() # SIP-7594 convention, blobs are bit-reversed evaluations
 
     let fk20Proof = fk20Proofs[pos]
 
@@ -300,9 +300,9 @@ proc testKzgCosetVerifyBatch*(numTestCells: int) =
     commitmentIdx[i] = 0  # index into uniqueCommitments
     cosetShifts[i] = h
 
-    # Generate evals and bit-reverse per EIP-7594 convention
+    # Generate evals and bit-reverse per SIP-7594 convention
     evals[i].computeEvalsAtCoset(setup.testPoly, h, setup.rootsOfUnity)
-    evals[i].bit_reversal_permutation() # EIP-7594 convention, blobs are bit-reversed evaluations
+    evals[i].bit_reversal_permutation() # SIP-7594 convention, blobs are bit-reversed evaluations
 
     # Generate proof using naive polynomial division
     # Note: naive proof gen doesn't bit-reverse, but batch verification expects
@@ -353,7 +353,7 @@ proc testKzgCosetVerifyBatch*(numTestCells: int) =
 
 proc testKzgCosetVerifyBatch*() =
   ## Test kzg_coset_verify_batch with multiple cell counts
-  echo "Testing kzg_coset_verify_batch (EIP-7594)..."
+  echo "Testing kzg_coset_verify_batch (SIP-7594)..."
 
   const testCases = [1, 2, 3, 4, 5, 10, 16]
   for numCells in testCases:
@@ -943,17 +943,17 @@ when isMainModule:
 
   echo "---------------------------"
 
-  echo "EIP-7594 batch verification ... "
+  echo "SIP-7594 batch verification ... "
   testKzgCosetVerifyBatch()
 
   echo "---------------------------"
 
-  echo "EIP-7594 batch verification (small sizes) ... "
+  echo "SIP-7594 batch verification (small sizes) ... "
   testKzgCosetVerifyBatchSmallSizes()
 
   echo "---------------------------"
 
-  echo "EIP-7594 batch verification (multiple commitments) ... "
+  echo "SIP-7594 batch verification (multiple commitments) ... "
   testKzgCosetVerifyBatchMultipleCommitments()
 
   echo "---------------------------"

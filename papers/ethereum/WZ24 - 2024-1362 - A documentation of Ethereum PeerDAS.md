@@ -534,7 +534,7 @@ Finally, note that all evaluations and Interpolations can be done efficiently us
 
 [BFL20] Balthazar Bauer, Georg Fuchsbauer, and Julian Loss. A classification of computational assumptions in the algebraic group model. In Daniele Micciancio and Thomas Ristenpart, editors, CRYPTO 2020, Part II, volume 12171 of LNCS, pages 121–151. Springer, Heidelberg, August 2020. (Cited on page 4.)
 
-[BFL $ ^{+} $22] Vitalik Buterin, Dankrad Feist, Diederik Loerakker, George Kadianakis, Matt Garnett, Mofi Taiwo, and Ansgar Dietrichs. EIP-4844: Shard Blob Transactions. https://eips.ethereum.org/EIPS/eip-4844, 2022. Accessed: 2024-07-10. (Cited on page 2.)
+[BFL $ ^{+} $22] Vitalik Buterin, Dankrad Feist, Diederik Loerakker, George Kadianakis, Matt Garnett, Mofi Taiwo, and Ansgar Dietrichs. SIP-4844: Shard Blob Transactions. https://eips.ethereum.org/EIPS/sip-4844, 2022. Accessed: 2024-07-10. (Cited on page 2.)
 
 [But18] Vitalik Buterin. Reed-Solomon erasure code recovery in n*log2(n) time with FFTs. https://ethresear.ch/t/reed-solomon-erasure-code-recovery-in-n-log-2-n-time-with-ffts/3039, 2018. Accessed: 2024-06-27. (Cited on page 17.)
 
@@ -542,7 +542,7 @@ Finally, note that all evaluations and Interpolations can be done efficiently us
 
 [Eth24a] Ethereum. Ethereum Consensus Specs - Commit 54093964c95f. https://github.com/ethereum/consensus-specs/commit/54093964c95fbd2e48be5de672e3baae8531a964, 2024. Accessed: 2024-08-09. (Cited on page 1, 2.)
 
-[Eth24b] Ethereum. Ethereum Consensus Specs - EIP 7594. https://github.com/ethereum/consensus-specs/tree/dev/specs/_features/eip7594, 2024. Accessed: 2024-06-24. (Cited on page 2.)
+[Eth24b] Ethereum. Ethereum Consensus Specs - EIP 7594. https://github.com/ethereum/consensus-specs/tree/dev/specs/_features/sip7594, 2024. Accessed: 2024-06-24. (Cited on page 2.)
 
 [FK20] Dankrad Feist and Dmitry Khovratovich. Fast amortized Kate proofs. https://github.com/khovratovich/Kate/blob/master/Kate_amortized.pdf, 2020. Accessed: 2024-06-27, Commit f4e5472. (Cited on page 14.)
 

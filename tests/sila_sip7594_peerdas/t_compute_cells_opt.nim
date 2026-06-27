@@ -12,7 +12,7 @@
 ## results to the naive O(n²) reference implementation.
 ##
 ## Run with
-##   nim c -r -d:release --hints:off --warnings:off --outdir:build/wip --nimcache:nimcache/wip tests/eth_eip7594_peerdas/t_compute_cells_opt.nim
+##   nim c -r -d:release --hints:off --warnings:off --outdir:build/wip --nimcache:nimcache/wip tests/sila_sip7594_peerdas/t_compute_cells_opt.nim
 
 import
   # Standard library
@@ -20,8 +20,8 @@ import
   # 3rd party
   pkg/yaml,
   # Internals
-  constantine/eth_eip7594_peerdas {.all.},
-  constantine/ethereum_eip4844_kzg,
+  constantine/sila_sip7594_peerdas {.all.},
+  constantine/sila_sip4844_kzg,
   constantine/serialization/codecs,
   constantine/platforms/allocs,
   # Shared test utilities
@@ -55,9 +55,9 @@ func zeroPad[N, ExtN: static int, Field](
     dst.coefs[i].setZero()
 
 func compute_cells_naive(
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        blob: Blob,
-       cells: var array[CELLS_PER_EXT_BLOB, Cell]): cttEthKzgStatus =
+       cells: var array[CELLS_PER_EXT_BLOB, Cell]): cttSilaKzgStatus =
   ## Compute all cells for an extended blob using the naive O(n²) algorithm.
   ## This follows the consensus-specs exactly and serves as the reference
   ## implementation for test vector validation.
@@ -87,9 +87,9 @@ func compute_cells_naive(
   of cttCodecScalar_Success:
     discard
   of cttCodecScalar_Zero:
-    return cttEthKzg_ScalarZero
+    return cttSilaKzg_ScalarZero
   of cttCodecScalar_ScalarLargerThanCurveOrder:
-    return cttEthKzg_ScalarLargerThanCurveOrder
+    return cttSilaKzg_ScalarLargerThanCurveOrder
 
   # Step 2: Convert to coefficient form via IFFT
   var poly_coeff_N: PolynomialCoef[N, Fr[BLS12_381]]
@@ -119,7 +119,7 @@ func compute_cells_naive(
   for i in 0 ..< CELLS:
     cosetEvalsToCell(cells[i], cells_evals[][i])
 
-  return cttEthKzg_Success
+  return cttSilaKzg_Success
 
 # ---------------------------------------------------------
 
@@ -138,14 +138,14 @@ proc parseCells(expected: YamlNode): seq[Cell] =
 
 const test_case = "compute_cells_case_valid_2"
 
-suite "EIP-7594 PeerDAS - compute_cells [" & test_case & "]":
+suite "SIP-7594 PeerDAS - compute_cells [" & test_case & "]":
   let ctx = getTrustedSetup()
 
   test "compute_cells_naive vs test vector":
     ## Verify compute_cells_naive matches official test vectors
     const TestFile =
       currentSourcePath.rsplit(DirSep, 1)[0] /
-      ".." / ".." / "tests" / "protocol_ethereum_eip7594_fulu_peerdas" /
+      ".." / ".." / "tests" / "protocol_sila_sip7594_fulu_peerdas" /
       "compute_cells" / "kzg-mainnet" /
       test_case / "data.yaml"
 
@@ -158,7 +158,7 @@ suite "EIP-7594 PeerDAS - compute_cells [" & test_case & "]":
     var cells: array[CELLS_PER_EXT_BLOB, Cell]
     let status = compute_cells_naive(ctx, blob[], cells)
 
-    doAssert status == cttEthKzg_Success, "compute_cells_naive failed: " & $status
+    doAssert status == cttSilaKzg_Success, "compute_cells_naive failed: " & $status
     let expectedCells = testData["output"].parseCells()
     doAssert @cells == expectedCells, "compute_cells_naive doesn't match test vector"
     echo "  ✅ compute_cells_naive matches test vector"
@@ -167,7 +167,7 @@ suite "EIP-7594 PeerDAS - compute_cells [" & test_case & "]":
     ## Verify optimized compute_cells matches official test vectors
     const TestFile =
       currentSourcePath.rsplit(DirSep, 1)[0] /
-      ".." / ".." / "tests" / "protocol_ethereum_eip7594_fulu_peerdas" /
+      ".." / ".." / "tests" / "protocol_sila_sip7594_fulu_peerdas" /
       "compute_cells" / "kzg-mainnet" /
       test_case / "data.yaml"
 
@@ -181,7 +181,7 @@ suite "EIP-7594 PeerDAS - compute_cells [" & test_case & "]":
 
     let status = compute_cells(ctx, cells_opt, blob[])
 
-    doAssert status == cttEthKzg_Success, "compute_cells failed: " & $status
+    doAssert status == cttSilaKzg_Success, "compute_cells failed: " & $status
     let expectedCells = testData["output"].parseCells()
     doAssert @cells_opt == expectedCells, "compute_cells doesn't match test vector"
 

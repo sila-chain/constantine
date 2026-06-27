@@ -54,7 +54,7 @@ import ../zoo_exports
 #
 #   BLS12-381 was chosen for its high 2-adicity, as 2^32 is a factor of its order-1
 
-const ctt_eth_kzg4844_fr_pow2_roots_of_unity = [
+const ctt_sila_kzg4844_fr_pow2_roots_of_unity = [
   # primitive_root⁽ᵐᵒᵈᵘˡᵘˢ⁻¹⁾/⁽²^ⁱ⁾ for i in [0, 32)
   # The primitive root chosen is 7
   Fr[BLS12_381].fromHex"0x1",
@@ -93,9 +93,9 @@ const ctt_eth_kzg4844_fr_pow2_roots_of_unity = [
 
 template getRootOfUnityForSize(size: static int): Fr[BLS12_381] =
   ## size MUST be a power of 2
-  bind ctt_eth_kzg4844_fr_pow2_roots_of_unity
+  bind ctt_sila_kzg4844_fr_pow2_roots_of_unity
   const scale = log2_vartime(uint32 size)
-  ctt_eth_kzg4844_fr_pow2_roots_of_unity[scale]
+  ctt_sila_kzg4844_fr_pow2_roots_of_unity[scale]
 
 func computeRootsOfUnity(dst: var openArray[Fr[BLS12_381]], generatorRootOfUnity: Fr[BLS12_381]) =
   dst[0].setOne()
@@ -111,8 +111,8 @@ const FIELD_ELEMENTS_PER_BLOB* = 4096
 const FIELD_ELEMENTS_PER_EXT_BLOB* = 2 * FIELD_ELEMENTS_PER_BLOB
 const KZG_SETUP_G2_LENGTH = 65
 
-# EIP-7594 PeerDAS constants
-# https://eips.ethereum.org/EIPS/eip-7594
+# SIP-7594 PeerDAS constants
+# https://eips.ethereum.org/EIPS/sip-7594
 # https://github.com/ethereum/consensus-specs/blob/v1.7.0-alpha.3/specs/fulu/polynomial-commitments-sampling.md
 const FIELD_ELEMENTS_PER_CELL* = 64
 const CELLS_PER_BLOB* = FIELD_ELEMENTS_PER_BLOB div FIELD_ELEMENTS_PER_CELL
@@ -152,7 +152,7 @@ type
 #   are different from multiproofs
 
 type
-  EthereumKZGContext* = object
+  SilaKZGContext* = object
     ## KZG commitment context
 
     # It can be very confusing to follow:
@@ -168,7 +168,7 @@ type
     # Part of the Structured Reference String (SRS) holding the 𝔾1 points
     # Stored in bit-reversed evaluation / Lagrange form
     #
-    # This is used in EIP-4844 for committing to polynomials and producing an opening proof at
+    # This is used in SIP-4844 for committing to polynomials and producing an opening proof at
     # a random value (chosen via Fiat-Shamir heuristic)
     #
     # Referring to the 𝔾1 generator as G, in monomial basis / coefficient form we would store:
@@ -176,13 +176,13 @@ type
     # with τ a random secret derived from a multi-party computation ceremony
     # with at least one honest random secret contributor (also called KZG ceremony or powers-of-tau ceremony)
     #
-    # In EIP-4844 we operate only on the evaluation form of polynomials over 𝔾1 (i.e. the Lagrange basis)
+    # In SIP-4844 we operate only on the evaluation form of polynomials over 𝔾1 (i.e. the Lagrange basis)
     # i.e. for agreed upon [ω⁰, ω¹, ..., ω⁴⁰⁹⁶]
     # we store [f(ω⁰), f(ω¹), ..., f(ω⁴⁰⁹⁶)]
     #
     # https://en.wikipedia.org/wiki/Lagrange_polynomial#Barycentric_form
     #
-    # Conversion can be done with a discrete Fourier transform. In EIP-4844 we operate only on the evaluation form of polynomials over 𝔾1 (i.e. the Lagrange basis)
+    # Conversion can be done with a discrete Fourier transform. In SIP-4844 we operate only on the evaluation form of polynomials over 𝔾1 (i.e. the Lagrange basis)
 
     srs_monomial_g1*{.align: 64.}: PolynomialCoef[FIELD_ELEMENTS_PER_BLOB, EC_ShortW_Aff[Fp[BLS12_381], G1]]
     # Part of the Structured Reference String (SRS) holding the 𝔾1 points
@@ -190,7 +190,7 @@ type
     #   [G, [τ]G, [τ²]G, ... [τ⁴⁰⁹⁶]G]
     # in coefficient / monomial form
     #
-    # This is used in EIP-7594 to produce KZG multiproofs
+    # This is used in SIP-7594 to produce KZG multiproofs
 
     srs_monomial_g2*{.align: 64.}: PolynomialCoef[KZG_SETUP_G2_LENGTH, EC_ShortW_Aff[Fp2[BLS12_381], G2]]
     # Part of the SRS holding the 𝔾2 points
@@ -239,7 +239,7 @@ type
   TrustedSetupFormat* = enum
     kReferenceCKzg4844
 
-proc load_ckzg4844(ctx: ptr EthereumKZGContext, f: File): TrustedSetupStatus =
+proc load_ckzg4844(ctx: ptr SilaKZGContext, f: File): TrustedSetupStatus =
   ## Read a trusted setup in the reference library c-kzg-4844 format
   # Format is the following (c-kzg-4844 with Monomial G1 for FK20):
   # <nG1: number of G1 points>
@@ -331,7 +331,7 @@ proc load_ckzg4844(ctx: ptr EthereumKZGContext, f: File): TrustedSetupStatus =
 
   block:
     # G1 points (Monomial form) - 96 characters + newline
-    # These are needed for FK20 multiproof computation (EIP-7594)
+    # These are needed for FK20 multiproof computation (SIP-7594)
     var bufG1Hex {.noInit.}: array[2*g1Bytes+1, char]
     var bufG1bytes {.noInit.}: array[g1Bytes, byte]
     var charsRead: cint
@@ -347,7 +347,7 @@ proc load_ckzg4844(ctx: ptr EthereumKZGContext, f: File): TrustedSetupStatus =
 
   return tsSuccess
 
-proc setupPolyphaseSpectrumBank(ctx: ptr EthereumKZGContext, t: int = 0, b: int = 0) =
+proc setupPolyphaseSpectrumBank(ctx: ptr SilaKZGContext, t: int = 0, b: int = 0) =
   ## Build the polyphase spectrum bank from the SRS monomial points.
   ## Use when the bank has been mutated in-place (e.g., benchmarking different
   ## precompute configs) and you need to restore it without reloading the full context.
@@ -376,11 +376,11 @@ proc setupPolyphaseSpectrumBank(ctx: ptr EthereumKZGContext, t: int = 0, b: int 
       for offset in 0 ..< FIELD_ELEMENTS_PER_CELL:
         ctx.polyphaseSpectrumBank.rawPoints[pos][offset] = tmp[offset][pos]
 
-proc setupKzg4844ProtoDanksharding(ctx: ptr EthereumKZGContext) =
+proc setupKzg4844ProtoDanksharding(ctx: ptr SilaKZGContext) =
   block:
     # Powers of tau: [G, [τ]G, [τ²]G, ... [τ⁴⁰⁹⁶]G]
 
-    # Bit-reverse the Lagrange form points (for EIP-4844 commitments)
+    # Bit-reverse the Lagrange form points (for SIP-4844 commitments)
     ctx.srs_lagrange_brp_g1.evals.bit_reversal_permutation()
 
     # G1 Monomial points are already loaded from the trusted setup file
@@ -393,7 +393,7 @@ proc setupKzg4844ProtoDanksharding(ctx: ptr EthereumKZGContext) =
     ctx.domain_brp.invMaxDegree.fromUint(ctx.domain_brp.rootsOfUnity.len.uint64)
     ctx.domain_brp.invMaxDegree.inv_vartime()
 
-proc setupKzg7594PeerDAS(ctx: ptr EthereumKZGContext, t, b: int) =
+proc setupKzg7594PeerDAS(ctx: ptr SilaKZGContext, t, b: int) =
   # Initialize FFT descriptors
   ctx.ecfft_desc_ext = ECFFT_Descriptor[EC_ShortW_Jac[Fp[BLS12_381], G1]].new(
     order = FIELD_ELEMENTS_PER_EXT_BLOB,
@@ -408,7 +408,7 @@ proc setupKzg7594PeerDAS(ctx: ptr EthereumKZGContext, t, b: int) =
 
   ctx.setupPolyphaseSpectrumBank(t, b)
 
-proc load_from_file(ctx: var ptr EthereumKZGContext, filepath: cstring, format: TrustedSetupFormat, t = 64, b = 12): TrustedSetupStatus =
+proc load_from_file(ctx: var ptr SilaKZGContext, filepath: cstring, format: TrustedSetupFormat, t = 64, b = 12): TrustedSetupStatus =
   ## Load from a trusted setup file.
 
   var f: File
@@ -416,7 +416,7 @@ proc load_from_file(ctx: var ptr EthereumKZGContext, filepath: cstring, format: 
   if not ok:
     return tsMissingOrInaccessibleFile
 
-  ctx = alloc0HeapAligned(EthereumKZGContext, alignment = 64)
+  ctx = alloc0HeapAligned(SilaKZGContext, alignment = 64)
 
   defer:
     fileio.close(f)
@@ -427,13 +427,13 @@ proc load_from_file(ctx: var ptr EthereumKZGContext, filepath: cstring, format: 
     ctx = nil
   return status
 
-proc new*(ctx: var ptr EthereumKZGContext, filepath: cstring, format: TrustedSetupFormat): TrustedSetupStatus {.exportc: "ctt_eth_kzg_context_new".} =
+proc new*(ctx: var ptr SilaKZGContext, filepath: cstring, format: TrustedSetupFormat): TrustedSetupStatus {.exportc: "ctt_sila_kzg_context_new".} =
   result = ctx.load_from_file(filepath, format)
   if result == tsSuccess:
     ctx.setupKzg4844ProtoDanksharding()
     ctx.setupKzg7594PeerDAS(t=0, b=0)
 
-proc new_with_precompute*(ctx: var ptr EthereumKZGContext, filepath: cstring, format: TrustedSetupFormat, t, b: cint): TrustedSetupStatus {.exportc: "ctt_eth_kzg_context_new_with_precompute".} =
+proc new_with_precompute*(ctx: var ptr SilaKZGContext, filepath: cstring, format: TrustedSetupFormat, t, b: cint): TrustedSetupStatus {.exportc: "ctt_sila_kzg_context_new_with_precompute".} =
   ## Create a KZG context with precomputed MSM tables for FK20 proofs (PeerDAS).
   ##
   ## `t` = base groups (stride between precomputed layers)
@@ -463,7 +463,7 @@ proc new_with_precompute*(ctx: var ptr EthereumKZGContext, filepath: cstring, fo
     ctx.setupKzg4844ProtoDanksharding()
     ctx.setupKzg7594PeerDAS(t, b)
 
-proc delete*(ctx: ptr EthereumKZGContext) {.exportc: "ctt_eth_kzg_context_delete".} =
+proc delete*(ctx: ptr SilaKZGContext) {.exportc: "ctt_sila_kzg_context_delete".} =
   # Not why but `=destroy`(ctx.polyphaseSpectrumBank)
   # can apparently raise
   # but destroying the individual precomp MSM field cannot

@@ -10,7 +10,7 @@ import
   # Standard library
   std/[os, strutils, streams],
   # Internal
-  constantine/commitments_setups/ethereum_kzg_srs,
+  constantine/commitments_setups/sila_kzg_srs,
   # 3rd party
   pkg/yaml
 
@@ -20,11 +20,11 @@ const TrustedSetupMainnet* =
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
-proc getTrustedSetup*(): ptr EthereumKZGContext =
+proc getTrustedSetup*(): ptr SilaKZGContext =
   ## This is a convenience function for the Ethereum mainnet testing trusted setups.
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus
   echo "Trusted Setup loaded successfully"
@@ -49,13 +49,13 @@ proc loadVectors*(filename: string): YamlNode =
   load(s, result)
 
 template testGen*(testDirPrefix: string, name: untyped, testDirSuffix: string, injectedTestVectorIdentifier: untyped, body: untyped): untyped {.dirty.} =
-  ## Generates a test proc(ctx: ptr EthereumKZGContext)
+  ## Generates a test proc(ctx: ptr SilaKZGContext)
   ## with identifier "test_name"
   ## The test vector data is available as YamlNode under the
   ## the variable passed as `injectedTestVectorIdentifier`
   bind walkTests, loadVectors
 
-  proc `test _ name`(ctx: ptr EthereumKZGContext) =
+  proc `test _ name`(ctx: ptr SilaKZGContext) =
     var count = 0 # Need to fail if walkDir doesn't return anything
     var skipped = 0
     let testDir = testDirPrefix / astToStr(name) / testDirSuffix
@@ -75,13 +75,13 @@ template testGen*(testDirPrefix: string, name: untyped, testDirSuffix: string, i
       echo "[Warning]: ", skipped, " tests skipped."
 
 template testGenPar*(testDirPrefix: string, name: untyped, testDirSuffix: string, injectedTestVectorIdentifier: untyped, body: untyped): untyped {.dirty.} =
-  ## Generates a test proc(ctx: ptr EthereumKZGContext, tp: Threadpool)
+  ## Generates a test proc(ctx: ptr SilaKZGContext, tp: Threadpool)
   ## with identifier "test_name"
   ## The test vector data is available as YamlNode under the
   ## the variable passed as `injectedTestVectorIdentifier`
   bind walkTests, loadVectors
 
-  proc `test _ name`(ctx: ptr EthereumKZGContext, tp: Threadpool) =
+  proc `test _ name`(ctx: ptr SilaKZGContext, tp: Threadpool) =
     var count = 0 # Need to fail if walkDir doesn't return anything
     var skipped = 0
     let testDir = testDirPrefix / astToStr(name) / testDirSuffix

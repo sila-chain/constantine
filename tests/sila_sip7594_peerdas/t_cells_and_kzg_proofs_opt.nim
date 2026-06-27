@@ -16,7 +16,7 @@
 ## as `compute_cells_naive` is about 350x slower than the optimized version.
 ##
 ## Companion tests:
-##   - `constantine/tests/eth_eip7594_peerdas/t_compute_cells_opt.nim`
+##   - `constantine/tests/sila_sip7594_peerdas/t_compute_cells_opt.nim`
 ##     verifies the compute_cells logic in isolation vs a naive spec-like O(n²) algorithm.
 ##     for both internal and external consistency
 ##   - `constantine/tests/commitments/t_kzg_multiproofs.nim`
@@ -25,13 +25,13 @@
 ##     against `kzg_coset_verify`
 ##
 ## Run with
-##   nim c -r -d:release --hints:off --warnings:off --outdir:build/wip --nimcache:nimcache/wip tests/eth_eip7594_peerdas/t_cells_and_kzg_proofs_opt.nim
+##   nim c -r -d:release --hints:off --warnings:off --outdir:build/wip --nimcache:nimcache/wip tests/sila_sip7594_peerdas/t_cells_and_kzg_proofs_opt.nim
 
 import
   std/[os, strutils, streams, unittest],
   pkg/yaml,
-  constantine/eth_eip7594_peerdas {.all.},
-  constantine/ethereum_eip4844_kzg {.all.},
+  constantine/sila_sip7594_peerdas {.all.},
+  constantine/sila_sip4844_kzg {.all.},
   constantine/serialization/[codecs, codecs_bls12_381],
   constantine/math/ec_shortweierstrass,
   constantine/named/algebras,
@@ -49,10 +49,10 @@ import
   constantine/commitments/kzg_multiproofs
 
 func compute_cells_and_kzg_proofs_naive(
-       ctx: ptr EthereumKZGContext,
+       ctx: ptr SilaKZGContext,
        cells: var array[CELLS_PER_EXT_BLOB, Cell],
        proofs: var array[CELLS_PER_EXT_BLOB, KZGProof],
-       blob: Blob): cttEthKzgStatus =
+       blob: Blob): cttSilaKzgStatus =
   ## Compute all cells and proofs for an extended blob using the naive O(n²) algorithm.
   ##
   ## This follows the consensus-specs exactly, using polynomial long division
@@ -78,9 +78,9 @@ func compute_cells_and_kzg_proofs_naive(
   of cttCodecScalar_Success:
     discard
   of cttCodecScalar_Zero:
-    return cttEthKzg_ScalarZero
+    return cttSilaKzg_ScalarZero
   of cttCodecScalar_ScalarLargerThanCurveOrder:
-    return cttEthKzg_ScalarLargerThanCurveOrder
+    return cttSilaKzg_ScalarLargerThanCurveOrder
 
   # Convert to coefficient form
   var poly_monomial: PolynomialCoef[N, Fr[BLS12_381]]
@@ -88,7 +88,7 @@ func compute_cells_and_kzg_proofs_naive(
 
   # Compute cells using the public API
   let cells_status = compute_cells(ctx, cells, blob)
-  if cells_status != cttEthKzg_Success:
+  if cells_status != cttSilaKzg_Success:
     return cells_status
 
   # Note: kzg_coset_prove_naive now computes evaluations internally,
@@ -113,7 +113,7 @@ func compute_cells_and_kzg_proofs_naive(
       proof, poly_monomial, x, L, ctx.srs_monomial_g1)
     proofs[cell_idx] = KZGProof(proof)
 
-  return cttEthKzg_Success
+  return cttSilaKzg_Success
 
 # ---------------------------------------------------------
 
@@ -122,10 +122,10 @@ const
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
-proc trusted_setup(): ptr EthereumKZGContext =
-  var ctx: ptr EthereumKZGContext
+proc trusted_setup(): ptr SilaKZGContext =
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus
   return ctx
@@ -201,14 +201,14 @@ proc testProofsMatch(
 
 const TestVectorsDir =
   currentSourcePath.rsplit(DirSep, 1)[0] /
-  ".." / "protocol_ethereum_eip7594_fulu_peerdas" /
+  ".." / "protocol_sila_sip7594_fulu_peerdas" /
   "compute_cells_and_kzg_proofs" / "kzg-mainnet"
 
 # Test vectors are generated from:
 # https://github.com/ethereum/consensus-specs/blob/master/tests/core/pyspec/eth2spec/test/utils/kzg_tests.py
 
 proc main() =
-  suite "EIP-7594 PeerDAS - KZG coset prove optimization":
+  suite "SIP-7594 PeerDAS - KZG coset prove optimization":
     let ctx = trusted_setup()
 
     for file in walkDirRec(TestVectorsDir, relative = true):
@@ -241,7 +241,7 @@ proc main() =
 
         let status_naive = compute_cells_and_kzg_proofs_naive(ctx, cells_naive, proofs_naive, blob[])
 
-        if status_naive != cttEthKzg_Success:
+        if status_naive != cttSilaKzg_Success:
           echo "❌ compute_cells_and_kzg_proofs_naive failed: " & $status_naive & " [" & testCaseName & "]"
           check false
           return
@@ -272,7 +272,7 @@ proc main() =
 
         let status_opt = compute_cells_and_kzg_proofs(ctx, cells_opt.asUnchecked(), proofs_opt.asUnchecked(), blob[])
 
-        if status_opt != cttEthKzg_Success:
+        if status_opt != cttSilaKzg_Success:
           echo "❌ compute_cells_and_kzg_proofs failed: " & $status_opt & " [" & testCaseName & "]"
           check false
           return
@@ -315,11 +315,11 @@ proc main() =
         let status_naive = compute_cells_and_kzg_proofs_naive(ctx, cells_naive, proofs_naive, blob[])
         let status_opt = compute_cells_and_kzg_proofs(ctx, cells_opt.asUnchecked(), proofs_opt.asUnchecked(), blob[])
 
-        if status_naive != cttEthKzg_Success:
+        if status_naive != cttSilaKzg_Success:
           echo "❌ naive failed: " & $status_naive
           check false
           return
-        if status_opt != cttEthKzg_Success:
+        if status_opt != cttSilaKzg_Success:
           echo "❌ opt failed: " & $status_opt
           check false
           return

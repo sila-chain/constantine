@@ -8,8 +8,8 @@
 
 import
   benchset_serialization,
-  constantine/eth_eip7594_peerdas,
-  constantine/ethereum_eip4844_kzg_parallel,
+  constantine/sila_sip7594_peerdas,
+  constantine/sila_sip4844_kzg_parallel,
   ../bench_blueprint,
   std/[os, strutils, monotimes]
 
@@ -25,14 +25,14 @@ template bench(op: string, iters: int, body: untyped): untyped =
   measure(iters, startTime, stopTime, startClk, stopClk, body)
   report(op, startTime, stopTime, startClk, stopClk, iters)
 
-proc benchComputeCells(b: BenchSet, ctx: ptr EthereumKZGContext, iters: int) =
+proc benchComputeCells(b: BenchSet, ctx: ptr SilaKZGContext, iters: int) =
   var cells: ref array[CELLS_PER_EXT_BLOB, Cell]
   new(cells)
   bench("compute_cells", iters):
-    doAssert cttEthKzg_Success == ctx.compute_cells(cells[], b.blobs[0])
+    doAssert cttSilaKzg_Success == ctx.compute_cells(cells[], b.blobs[0])
 
 proc main() =
-  echo "PeerDAS (EIP-7594) - compute_cells Benchmark"
+  echo "PeerDAS (SIP-7594) - compute_cells Benchmark"
   echo "Optimized for perf/VTune profiling (single benchmark, serialized data)\n"
 
   let benchsetFile = currentSourcePath.rsplit(DirSep, 1)[0] / "benchset.dat"
@@ -45,9 +45,9 @@ proc main() =
     currentSourcePath.rsplit(DirSep, 1)[0] /
     ".." / ".." / "constantine" /
     "commitments_setups" /
-    "trusted_setup_ethereum_kzg4844_reference.dat"
+    "trusted_setup_sila_kzg4844_reference.dat"
 
-  var ctx: ptr EthereumKZGContext
+  var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess
   let b = BenchSet.load(benchsetFile)

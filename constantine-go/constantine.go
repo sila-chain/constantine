@@ -44,40 +44,40 @@ func (tp Threadpool) Shutdown() {
 	C.ctt_threadpool_shutdown(tp.ctx)
 }
 
-// Ethereum EIP-4844 KZG API
+// Sila SIP-4844 KZG API
 // -----------------------------------------------------
 
 type (
-	EthKzgCommitment      [48]byte
-	EthKzgProof           [48]byte
-	EthBlob               [4096 * 32]byte
-	EthKzgChallenge       [32]byte
-	EthKzgEvalAtChallenge [32]byte
+	SilaKzgCommitment      [48]byte
+	SilaKzgProof           [48]byte
+	SilaBlob               [4096 * 32]byte
+	SilaKzgChallenge       [32]byte
+	SilaKzgEvalAtChallenge [32]byte
 )
 
-type EthKzgContext struct {
-	cCtx       *C.ctt_eth_kzg_context
+type SilaKzgContext struct {
+	cCtx       *C.ctt_sila_kzg_context
 	threadpool Threadpool
 }
 
-func EthKzgContextNew(trustedSetupFile string) (ctx EthKzgContext, err error) {
+func SilaKzgContextNew(trustedSetupFile string) (ctx SilaKzgContext, err error) {
 	cFile := C.CString(trustedSetupFile)
 	defer C.free(unsafe.Pointer(cFile))
-	status := C.ctt_eth_kzg_context_new(
+	status := C.ctt_sila_kzg_context_new(
 		&ctx.cCtx,
 		cFile,
-		C.cttEthTSFormat_ckzg4844,
+		C.cttSilaTSFormat_ckzg4844,
 	)
-	if status != C.cttEthTS_Success {
+	if status != C.cttSilaTS_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_trusted_setup_status_to_string(status)),
+			C.GoString(C.ctt_sila_trusted_setup_status_to_string(status)),
 		)
 	}
 	ctx.threadpool.ctx = nil
 	return ctx, err
 }
 
-// EthKzgContextNewWithPrecompute creates a KZG context with precomputed MSM tables
+// SilaKzgContextNewWithPrecompute creates a KZG context with precomputed MSM tables
 // for FK20 proofs (PeerDAS).
 //
 // t = base groups (stride between precomputed layers)
@@ -102,337 +102,337 @@ func EthKzgContextNew(trustedSetupFile string) (ctx EthKzgContext, err error) {
 // Larger b = faster per MSM but exponentially more memory (2^b entries).
 // Larger t = fewer doublings but more precomputed layers.
 // Recommended (t=256, b=8): ~98 ms/blob proving, ~24 MiB total memory.
-func EthKzgContextNewWithPrecompute(trustedSetupFile string, t, b int) (ctx EthKzgContext, err error) {
+func SilaKzgContextNewWithPrecompute(trustedSetupFile string, t, b int) (ctx SilaKzgContext, err error) {
 	cFile := C.CString(trustedSetupFile)
 	defer C.free(unsafe.Pointer(cFile))
-	status := C.ctt_eth_kzg_context_new_with_precompute(
+	status := C.ctt_sila_kzg_context_new_with_precompute(
 		&ctx.cCtx,
 		cFile,
-		C.cttEthTSFormat_ckzg4844,
+		C.cttSilaTSFormat_ckzg4844,
 		C.int(t),
 		C.int(b),
 	)
-	if status != C.cttEthTS_Success {
+	if status != C.cttSilaTS_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_trusted_setup_status_to_string(status)),
+			C.GoString(C.ctt_sila_trusted_setup_status_to_string(status)),
 		)
 	}
 	ctx.threadpool.ctx = nil
 	return ctx, err
 }
 
-func (ctx *EthKzgContext) SetThreadpool(tp Threadpool) {
+func (ctx *SilaKzgContext) SetThreadpool(tp Threadpool) {
 	ctx.threadpool = tp
 }
 
-func (ctx *EthKzgContext) Delete() {
+func (ctx *SilaKzgContext) Delete() {
     if ctx == nil || ctx.cCtx == nil {
         return
     }
-    C.ctt_eth_kzg_context_delete(ctx.cCtx)
+    C.ctt_sila_kzg_context_delete(ctx.cCtx)
     ctx.cCtx = nil
 }
 
-func (ctx EthKzgContext) BlobToKzgCommitment(blob EthBlob) (commitment EthKzgCommitment, err error) {
-	status := C.ctt_eth_kzg_blob_to_kzg_commitment(
+func (ctx SilaKzgContext) BlobToKzgCommitment(blob SilaBlob) (commitment SilaKzgCommitment, err error) {
+	status := C.ctt_sila_kzg_blob_to_kzg_commitment(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitment)),
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitment)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 	}
 	return commitment, err
 }
 
-func (ctx EthKzgContext) ComputeKzgProof(blob EthBlob, z EthKzgChallenge) (proof EthKzgProof, y EthKzgEvalAtChallenge, err error) {
-	status := C.ctt_eth_kzg_compute_kzg_proof(
+func (ctx SilaKzgContext) ComputeKzgProof(blob SilaBlob, z SilaKzgChallenge) (proof SilaKzgProof, y SilaKzgEvalAtChallenge, err error) {
+	status := C.ctt_sila_kzg_compute_kzg_proof(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(&proof)),
-		(*C.ctt_eth_kzg_eval_at_challenge)(unsafe.Pointer(&y)),
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
-		(*C.ctt_eth_kzg_opening_challenge)(unsafe.Pointer(&z)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(&proof)),
+		(*C.ctt_sila_kzg_eval_at_challenge)(unsafe.Pointer(&y)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_opening_challenge)(unsafe.Pointer(&z)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 	}
 	return proof, y, err
 }
 
-func (ctx EthKzgContext) VerifyKzgProof(commitment EthKzgCommitment, z EthKzgChallenge, y EthKzgEvalAtChallenge, proof EthKzgProof) (bool, error) {
-	status := C.ctt_eth_kzg_verify_kzg_proof(
+func (ctx SilaKzgContext) VerifyKzgProof(commitment SilaKzgCommitment, z SilaKzgChallenge, y SilaKzgEvalAtChallenge, proof SilaKzgProof) (bool, error) {
+	status := C.ctt_sila_kzg_verify_kzg_proof(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitment)),
-		(*C.ctt_eth_kzg_opening_challenge)(unsafe.Pointer(&z)),
-		(*C.ctt_eth_kzg_eval_at_challenge)(unsafe.Pointer(&y)),
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(&proof)),
+		(*C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitment)),
+		(*C.ctt_sila_kzg_opening_challenge)(unsafe.Pointer(&z)),
+		(*C.ctt_sila_kzg_eval_at_challenge)(unsafe.Pointer(&y)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(&proof)),
 	)
-	if status != C.cttEthKzg_Success {
-		if status == C.cttEthKzg_VerificationFailure {
+	if status != C.cttSilaKzg_Success {
+		if status == C.cttSilaKzg_VerificationFailure {
 			return false, nil
 		}
 
 		err := errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-func (ctx EthKzgContext) ComputeBlobKzgProof(blob EthBlob, commitment EthKzgCommitment) (proof EthKzgProof, err error) {
-	status := C.ctt_eth_kzg_compute_blob_kzg_proof(
+func (ctx SilaKzgContext) ComputeBlobKzgProof(blob SilaBlob, commitment SilaKzgCommitment) (proof SilaKzgProof, err error) {
+	status := C.ctt_sila_kzg_compute_blob_kzg_proof(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(&proof)),
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
-		(*C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitment)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(&proof)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitment)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 	}
 	return proof, err
 }
 
-func (ctx EthKzgContext) VerifyBlobKzgProof(blob EthBlob, commitment EthKzgCommitment, proof EthKzgProof) (bool, error) {
-	status := C.ctt_eth_kzg_verify_blob_kzg_proof(
+func (ctx SilaKzgContext) VerifyBlobKzgProof(blob SilaBlob, commitment SilaKzgCommitment, proof SilaKzgProof) (bool, error) {
+	status := C.ctt_sila_kzg_verify_blob_kzg_proof(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
-		(*C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitment)),
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(&proof)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitment)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(&proof)),
 	)
-	if status != C.cttEthKzg_Success {
-		if status == C.cttEthKzg_VerificationFailure {
+	if status != C.cttSilaKzg_Success {
+		if status == C.cttSilaKzg_VerificationFailure {
 			return false, nil
 		}
 
 		err := errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-func (ctx EthKzgContext) VerifyBlobKzgProofBatch(blobs []EthBlob, commitments []EthKzgCommitment, proofs []EthKzgProof, secureRandomBytes [32]byte) (bool, error) {
+func (ctx SilaKzgContext) VerifyBlobKzgProofBatch(blobs []SilaBlob, commitments []SilaKzgCommitment, proofs []SilaKzgProof, secureRandomBytes [32]byte) (bool, error) {
 
 	if len(blobs) != len(commitments) || len(blobs) != len(proofs) {
 		return false, errors.New("VerifyBlobKzgProofBatch: Lengths of inputs do not match.")
 	}
 
-	status := C.ctt_eth_kzg_verify_blob_kzg_proof_batch(
+	status := C.ctt_sila_kzg_verify_blob_kzg_proof_batch(
 		ctx.cCtx,
-		*(**C.ctt_eth_kzg_blob)(unsafe.Pointer(&blobs)),
-		*(**C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitments)),
-		*(**C.ctt_eth_kzg_proof)(unsafe.Pointer(&proofs)),
+		*(**C.ctt_sila_kzg_blob)(unsafe.Pointer(&blobs)),
+		*(**C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitments)),
+		*(**C.ctt_sila_kzg_proof)(unsafe.Pointer(&proofs)),
 		(C.size_t)(len(blobs)),
 		(*C.uint8_t)(unsafe.Pointer(&secureRandomBytes)),
 	)
-	if status != C.cttEthKzg_Success {
-		if status == C.cttEthKzg_VerificationFailure {
+	if status != C.cttSilaKzg_Success {
+		if status == C.cttSilaKzg_VerificationFailure {
 			return false, nil
 		}
 
 		err := errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-// Ethereum EIP-4844 KZG API - Parallel
+// Sila SIP-4844 KZG API - Parallel
 // -----------------------------------------------------
 
-func (ctx EthKzgContext) BlobToKzgCommitmentParallel(blob EthBlob) (commitment EthKzgCommitment, err error) {
+func (ctx SilaKzgContext) BlobToKzgCommitmentParallel(blob SilaBlob) (commitment SilaKzgCommitment, err error) {
 	if ctx.threadpool.ctx == nil {
 		return commitment, errors.New("BlobToKzgCommitmentParallel: The threadpool is not configured.")
 	}
-	status := C.ctt_eth_kzg_blob_to_kzg_commitment_parallel(
+	status := C.ctt_sila_kzg_blob_to_kzg_commitment_parallel(
 		ctx.threadpool.ctx, ctx.cCtx,
-		(*C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitment)),
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitment)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 	}
 	return commitment, err
 }
 
-func (ctx EthKzgContext) ComputeKzgProofParallel(blob EthBlob, z EthKzgChallenge) (proof EthKzgProof, y EthKzgEvalAtChallenge, err error) {
+func (ctx SilaKzgContext) ComputeKzgProofParallel(blob SilaBlob, z SilaKzgChallenge) (proof SilaKzgProof, y SilaKzgEvalAtChallenge, err error) {
 	if ctx.threadpool.ctx == nil {
 		return proof, y, errors.New("ComputeKzgProofParallel: The Constantine's threadpool is not configured.")
 	}
-	status := C.ctt_eth_kzg_compute_kzg_proof_parallel(
+	status := C.ctt_sila_kzg_compute_kzg_proof_parallel(
 		ctx.threadpool.ctx, ctx.cCtx,
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(&proof)),
-		(*C.ctt_eth_kzg_eval_at_challenge)(unsafe.Pointer(&y)),
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
-		(*C.ctt_eth_kzg_opening_challenge)(unsafe.Pointer(&z)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(&proof)),
+		(*C.ctt_sila_kzg_eval_at_challenge)(unsafe.Pointer(&y)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_opening_challenge)(unsafe.Pointer(&z)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 	}
 	return proof, y, err
 }
 
-func (ctx EthKzgContext) ComputeBlobKzgProofParallel(blob EthBlob, commitment EthKzgCommitment) (proof EthKzgProof, err error) {
+func (ctx SilaKzgContext) ComputeBlobKzgProofParallel(blob SilaBlob, commitment SilaKzgCommitment) (proof SilaKzgProof, err error) {
 	if ctx.threadpool.ctx == nil {
 		return proof, errors.New("ComputeBlobKzgProofParallel: The threadpool is not configured.")
 	}
-	status := C.ctt_eth_kzg_compute_blob_kzg_proof_parallel(
+	status := C.ctt_sila_kzg_compute_blob_kzg_proof_parallel(
 		ctx.threadpool.ctx, ctx.cCtx,
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(&proof)),
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
-		(*C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitment)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(&proof)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitment)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 	}
 	return proof, err
 }
 
-func (ctx EthKzgContext) VerifyBlobKzgProofParallel(blob EthBlob, commitment EthKzgCommitment, proof EthKzgProof) (bool, error) {
+func (ctx SilaKzgContext) VerifyBlobKzgProofParallel(blob SilaBlob, commitment SilaKzgCommitment, proof SilaKzgProof) (bool, error) {
 	if ctx.threadpool.ctx == nil {
 		return false, errors.New("VerifyBlobKzgProofParallel: The threadpool is not configured.")
 	}
-	status := C.ctt_eth_kzg_verify_blob_kzg_proof_parallel(
+	status := C.ctt_sila_kzg_verify_blob_kzg_proof_parallel(
 		ctx.threadpool.ctx, ctx.cCtx,
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(&blob)),
-		(*C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitment)),
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(&proof)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(&blob)),
+		(*C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitment)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(&proof)),
 	)
-	if status != C.cttEthKzg_Success {
-		if status == C.cttEthKzg_VerificationFailure {
+	if status != C.cttSilaKzg_Success {
+		if status == C.cttSilaKzg_VerificationFailure {
 			return false, nil
 		}
 
 		err := errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-func (ctx EthKzgContext) VerifyBlobKzgProofBatchParallel(blobs []EthBlob, commitments []EthKzgCommitment, proofs []EthKzgProof, secureRandomBytes [32]byte) (bool, error) {
+func (ctx SilaKzgContext) VerifyBlobKzgProofBatchParallel(blobs []SilaBlob, commitments []SilaKzgCommitment, proofs []SilaKzgProof, secureRandomBytes [32]byte) (bool, error) {
 	if len(blobs) != len(commitments) || len(blobs) != len(proofs) {
 		return false, errors.New("VerifyBlobKzgProofBatch: Lengths of inputs do not match.")
 	}
 	if ctx.threadpool.ctx == nil {
 		return false, errors.New("VerifyBlobKzgProofBatch: The threadpool is not configured.")
 	}
-	status := C.ctt_eth_kzg_verify_blob_kzg_proof_batch_parallel(
+	status := C.ctt_sila_kzg_verify_blob_kzg_proof_batch_parallel(
 		ctx.threadpool.ctx, ctx.cCtx,
-		*(**C.ctt_eth_kzg_blob)(unsafe.Pointer(&blobs)),
-		*(**C.ctt_eth_kzg_commitment)(unsafe.Pointer(&commitments)),
-		*(**C.ctt_eth_kzg_proof)(unsafe.Pointer(&proofs)),
+		*(**C.ctt_sila_kzg_blob)(unsafe.Pointer(&blobs)),
+		*(**C.ctt_sila_kzg_commitment)(unsafe.Pointer(&commitments)),
+		*(**C.ctt_sila_kzg_proof)(unsafe.Pointer(&proofs)),
 		(C.size_t)(len(blobs)),
 		(*C.uint8_t)(unsafe.Pointer(&secureRandomBytes)),
 	)
-	if status != C.cttEthKzg_Success {
-		if status == C.cttEthKzg_VerificationFailure {
+	if status != C.cttSilaKzg_Success {
+		if status == C.cttSilaKzg_VerificationFailure {
 			return false, nil
 		}
 
 		err := errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-// Ethereum EIP-7594 PeerDAS API
+// Sila SIP-7594 PeerDAS API
 // -----------------------------------------------------
 
-type EthKzgCell [2048]byte
+type SilaKzgCell [2048]byte
 
-func (ctx EthKzgContext) ComputeCellsAndKzgProofs(
-	blob *EthBlob,
-) (cells *[128]EthKzgCell, proofs *[128]EthKzgProof, err error) {
+func (ctx SilaKzgContext) ComputeCellsAndKzgProofs(
+	blob *SilaBlob,
+) (cells *[128]SilaKzgCell, proofs *[128]SilaKzgProof, err error) {
 	if blob == nil {
 		return nil, nil, errors.New("ComputeCellsAndKzgProofs: blob is nil")
 	}
-	cells = new([128]EthKzgCell)
-	proofs = new([128]EthKzgProof)
-	status := C.ctt_eth_kzg_compute_cells_and_kzg_proofs(
+	cells = new([128]SilaKzgCell)
+	proofs = new([128]SilaKzgProof)
+	status := C.ctt_sila_kzg_compute_cells_and_kzg_proofs(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_cell)(unsafe.Pointer(cells)),
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(proofs)),
-		(*C.ctt_eth_kzg_blob)(unsafe.Pointer(blob)),
+		(*C.ctt_sila_kzg_cell)(unsafe.Pointer(cells)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(proofs)),
+		(*C.ctt_sila_kzg_blob)(unsafe.Pointer(blob)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return nil, nil, err
 	}
 	return cells, proofs, nil
 }
 
-func (ctx EthKzgContext) VerifyCellKzgProofBatch(
-	commitments []EthKzgCommitment,
+func (ctx SilaKzgContext) VerifyCellKzgProofBatch(
+	commitments []SilaKzgCommitment,
 	cellIndices []uint64,
-	cells []EthKzgCell,
-	proofs []EthKzgProof,
+	cells []SilaKzgCell,
+	proofs []SilaKzgProof,
 	secureRandomBytes [32]byte,
 ) (bool, error) {
 	if len(commitments) != len(cellIndices) || len(commitments) != len(cells) || len(commitments) != len(proofs) {
 		return false, errors.New("VerifyCellKzgProofBatch: Lengths of inputs do not match.")
 	}
-	status := C.ctt_eth_kzg_verify_cell_kzg_proof_batch(
+	status := C.ctt_sila_kzg_verify_cell_kzg_proof_batch(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_commitment)(getAddr(commitments)),
+		(*C.ctt_sila_kzg_commitment)(getAddr(commitments)),
 		(*C.uint64_t)(getAddr(cellIndices)),
-		(*C.ctt_eth_kzg_cell)(getAddr(cells)),
-		(*C.ctt_eth_kzg_proof)(getAddr(proofs)),
+		(*C.ctt_sila_kzg_cell)(getAddr(cells)),
+		(*C.ctt_sila_kzg_proof)(getAddr(proofs)),
 		(C.size_t)(len(cells)),
 		(*C.uint8_t)(unsafe.Pointer(&secureRandomBytes)),
 	)
-	if status != C.cttEthKzg_Success {
-		if status == C.cttEthKzg_VerificationFailure {
+	if status != C.cttSilaKzg_Success {
+		if status == C.cttSilaKzg_VerificationFailure {
 			return false, nil
 		}
 		err := errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return false, err
 	}
 	return true, nil
 }
 
-func (ctx EthKzgContext) RecoverCellsAndKzgProofs(
-	cells []EthKzgCell,
+func (ctx SilaKzgContext) RecoverCellsAndKzgProofs(
+	cells []SilaKzgCell,
 	cellIndices []uint64,
-) (recoveredCells *[128]EthKzgCell, recoveredProofs *[128]EthKzgProof, err error) {
+) (recoveredCells *[128]SilaKzgCell, recoveredProofs *[128]SilaKzgProof, err error) {
 	if len(cells) != len(cellIndices) {
 		return nil, nil, errors.New("RecoverCellsAndKzgProofs: Lengths of inputs do not match.")
 	}
-	recoveredCells = new([128]EthKzgCell)
-	recoveredProofs = new([128]EthKzgProof)
-	status := C.ctt_eth_kzg_recover_cells_and_kzg_proofs(
+	recoveredCells = new([128]SilaKzgCell)
+	recoveredProofs = new([128]SilaKzgProof)
+	status := C.ctt_sila_kzg_recover_cells_and_kzg_proofs(
 		ctx.cCtx,
-		(*C.ctt_eth_kzg_cell)(unsafe.Pointer(recoveredCells)),
-		(*C.ctt_eth_kzg_proof)(unsafe.Pointer(recoveredProofs)),
+		(*C.ctt_sila_kzg_cell)(unsafe.Pointer(recoveredCells)),
+		(*C.ctt_sila_kzg_proof)(unsafe.Pointer(recoveredProofs)),
 		(*C.uint64_t)(getAddr(cellIndices)),
-		(*C.ctt_eth_kzg_cell)(getAddr(cells)),
+		(*C.ctt_sila_kzg_cell)(getAddr(cells)),
 		(C.size_t)(len(cells)),
 	)
-	if status != C.cttEthKzg_Success {
+	if status != C.cttSilaKzg_Success {
 		err = errors.New(
-			C.GoString(C.ctt_eth_kzg_status_to_string(status)),
+			C.GoString(C.ctt_sila_kzg_status_to_string(status)),
 		)
 		return nil, nil, err
 	}

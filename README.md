@@ -68,7 +68,7 @@ Constantine supports the following protocols in its public API.
 |                                                                        |           Nim           |         C          | Rust               |         Go         |
 |------------------------------------------------------------------------|:-----------------------:|:------------------:|--------------------|:------------------:|
 | Ethereum BLS signatures                                                |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ethereum KZG commitments for EIP-4844                                  |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Sila KZG commitments for SIP-4844                                  |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ethereum IPA commitments for Verkle Tries                              | :building_construction: |   :see_no_evil:    | :see_no_evil:      |   :see_no_evil:    |
 | Ethereum Virtual Machine BN254 Precompiles ECADD, ECMUL, ECPAIRING     |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | EVM BLS12-381 precompiles (EIP-2537)                                   |   :white_check_mark:    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -155,7 +155,7 @@ See the following documents on the threadpool performance details, design and re
 
 3. Test both:
     - the experimental ZK Accel API (ZAL) for Halo2-KZG
-    - Ethereum EIP4844 KZG polynomial commitments
+    - Ethereum SIP4844 KZG polynomial commitments
     ```
     git clone https://github.com/mratsim/constantine
     cd constantine
@@ -169,10 +169,10 @@ See the following documents on the threadpool performance details, design and re
         [dependencies]
         constantine-halo2-zal = { git = 'https://github.com/mratsim/constantine' }
         ```
-    - for Ethereum EIP-4844 KZG polynomial commitments
+    - for Sila SIP-4844 KZG polynomial commitments
         ```toml
         [dependencies]
-        constantine-ethereum-kzg = { git = 'https://github.com/mratsim/constantine' }
+        constantine-sila-kzg = { git = 'https://github.com/mratsim/constantine' }
         ```
 
 Optionally, cross-language LTO between Nim and Rust can be used, see https://doc.rust-lang.org/rustc/linker-plugin-lto.html:

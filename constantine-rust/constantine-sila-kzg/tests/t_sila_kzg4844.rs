@@ -20,7 +20,7 @@ use serde_yaml;
 #[test]
 fn t_smoke_load_trusted_setup() {
     let _ctx = SilaKzgContext::load_trusted_setup(Path::new(
-        "../../constantine/commitments_setups/trusted_setup_ethereum_kzg4844_reference.dat",
+        "../../constantine/commitments_setups/trusted_setup_sila_kzg4844_reference.dat",
     ))
     .expect("Trusted setup should be loaded without error.");
 }
@@ -33,7 +33,7 @@ fn t_smoke_load_trusted_setup() {
 
 macro_rules! test_dir {
     () => {
-        "../../tests/protocol_ethereum_eip4844_deneb_kzg/"
+        "../../tests/protocol_sila_sip4844_deneb_kzg/"
     };
 }
 
@@ -46,7 +46,7 @@ const VERIFY_BLOB_KZG_PROOF_BATCH_TESTS: &str =
     concat!(test_dir!(), "verify_blob_kzg_proof_batch/*/*/*");
 
 const SRS_PATH: &str =
-    "../../constantine/commitments_setups/trusted_setup_ethereum_kzg4844_reference.dat";
+    "../../constantine/commitments_setups/trusted_setup_sila_kzg4844_reference.dat";
 
 struct OptRawBytes<const N: usize>(Option<Box<[u8; N]>>);
 

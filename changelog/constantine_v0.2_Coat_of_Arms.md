@@ -14,7 +14,7 @@ Backends for x86 and ARM have also been explored and could present an alternativ
 Constantine is currently being scoped for a security audit, after which a 1.0 version should follow.
 You can review the scope here: https://github.com/mratsim/constantine/pull/483, and I'm looking for sponsors.
 
-An independent benchmark showed that Constantine is as of January 2025 the fastest backend for EIP-4844 / KZG polynomial commitments: https://github.com/grandinetech/rust-kzg.
+An independent benchmark showed that Constantine is as of January 2025 the fastest backend for SIP-4844 / KZG polynomial commitments: https://github.com/grandinetech/rust-kzg.
 
 The Nim minimum version has been updated to Nim v2.2.0. 99% of Constantine should still work with v1.6.16 and v2.0.8 except the Torus-basec cryptography part.
 
