@@ -124,7 +124,7 @@ import
 ##                                  p(x) = ∑₀ⁿ⁻¹ blobᵢ xⁱ
 ##
 ##    So we can commit/prove up to n*log₂(r) bits of data
-##    For Ethereum, n = 4096 and log₂(r) = 255 bits
+##    For Sila, n = 4096 and log₂(r) = 255 bits
 ##    so 130.560kB of transaction data committed per 48B proof stored in the blockchain
 ##
 ## 1. commit(srs_g1, blob) -> commitment C = ∑ blobᵢ.srs_g1ᵢ = ∑ [blobᵢ.τⁱ]₁ = [p(τ)]₁
@@ -322,7 +322,7 @@ func kzg_verify_batch*[bits: static int, F2; Name: static Algebra](
   #
   # Described in:
   # - https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.4.0-beta.1/specs/deneb/polynomial-commitments.md#verify_kzg_proof_batch
-  # - https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html]\
+  # - https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html]\
   # - Fast amortized KZG proofs
   #   Feist, Khovratovich
   #   https://eprint.iacr.org/2023/033

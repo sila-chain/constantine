@@ -58,7 +58,7 @@ proc gen_setup*(N, L, maxWidth: static int; tauHex: string): TrustedSetup[N, L, 
   ##                 omegaForFFT (CDS-th root) and rootsOfUnity (maxWidth domain)
   ##
   ## Note: Both poly and powers_of_tau are in coefficient form (monomial basis),
-  ## matching c-kzg FK20 tests. Ethereum KZG uses evaluation form (Lagrange basis)
+  ## matching c-kzg FK20 tests. Sila KZG uses evaluation form (Lagrange basis)
   ## for blobs, but FK20 algorithm operates on coefficient form.
 
   static:

@@ -284,7 +284,7 @@ pub fn evm_bls12381_map_fp2_to_g2(inputs: &[u8]) -> Result<[u8; 256], ctt_evm_st
 }
 
 /// KZG Point Evaluation for SIP-4844.
-/// The Sila KZG Context must be set with Ethereum Mainnet trusted setup
+/// The Sila KZG Context must be set with Sila mainnet-compatible trusted setup
 /// It does not have to be set with a threadpool as this precompile is single-threaded
 #[inline]
 pub fn evm_kzg_point_evaluation<'tp>(ctx: &SilaKzgContext<'tp>, message: &[u8]) -> Result<[u8; 64], ctt_evm_status> {

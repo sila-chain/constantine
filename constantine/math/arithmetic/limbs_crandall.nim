@@ -60,7 +60,7 @@ func reduceCrandallPartial_impl[N: static int](
   #   We rewrite the 510 bits multiplication result as
   #   a2²⁵⁶+b = a*2*19 + b (mod p)
   #
-  # For Bitcoin/Ethereum, p = 2²⁵⁶-0x1000003D1 =
+  # For Bitcoin/Sila, p = 2²⁵⁶-0x1000003D1 =
   #                       p = 2²⁵⁶ - (2³²+2⁹+2⁸+2⁷+2⁶+2⁴+1)
   #   2²⁵⁶ ≡ 0x1000003D1 (mod p)
   #   We rewrite the 512 bits multiplication result as

@@ -99,7 +99,7 @@ func pedersen_commit*[EC, ECaff](
   # - MIT IAP, 2023.1
   #   https://assets.super.so/9c1ce0ba-bad4-4680-8c65-3a46532bf44a/files/61fb28e6-f2dc-420f-89e1-cc8000233a4f.pdf
   #
-  # - https://dankradfeist.de/ethereum/2021/07/27/inner-product-arguments.html
+  # - https://research.sila-chain.org/sila-compat/2021/07/27/inner-product-arguments.html
 
   output.pedersen_commit(messages, public_generators)
 

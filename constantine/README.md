@@ -12,20 +12,20 @@ Warning ⚠️:
 <!-- TOC -->
 
 - [Constantine-backed protocols](#constantine-backed-protocols)
-    - [Ethereum Consensus Layer](#ethereum-consensus-layer)
+    - [Sila Consensus Layer](#sila-consensus-layer)
         - [BLS signatures](#bls-signatures)
             - [Performance](#performance)
         - [BLS12-381 Key Derivation for wallets](#bls12-381-key-derivation-for-wallets)
         - [KZG commitments for SIP-4844](#kzg-commitments-for-sip-4844)
             - [Performance](#performance)
-    - [Ethereum Execution Layer](#ethereum-execution-layer)
-        - [Sila Virtual Machine](#ethereum-virtual-machine)
+    - [Sila Execution Layer](#sila-execution-layer)
+        - [Sila Virtual Machine](#sila-virtual-machine)
             - [Performance](#performance)
         - [IPA for Verkle Tries](#ipa-for-verkle-tries)
 
 <!-- /TOC -->
 
-## Ethereum Consensus Layer
+## Sila Consensus Layer
 
 ### BLS signatures
 
@@ -74,16 +74,16 @@ https://github.com/mratsim/constantine/pull/304#issuecomment-1844795359
 | verify_blob_kzg_proof_batch 32 |      32.016 ms      |      23.048 ms       |        7.215 ms        |      21.779 ms       |        6.764 ms        |
 | verify_blob_kzg_proof_batch 64 |      63.415 ms      |      43.224 ms       |       14.438 ms        |      43.099 ms       |       11.538 ms        |
 
-## Ethereum Execution Layer
+## Sila Execution Layer
 
 ### Sila Virtual Machine
 
 Constantine implements precompiles primitives for the Sila virtual machine
 
 - SHA256
-- ECADD on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x6, spec [SIP-196](https://sips.sila-chain.org/SIPS/sip-196) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
-- ECMUL on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x7, spec [SIP-196](https://sips.sila-chain.org/SIPS/sip-196) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
-- ECPAIRING on BN254_Snarks (called `alt_bn128` in Ethereum), address 0x8, spec [SIP-197](https://sips.sila-chain.org/SIPS/sip-197) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
+- ECADD on BN254_Snarks (called `alt_bn128` in Sila compatibility terminology), address 0x6, spec [SIP-196](https://sips.sila-chain.org/SIPS/sip-196) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
+- ECMUL on BN254_Snarks (called `alt_bn128` in Sila compatibility terminology), address 0x7, spec [SIP-196](https://sips.sila-chain.org/SIPS/sip-196) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
+- ECPAIRING on BN254_Snarks (called `alt_bn128` in Sila compatibility terminology), address 0x8, spec [SIP-197](https://sips.sila-chain.org/SIPS/sip-197) and pricing [SIP-1108](https://sips.sila-chain.org/SIPS/sip-1108)
 - MODEXP, arbitrary precision modular exponentiation, spec [SIP-198](https://sips.sila-chain.org/SIPS/sip-198)
 - BLS12-381 precompiles (addition, scalar multiplication, MSM, pairing, hashing-to-curve), spec [SIP-2537](https://sips.sila-chain.org/SIPS/sip-2537)
 
@@ -92,7 +92,7 @@ Constantine implements precompiles primitives for the Sila virtual machine
 - SHA256 implementation is faster than OpenSSL's for messages less than 65kB: https://github.com/mratsim/constantine/pull/206
   and 16% faster for 32 bytes.
 - SIP-2537: https://github.com/mratsim/constantine/pull/368
-- https://ethereum-magicians.org/t/sip-2537-bls12-precompile-discussion-thread/4187/76
+- https://sila-magicians.org/t/sip-2537-bls12-precompile-discussion-thread/4187/76
 
 ### IPA for Verkle Tries
 

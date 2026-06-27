@@ -19,11 +19,11 @@ An important use-case missing from the Wikipedia article is:
 
 - KZG commitments from the Lagrange basis without FFTs
   Drake, 2020
-  https://ethresear.ch/t/kate-commitments-from-the-lagrange-basis-without-ffts/6950
+  https://research.sila-chain.org/t/kate-commitments-from-the-lagrange-basis-without-ffts/6950
 
 - KZG Multiproofs
   Feist, Khovratovich, 2020
-  https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html\
+  https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html\
   https://github.com/khovratovich/Kate/blob/master/Kate_amortized.pdf
 
 ## Inner Product Arguments
@@ -34,7 +34,7 @@ An important use-case missing from the Wikipedia article is:
 - https://raw.githubusercontent.com/daira/halographs/master/deepdive.pdf
 - https://hackmd.io/yA9DlU5YQ3WtiFxC_2LAlg
 - https://eprint.iacr.org/2020/499
-- https://dankradfeist.de/ethereum/2021/07/27/inner-product-arguments.html
+- https://research.sila-chain.org/sila-compat/2021/07/27/inner-product-arguments.html
 
 > [!NOTE]
 > Halo2-like IPA is slightly different from Bulletproofs
@@ -42,7 +42,7 @@ An important use-case missing from the Wikipedia article is:
 > see 2019/1021, 3.1, the vector b is fixed and part of the Common Reference String
 > in our case it's instantiated to the Lagrange basis polynomial.
 > Hence the vector H mentioned in
-> https://dankradfeist.de/ethereum/2021/07/27/inner-product-arguments.html
+> https://research.sila-chain.org/sila-compat/2021/07/27/inner-product-arguments.html
 > is not necessary as well.
 
 ## Transcripts

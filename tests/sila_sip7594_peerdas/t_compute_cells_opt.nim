@@ -25,9 +25,9 @@ import
   constantine/serialization/codecs,
   constantine/platforms/allocs,
   # Shared test utilities
-  ../testutils/eth_consensus_utils
+  ../testutils/sila_consensus_utils
 
-from ../testutils/eth_consensus_utils import loadVectors
+from ../testutils/sila_consensus_utils import loadVectors
 # ---------------------------------------------------------
 # Spec implementation of compute cells ~340x slower than prod
 

@@ -30,7 +30,7 @@ Cryptographic references:
 - Folded Committed CCS: https://github.com/privacy-scaling-explorations/multifolding-poc
 - GKR:
   - https://people.cs.georgetown.edu/jthaler/gkrnotes.pdf
-  - https://ethresear.ch/t/performance-improvement-for-gkr/12228
+  - https://research.sila-chain.org/t/performance-improvement-for-gkr/12228
   - https://eprint.iacr.org/2022/1072
 
 ## Deep learning compilers & computation graphs

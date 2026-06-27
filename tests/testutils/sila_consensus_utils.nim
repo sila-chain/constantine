@@ -23,7 +23,7 @@ const TrustedSetupMainnet* =
     "trusted_setup_sila_kzg4844_reference.dat"
 
 proc getTrustedSetup*(): ptr SilaKZGContext =
-  ## This is a convenience function for the Ethereum mainnet testing trusted setups.
+  ## This is a convenience function for the Sila mainnet-compatible testing trusted setups.
   var ctx: ptr SilaKZGContext
   let tsStatus = ctx.new(TrustedSetupMainnet, kReferenceCKzg4844)
   doAssert tsStatus == tsSuccess, "\n[Trusted Setup Error] " & $tsStatus

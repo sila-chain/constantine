@@ -35,7 +35,7 @@ func TestThreadpool(t *testing.T) {
 // Sila SIP-4844 KZG tests
 // ----------------------------------------------------------
 //
-// Source: https://github.com/ethereum/c-kzg-4844
+// Source: https://github.com/sila-chain/c-kzg-4844
 
 var (
 	trustedSetupFile             = "../constantine/commitments_setups/trusted_setup_sila_kzg4844_reference.dat"

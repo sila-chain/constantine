@@ -40,7 +40,7 @@ import ../zoo_exports
 #
 # Usage:
 #   The roots of unity ω allow usage of polynomials in evaluation form (Lagrange basis)
-#   see ω https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+#   see ω https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
 #
 # Where does the 32 come from?
 #   Recall the definition of the BLS12-381 curve:
@@ -145,7 +145,7 @@ type
 #     [s]G₂, i.e a random secret [s] scalar multiplied by the generator of 𝔾2, is needed
 #
 #   The extra 63 points are expected to be used for sharding https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/_features/sharding/polynomial-commitments.md
-#   for KZG multiproofs for 64 shards: https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+#   for KZG multiproofs for 64 shards: https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
 #
 # Note:
 #   The batched proofs (different polynomials) used in Deneb specs
@@ -201,8 +201,8 @@ type
     # with at least one honest random secret contributor (also called KZG ceremony or powers-of-tau ceremony)
     #
     # This is used to verify commitments.
-    # For most schemes (Marlin, Plonk, Sonic, Ethereum's Deneb), only [τ]H is needed
-    # but Ethereum's sharding will need 64 (65 with the generator H)
+    # For most schemes (Marlin, Plonk, Sonic, Sila Deneb-compatible setup), only [τ]H is needed
+    # but Sila sharding will need 64 (65 with the generator H)
 
     domain_brp*{.align: 64.}: PolyEvalRootsDomain[FIELD_ELEMENTS_PER_BLOB, Fr[BLS12_381], kBitReversed]
     # The domain field holds the roots of unity of the polynomial evaluation domain.
@@ -298,8 +298,8 @@ proc load_ckzg4844(ctx: ptr SilaKZGContext, f: File): TrustedSetupStatus =
     # G1 points - 96 characters + newline
     # These are the Lagrange form (bit-reversed evaluation) points
     # Original ceremony files:
-    # - https://github.com/ethereum/kzg-ceremony-verifier/blob/master/output_setups/trusted_setup_4096.json
-    # - https://github.com/ethereum/c-kzg-4844/blob/v2.1.7/src/trusted_setup.txt
+    # - https://github.com/sila-chain/Sila-KZG-Ceremony-Verifier/blob/master/output_setups/trusted_setup_4096.json
+    # - https://github.com/sila-chain/c-kzg-4844/blob/v2.1.7/src/trusted_setup.txt
     # On disk, G1 points are stored in natural order and will need bit-reversal
     var bufG1Hex {.noInit.}: array[2*g1Bytes+1, char] # On MacOS, an extra byte seems to be needed for fscanf or AddressSanitizer complains
     var bufG1bytes {.noInit.}: array[g1Bytes, byte]

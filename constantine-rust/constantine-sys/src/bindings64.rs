@@ -4560,7 +4560,7 @@ unsafe extern "C" {
     pub fn ctt_sila_bls_free_batch_sig_accumulator(ptr: *mut ctt_sila_bls_batch_sig_accumulator);
 }
 unsafe extern "C" {
-    #[doc = "  Initializes a Batch BLS Signature accumulator context.\n\n  This requires cryptographically secure random bytes\n  to defend against forged signatures that would not\n  verify individually but would verify while aggregated\n  https://ethresear.ch/t/fast-verification-of-multiple-bls-signatures/5407/14\n\n  An optional accumulator separation tag can be added\n  so that from a single source of randomness\n  each accumulatpr is seeded with a different state.\n  This is useful in multithreaded context."]
+    #[doc = "  Initializes a Batch BLS Signature accumulator context.\n\n  This requires cryptographically secure random bytes\n  to defend against forged signatures that would not\n  verify individually but would verify while aggregated\n  https://research.sila-chain.org/t/fast-verification-of-multiple-bls-signatures/5407/14\n\n  An optional accumulator separation tag can be added\n  so that from a single source of randomness\n  each accumulatpr is seeded with a different state.\n  This is useful in multithreaded context."]
     pub fn ctt_sila_bls_init_batch_sig_accumulator(
         ctx: *mut ctt_sila_bls_batch_sig_accumulator,
         secure_random_bytes: *const byte,

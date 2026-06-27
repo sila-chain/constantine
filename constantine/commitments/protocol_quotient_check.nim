@@ -67,7 +67,7 @@ func getQuotientPolyInDomain*[N: static int, Field, Ord](
 
   for i in 0'u32 ..< N:
     if i == zIndex:
-      # https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+      # https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
       # section "Dividing when one of the points is zero".
       #
       # Due to qᵢ = 0/0, we can't directly compute
@@ -106,7 +106,7 @@ func getQuotientPolyInDomain*[N: static int, Field, Ord](
     #   However some protocols use bit-reversal permutation (brp) to store the ωⁱ
     #   Hence retrieving the data requires roots[brp((brp(i)-n-brp(idx)) mod n)] for those (note: n = brp(n))
     #
-    #   For Ethereum:
+    #   For Sila:
     #     A 254~255-bit multiplication takes 11ns / 38 cycles (Fr[BLS12-381]),
     #     A brp with n = 2¹² = 4096 (for SIP4844) takes about 6ns
     #   We could also cache either ωⁿ⁻ⁱ or a map i' = brp(n - brp(i))
@@ -181,7 +181,7 @@ func getQuotientPolyInDomain*[N: static int, Field](
   ##                      and related precomputed constants like
   ##                      vanishing polynomial, its derivative and inverse.
   #
-  # - https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+  # - https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
   #   section "Dividing when one of the points is zero".
   # - https://hackmd.io/@6iQDuIePQjyYBqDChYw_jg/B1FWLgtD9
 
@@ -189,7 +189,7 @@ func getQuotientPolyInDomain*[N: static int, Field](
 
   for i in 0'u32 ..< N:
     if i == zIndex:
-      # https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+      # https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
       # section "Dividing when one of the points is zero".
       #
       # Due to qᵢ = 0/0, we can't directly compute

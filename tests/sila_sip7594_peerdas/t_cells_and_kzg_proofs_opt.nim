@@ -205,7 +205,7 @@ const TestVectorsDir =
   "compute_cells_and_kzg_proofs" / "kzg-mainnet"
 
 # Test vectors are generated from:
-# https://github.com/sila-chain/Sila-Consensus-Specs/blob/master/tests/core/pyspec/eth2spec/test/utils/kzg_tests.py
+# https://github.com/sila-chain/Sila-Consensus-Specs/blob/master/tests/core/pyspec/sila2spec/test/utils/kzg_tests.py
 
 proc main() =
   suite "SIP-7594 PeerDAS - KZG coset prove optimization":

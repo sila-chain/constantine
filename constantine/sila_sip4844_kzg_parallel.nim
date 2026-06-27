@@ -22,7 +22,7 @@ import
 
 ## ############################################################
 ##
-##           KZG Polynomial Commitments for Ethereum
+##           KZG Polynomial Commitments for Sila
 ##                    Parallel Edition
 ##
 ## ############################################################
@@ -31,7 +31,7 @@ import
 ## for the Sila blockchain.
 ##
 ## References:
-## - Ethereum spec:
+## - Sila spec:
 ##   https://github.com/sila-chain/Sila-Consensus-Specs/blob/v1.3.0/specs/deneb/polynomial-commitments.md
 ## - KZG Paper:
 ##   Constant-Size Commitments to Polynomials and Their Applications
@@ -39,7 +39,7 @@ import
 ##   https://www.iacr.org/archive/asiacrypt2010/6477178/6477178.pdf
 ##   https://cacr.uwaterloo.ca/techreports/2010/cacr2010-10.pdf
 ## - Audited reference implementation
-##   https://github.com/ethereum/c-kzg-4844
+##   https://github.com/sila-chain/c-kzg-4844
 
 const prefix_sila_kzg = "ctt_sila_kzg_"
 import ./zoo_exports

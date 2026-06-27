@@ -23,7 +23,7 @@ import (
 // Sila SIP-7594 PeerDAS tests
 // ----------------------------------------------------------
 //
-// Source: https://github.com/ethereum/consensus-spec-tests
+// Source: https://github.com/sila-chain/Sila-Consensus-Spec-Tests
 
 var (
 	peerdasTestDir             = "../tests/protocol_sila_sip7594_fulu_peerdas"

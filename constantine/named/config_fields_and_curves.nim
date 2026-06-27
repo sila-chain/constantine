@@ -113,7 +113,7 @@ declareCurves:
     embedding_degree: 12
     sexticTwist: D_Twist
 
-  curve BN254_Snarks: # Zero-Knowledge proofs curve (SNARKS, STARKS, Ethereum)
+  curve BN254_Snarks: # Zero-Knowledge proofs curve (SNARKS, STARKS, Sila)
     bitwidth: 254
     modulus: "0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47"
     family: BarretoNaehrig

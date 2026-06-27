@@ -13,7 +13,7 @@
 # ############################################################
 #
 # Benchmarks for kzg_coset_prove_naive and kzg_coset_prove (FK20)
-# using Ethereum PeerDAS parameters: N=4096, L=64, CDS=128
+# using Sila PeerDAS parameters: N=4096, L=64, CDS=128
 #
 
 import

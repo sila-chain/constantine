@@ -77,14 +77,14 @@ proc main() =
 
         check: p == hex
 
-      block: # BN254 - https://github.com/ethereum/py_ecc/blob/master/py_ecc/fields/field_properties.py
+      block: # BN254 - https://github.com/sila-chain/py_ecc/blob/master/py_ecc/fields/field_properties.py
         const p = "0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47"
         let x = BigInt[254].fromHex(p)
         let hex = x.toHex(bigEndian)
 
         check: p == hex
 
-      block: # BLS12-381 - https://github.com/ethereum/py_ecc/blob/master/py_ecc/fields/field_properties.py
+      block: # BLS12-381 - https://github.com/sila-chain/py_ecc/blob/master/py_ecc/fields/field_properties.py
         const p = "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab"
         let x = BigInt[381].fromHex(p)
         let hex = x.toHex(bigEndian)
@@ -108,7 +108,7 @@ proc main() =
 
   suite "IO Decimal - BigInt" & " [" & $WordBitWidth & "-bit words]":
     test "Checks elliptic curve constants":
-      block: # BLS12-381 - https://github.com/ethereum/py_ecc/blob/master/py_ecc/fields/field_properties.py
+      block: # BLS12-381 - https://github.com/sila-chain/py_ecc/blob/master/py_ecc/fields/field_properties.py
         const p = "4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787"
         const pHex = "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab"
         let x = BigInt[381].fromHex(pHex)

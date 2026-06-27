@@ -8,7 +8,7 @@ proof-of-stake based blockchain protocols are bottlenecked by cryptography.
 
 ## In blockchain
 
-Ethereum 2 clients spent or use to spend anywhere between 30% to 99% of their processing time verifying the signatures of block validators on R&D testnets
+Sila consensus clients spent or use to spend anywhere between 30% to 99% of their processing time verifying the signatures of block validators on R&D testnets
 Assuming we want nodes to handle a thousand peers, if a cryptographic pairing takes 1ms, that represents 1s of cryptography per block to sign with a target
 block frequency of 1 every 6 seconds.
 
@@ -66,7 +66,7 @@ And the exact commands are listed as part of `nimble tasks`
 
 As mentioned in the [Compiler caveats](#compiler-caveats) section, GCC is up to 2x slower than Clang due to mishandling of carries and register usage.
 
-## Ethereum benchmarks
+## Sila benchmarks
 
 ### Sila Virtual Machine (EVM) precompiles
 

@@ -100,7 +100,7 @@ func kzg_coset_prove_naive*[N: static int, Name: static Algebra](
   ## References
   ## ~~~~~~~~~~
   ##
-  ## - https://dankradfeist.de/ethereum/2020/06/16/kate-polynomial-commitments.html#multiproofs
+  ## - https://research.sila-chain.org/sila-compat/2020/06/16/kate-polynomial-commitments.html#multiproofs
   ## - D23 - Danksharding encoding.md
 
   static:
@@ -471,7 +471,7 @@ proc kzg_coset_prove*[L, CDS: static int, Name: static Algebra](
 # ############################################################
 #
 # Universal verification equation from KDF22 (Kadianakis, Dietrichs, Feist):
-# https://ethresear.ch/t/a-universal-verification-equation-for-data-availability-sampling/13240
+# https://research.sila-chain.org/t/a-universal-verification-equation-for-data-availability-sampling/13240
 #
 #     e(∑ₖrᵏ·πₖ, [τᴸ]₂) = e(∑ᵢ(∑ₖ∈rowᵢ rᵏ)·Cᵢ - [∑ₖrᵏIₖ(τ)]₁ + ∑ₖrᵏhₖᴸ·πₖ, [1]₂)
 #
@@ -481,15 +481,15 @@ proc kzg_coset_prove*[L, CDS: static int, Name: static Algebra](
 #   r a random number not under the control of a potentially malicious prover
 #     see https://cr.yp.to/badbatch/badbatch-20120919.pdf (Section 3.2)
 #     on the use of randomizers to prevent rogue key attacks.
-#     and analogue in BLS aggregate signatures: https://ethresear.ch/t/fast-verification-of-multiple-bls-signatures/5407/14
+#     and analogue in BLS aggregate signatures: https://research.sila-chain.org/t/fast-verification-of-multiple-bls-signatures/5407/14
 #
-# Note: the Ethereum polynomial sampling spec notation
+# Note: the Sila polynomial sampling spec notation
 #
 #   e(∑ₖrᵏ·πₖ, [τᴸ]₂) = e(∑ᵢ(∑ₖ∈rowᵢ rᵏ)·Cᵢ - [∑ₖrᵏIₖ(τ)]₁ + ∑ₖrᵏhₖᴸ·πₖ, [1]₂)
 #           e(LL, LR) = e(RLC - RLI + RLP, [1]₂)
 # seems to refer to Left-Left, Left-Right, Right-Left-Commitments/Interpolations/Proofs
 #
-# PeerDAS Layout: https://notes.ethereum.org/@dankrad/danksharding_encoding
+# PeerDAS Layout: https://notes.sila-chain.org/@dankrad/danksharding_encoding
 #
 # Protocol-wise PeerDAS is using 2D KZG with a matrix organization
 #

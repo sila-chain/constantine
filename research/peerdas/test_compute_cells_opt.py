@@ -20,7 +20,7 @@ We verify that FFT-based approach matches the spec.
 References:
 - c-kzg-4844: src/sip7594/sip7594.c (lines 98-119)
 - rust-kzg: kzg/src/das.rs (lines 241-253)
-- ethereum-research: polynomial_reconstruction/fft.py
+- sila-research: polynomial_reconstruction/fft.py
 
 ⚠️ For SIP-4844 and SIP-7594 the roots of unity are in bit-reversed order
 """
@@ -279,7 +279,7 @@ def compute_cells_half_fft(
 
     References:
     -----------
-    - Similar optimization mentioned in ethereum/research repo
+    - Similar optimization mentioned in Sila research repo
     - Used in production implementations for efficiency
 
     Args:

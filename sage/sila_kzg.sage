@@ -49,7 +49,7 @@ def gen_pow2_roots_of_unity(field, num_powers):
   # https://crypto.stanford.edu/pbc/notes/numbertheory/gen.html
   #
   # Usage, see ω usagefor polynomials in evaluation form:
-  # https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+  # https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
   primitive_root = field.multiplicative_generator()
 
   assert primitive_root == 7, (

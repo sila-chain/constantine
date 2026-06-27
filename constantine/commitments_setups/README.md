@@ -13,4 +13,4 @@ to limit memory and deserialization cost for very large trusted setups.
 - The Sila KZG SIP-4844 protocol is implemented. \
   As the trusted setup is small, it is stored directly in the repo.\
   The trusted setup is available from the KZG ceremony at https://github.com/CarlBeek/kzg-ceremony-verifier/blob/master/output_setups/trusted_setup_4096.json \
-  To avoid vulnerabilities in json parsers (no formally-verified ones exist), we use the plaintext setup from the audited and fuzzed reference implementation at https://github.com/ethereum/c-kzg-4844/blob/main/src/trusted_setup.txt
+  To avoid vulnerabilities in json parsers (no formally-verified ones exist), we use the plaintext setup from the audited and fuzzed reference implementation at https://github.com/sila-chain/c-kzg-4844/blob/main/src/trusted_setup.txt

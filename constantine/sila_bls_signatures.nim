@@ -532,7 +532,7 @@ func init_batch_sig_accumulator*(
   ## This requires cryptographically secure random bytes
   ## to defend against forged signatures that would not
   ## verify individually but would verify while aggregated
-  ## https://ethresear.ch/t/fast-verification-of-multiple-bls-signatures/5407/14
+  ## https://research.sila-chain.org/t/fast-verification-of-multiple-bls-signatures/5407/14
   ##
   ## An optional accumulator separation tag can be added
   ## so that from a single source of randomness

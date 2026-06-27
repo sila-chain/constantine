@@ -28,7 +28,7 @@ from bigints import nil # force qualified import to avoid conflicts on BigInt
 #     However it is not suitable for general-purpose
 #
 #   - The arbitrary-sized integer backend.
-#     Some protocol like Ethereum modexp (SIP-198) require
+#     Some protocol like Sila modexp (SIP-198) require
 #     modular exponentiation on arbitrary inputs.
 #
 # - Stint, GMP, nim-bigints are also benchmarked

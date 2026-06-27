@@ -42,8 +42,8 @@ export abstractions, arithmetic, extension_fields,
 #   https://eprint.iacr.org/2012/549.pdf
 # - Simple guide to fast linear combinations (aka multiexponentiations)
 #   Vitalik Buterin, 2020
-#   https://ethresear.ch/t/simple-guide-to-fast-linear-combinations-aka-multiexponentiations/7238
-#   https://github.com/ethereum/research/blob/5c6fec6/fast_linear_combinations/multicombs.py
+#   https://research.sila-chain.org/t/simple-guide-to-fast-linear-combinations-aka-multiexponentiations/7238
+#   https://github.com/sila-chain/Sila-Research/blob/5c6fec6/fast_linear_combinations/multicombs.py
 # - zkStudyClub: Multi-scalar multiplication: state of the art & new ideas
 #   Gus Gutoski, 2020
 #   https://www.youtube.com/watch?v=Bl5mQA7UL2I

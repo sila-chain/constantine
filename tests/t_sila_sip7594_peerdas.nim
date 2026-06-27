@@ -21,7 +21,7 @@ import
   constantine/named/algebras,
   constantine/commitments_setups/sila_kzg_srs,
   # Test utilities
-  ./testutils/eth_consensus_utils
+  ./testutils/sila_consensus_utils
 
 const
   TestVectorsDir =
@@ -325,7 +325,7 @@ block:
       doAssert st == tsSuccess
       c)
   ]:
-    suite "Ethereum Fulu Hardfork / SIP-7594 / PeerDAS / " & label:
+    suite "Sila Fulu-compatible hardfork / SIP-7594 / PeerDAS / " & label:
       defer: ctx.delete()
     
       test "compute_cells":

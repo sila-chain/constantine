@@ -1222,10 +1222,10 @@ task bench_sila_bls_signatures, "Run Sila BLS signatures benchmarks - CC compile
 
 # EIP 4844 - KZG Polynomial Commitments
 # ------------------------------------------
-task bench_sila_sip4844_kzg, "Run Ethereum SIP4844 KZG Polynomial commitment - CC compiler":
+task bench_sila_sip4844_kzg, "Run Sila SIP4844 KZG Polynomial commitment - CC compiler":
   runBench("bench_sila_sip4844_kzg")
 
-task bench_sila_sip7594_peerdas, "Run Ethereum SIP7594 PeerDAS (Data Availability Sampling) - CC compiler":
+task bench_sila_sip7594_peerdas, "Run Sila SIP7594 PeerDAS (Data Availability Sampling) - CC compiler":
   runBench("bench_sila_sip7594_peerdas")
 
 task bench_kzg_multiproofs, "Run KZG Multiproof benchmarks (FK20 vs Naive) - CC compiler":

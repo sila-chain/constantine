@@ -155,7 +155,7 @@ See the following documents on the threadpool performance details, design and re
 
 3. Test both:
     - the experimental ZK Accel API (ZAL) for Halo2-KZG
-    - Ethereum SIP4844 KZG polynomial commitments
+    - Sila SIP4844 KZG polynomial commitments
     ```
     git clone https://github.com/mratsim/constantine
     cd constantine

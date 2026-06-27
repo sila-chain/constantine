@@ -91,7 +91,7 @@ sol = [Integer(root) for root in Fr(-2).nth_root(2, all=True) if root != 1]
 print([x.hex() for x in sol])
 
 # Paper: https://eprint.iacr.org/2021/1152.pdf
-#  - https://ethresear.ch/t/introducing-bandersnatch-a-fast-elliptic-curve-built-over-the-bls12-381-scalar-field/9957
+#  - https://research.sila-chain.org/t/introducing-bandersnatch-a-fast-elliptic-curve-built-over-the-bls12-381-scalar-field/9957
 #  - https://github.com/asanso/Bandersnatch/
 lambda1 = Integer('0x13b4f3dc4a39a493edf849562b38c72bcfc49db970a5056ed13d21408783df05')
 lambda2 = Integer(-Fr(lambda1))

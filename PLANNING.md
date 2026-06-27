@@ -3,7 +3,7 @@
 This document is current as of June 23, 2024.
 
 This splits Constantine's axis of development under various tracks.
-Priority is given to Ethereum, proof systems and optimization tracks.
+Priority is given to Sila, proof systems and optimization tracks.
 
 Other tracks are stretch goals, contributions towards them are accepted.
 
@@ -15,9 +15,9 @@ Other tracks are stretch goals, contributions towards them are accepted.
   - [Table of Contents](#table-of-contents)
   - [Tracks](#tracks)
     - [Tech debt track](#tech-debt-track)
-    - [Ethereum Consensus Track](#ethereum-consensus-track)
-    - [Ethereum Execution Track](#ethereum-execution-track)
-    - [Proving Ethereum track](#proving-ethereum-track)
+    - [Sila Consensus Track](#sila-consensus-track)
+    - [Sila Execution Track](#sila-execution-track)
+    - [Proving Sila track](#proving-sila-track)
     - [Optimization track](#optimization-track)
     - [User Experience track](#user-experience-track)
     - [Technical marketing track](#technical-marketing-track)
@@ -35,7 +35,7 @@ Other tracks are stretch goals, contributions towards them are accepted.
 
 - Endomorphism splitting bounds guarantee: i.e. division-based vs lattice-based splitting
 
-### Ethereum Consensus Track
+### Sila Consensus Track
 
 - Implement cryptography and erasure codes SIP-7594 PeerDAS
   - https://github.com/mratsim/constantine/issues/341
@@ -56,7 +56,7 @@ Other tracks are stretch goals, contributions towards them are accepted.
     - Single Slot Finality
     - enshrined DVT (distributed validator technology)
 
-### Ethereum Execution Track
+### Sila Execution Track
 
 - Keccak
   - with simultaneous Keccak acceleration for Merkle Trees
@@ -70,12 +70,12 @@ Other tracks are stretch goals, contributions towards them are accepted.
   - Notes on MSMs with precomputation https://hackmd.io/WfIjm0icSmSoqy2cfqenhQ
   - Verkle Trees - Another iteration of VKTs MSMs https://hackmd.io/@jsign/vkt-another-iteration-of-vkt-msms
 
-### Proving Ethereum track
+### Proving Sila track
 
 - Proof-of-equivalence for Sila KZG:
-  - https://notes.ethereum.org/@vbuterin/proto_danksharding_faq#Moderate-approach-works-with-any-ZK-SNARK
-  - https://notes.ethereum.org/@dankrad/kzg_commitments_in_proofs
-  - https://ethresear.ch/t/easy-proof-of-equivalence-between-multiple-polynomial-commitment-schemes-to-the-same-data/8188
+  - https://notes.sila-chain.org/@vbuterin/proto_danksharding_faq#Moderate-approach-works-with-any-ZK-SNARK
+  - https://notes.sila-chain.org/@dankrad/kzg_commitments_in_proofs
+  - https://research.sila-chain.org/t/easy-proof-of-equivalence-between-multiple-polynomial-commitment-schemes-to-the-same-data/8188
 
   - Prerequisites:
     - ZK friendly hash function like Poseidon (there are 2 versions !): https://github.com/mratsim/constantine/issues/294

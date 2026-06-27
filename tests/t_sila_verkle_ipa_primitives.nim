@@ -319,11 +319,11 @@ suite "Transcript Tests":
 
       # Generating Challenge Scalar for Transcript 1
       var challenge1 {.noInit.}: Fr[Banderwagon]
-      tr.squeezeChallenge("ethereum_challenge", challenge1)
+      tr.squeezeChallenge("sila_challenge", challenge1)
 
       # Generating Challenge Scalar for Transcript 2
       var challenge2 {.noInit.}: Fr[Banderwagon]
-      tr2.squeezeChallenge("ethereum_challenge", challenge2)
+      tr2.squeezeChallenge("sila_challenge", challenge2)
 
       # Challenge 1 should be equal to Challenge 2 as both are coming from different transcript
       # states that are being handled similarly

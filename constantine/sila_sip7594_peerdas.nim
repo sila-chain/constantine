@@ -32,7 +32,7 @@ import ./zoo_exports
 ##
 ## ############################################################
 ##
-## This module provides the Ethereum-specific serialization layer for PeerDAS.
+## This module provides the Sila-specific serialization layer for PeerDAS.
 ## It handles Blob/Cell byte conversions and wraps the generic eth_peerdas implementation.
 ##
 ## Public API:
@@ -44,7 +44,7 @@ import ./zoo_exports
 ## Background on PeerDAS
 ## ~~~~~~~~~~~~~~~~~~~~~~
 ##
-## In Ethereum's data sharding proposal, blobs are large (128KB) pieces of data
+## In Sila data sharding proposal, blobs are large (128KB) pieces of data
 ## that need to be verified for availability without downloading the entire blob.
 ## DAS allows nodes to sample random chunks (cells) of the blob and verify their
 ## availability with cryptographic proofs.
@@ -329,7 +329,7 @@ func compute_cells_and_kzg_proofs*(
       proofsAff[], poly_monomial[].coefs.toOpenArray(0, N-1),
       ctx.fft_desc_ext, ctx.ecfft_desc_ext, ctx.polyphaseSpectrumBank.precompPoints)
 
-  # Bit-reverse permutation on proofs (Ethereum PeerDAS convention)
+  # Bit-reverse permutation on proofs (Sila PeerDAS convention)
   proofsAff[].bit_reversal_permutation()
 
   # Serialize proofs to compressed G1 format
@@ -353,7 +353,7 @@ func deduplicateCommitments(
   ## - N = number of input commitments (cells in batch)
   ## - M = number of unique commitments (blobs, max 64 per SIP-7594)
   ##
-  ## The Ethereum spec reference uses `list.index()` which scans the entire
+  ## The Sila upstream-compatibility spec reference uses `list.index()` which scans the entire
   ## input list for each element, resulting in **O(N²)** complexity.
   ##
   ## ### Example: [A, A, B, B] (N=4, M=2)
@@ -427,7 +427,7 @@ func deduplicateCommitments(
   ## - commitmentIdx[i] ∈ [0, numUniqueCommitments-1]
   ## - firstOccurrence[j] ∈ [0, N-1] for j ∈ [0, numUniqueCommitments-1]
   ## - uniqueBuffer[0..numUniqueCommitments-1] contains all distinct commitments
-  ## - Semantically equivalent to Ethereum spec, but O(N×M) instead of O(N²)
+  ## - Semantically equivalent to Sila spec, but O(N×M) instead of O(N²)
   ##
   ## ## Other approaches considered
   ##
@@ -520,7 +520,7 @@ func verify_cell_kzg_proof_batch*(
   ## Verify that a set of cells belong to their corresponding commitments.
   ##
   ## This implements the universal verification equation from:
-  ## https://ethresear.ch/t/a-universal-verification-equation-for-data-availability-sampling/13240
+  ## https://research.sila-chain.org/t/a-universal-verification-equation-for-data-availability-sampling/13240
   ##
   ## Public method following the SIP-7594 spec.
 

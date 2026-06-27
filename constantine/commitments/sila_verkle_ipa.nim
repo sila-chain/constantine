@@ -25,8 +25,8 @@ import
 ## ############################################################
 
 # This file implements Inner Product Arguments (IPA) commitment.
-# While generic in theory and usable beyond Ethereum,
-# the transcript hardcodes Ethereum challenges and would need to be
+# While generic in theory and usable beyond Sila,
+# the transcript hardcodes Sila challenges and would need to be
 # modified to be compatible with other IPA implementations like Halo2.
 #
 # - https://eprint.iacr.org/2019/1021
@@ -34,7 +34,7 @@ import
 # - https://raw.githubusercontent.com/daira/halographs/master/deepdive.pdf
 # - https://hackmd.io/yA9DlU5YQ3WtiFxC_2LAlg
 # - https://eprint.iacr.org/2020/499
-# - https://dankradfeist.de/ethereum/2021/07/27/inner-product-arguments.html
+# - https://research.sila-chain.org/sila-compat/2021/07/27/inner-product-arguments.html
 #
 # Note:
 #   Halo2-like IPA is slightly different from Bulletproofs
@@ -42,7 +42,7 @@ import
 #   see 2019/1021, 3.1, the vector b is fixed and part of the Common Reference String
 #   in our case it's instantiated to the Lagrange basis polynomial.
 #   Hence the vector H mentioned in
-#   https://dankradfeist.de/ethereum/2021/07/27/inner-product-arguments.html
+#   https://research.sila-chain.org/sila-compat/2021/07/27/inner-product-arguments.html
 #  is not necessary as well.
 #
 # Notation
@@ -300,7 +300,7 @@ func computeChangeOfBasisFactors[F](
   # The vector is
   #   s̄(X) = ∏ᵢ₌₀ᵏ⁻¹ (1 + uₖ₋₁₋ᵢ) X²^ⁱ
   #
-  # See https://dankradfeist.de/ethereum/2021/07/27/inner-product-arguments.html#only-compute-basis-changes-at-the-end
+  # See https://research.sila-chain.org/sila-compat/2021/07/27/inner-product-arguments.html#only-compute-basis-changes-at-the-end
   debug: doAssert s.len == 1 shl u.len
   s[0].addr.zeroMem(sizeof(F) * s.len)
   s[0] = multiplier
@@ -444,7 +444,7 @@ func ipa_verify*[N, logN: static int, EcAff, F](
 ## ############################################################
 #
 # Write-ups:
-# - https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html
+# - https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html
 # - https://hackmd.io/7vIMcrgtTOKyvvtziTf0HA
 #
 # Specs:

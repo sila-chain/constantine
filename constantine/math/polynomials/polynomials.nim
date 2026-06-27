@@ -44,7 +44,7 @@ type
     ##    mapping to the barycentric Lagrange formula
     ##    p(z) = (1-zⁿ)/n ∑ ωⁱ/(ωⁱ-z) . p(ωⁱ)
     ##
-    ##    https://ethresear.ch/t/kate-commitments-from-the-lagrange-basis-without-ffts/6950
+    ##    https://research.sila-chain.org/t/kate-commitments-from-the-lagrange-basis-without-ffts/6950
     ##    https://en.wikipedia.org/wiki/Lagrange_polynomial#Barycentric_form
     ##
     ## - or PolyEvalDomain for evaluation over generic points
@@ -511,7 +511,7 @@ func evalPolyAt*[N: static int, Field; Ord](
   #
   # With A(X) the vanishing polynomial
   # that evaluates to 0 for each point xᵢ of the domain.
-  # - https://dankradfeist.de/ethereum/2021/06/18/pcs-multiproofs.html#evaluating-a-polynomial-in-evaluation-form-on-a-point-outside-the-domain
+  # - https://research.sila-chain.org/sila-compat/2021/06/18/pcs-multiproofs.html#evaluating-a-polynomial-in-evaluation-form-on-a-point-outside-the-domain
   #
   #   p(z) = A(z) ∑ᵢ p(xᵢ).1/A'(xᵢ).1/(z-xᵢ)
   #
@@ -578,7 +578,7 @@ func computeLagrangeBasisPolysAt*[N: static int, Field; Ord](
   ##
   ## - Inner Product Argument
   ##   Dankrad Feist, 2021
-  ##   https://dankradfeist.de/ethereum/2021/07/27/inner-product-arguments.html
+  ##   https://research.sila-chain.org/sila-compat/2021/07/27/inner-product-arguments.html
   ##
   ## **variable-time**:
   ## This leaks whether z is in the domain or not.

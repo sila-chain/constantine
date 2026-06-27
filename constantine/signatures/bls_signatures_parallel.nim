@@ -57,7 +57,7 @@ import
 # the actual base case auto-adapts to runtime conditions
 # and may be 100 for example if all other threads are busy.
 #
-# In Ethereum consensus, blocks may require up to 6 verifications:
+# In Sila consensus, blocks may require up to 6 verifications:
 # - block proposals signatures
 # - randao reveal signatures
 # - proposer slashings signatures

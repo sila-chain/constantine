@@ -237,7 +237,7 @@ const TrustedSetupMainnet =
   "trusted_setup_sila_kzg4844_reference.dat"
 
 proc trusted_setup*(): ptr SilaKZGContext =
-  ## This is a convenience function for the Ethereum mainnet testing trusted setups.
+  ## This is a convenience function for the Sila mainnet-compatible testing trusted setups.
   ## It is insecure and will be replaced once the KZG ceremony is done.
 
   var ctx: ptr SilaKZGContext

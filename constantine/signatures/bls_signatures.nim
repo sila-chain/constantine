@@ -276,7 +276,7 @@ type
     # to prevent forging valid aggregated signatures
     # from 2 invalid individual signatures using
     # the bilinearity property of pairings.
-    # https://ethresear.ch/t/fast-verification-of-multiple-bls-signatures/5407/14
+    # https://research.sila-chain.org/t/fast-verification-of-multiple-bls-signatures/5407/14
     #
     # Assuming blinding muls cost 60% of a pairing (worst case with 255-bit blinding)
     # verifying 3 signatures would have a base cost of 300
@@ -313,7 +313,7 @@ func init*(
   ## This requires cryptographically secure random bytes
   ## to defend against forged signatures that would not
   ## verify individually but would verify while aggregated
-  ## https://ethresear.ch/t/fast-verification-of-multiple-bls-signatures/5407/14
+  ## https://research.sila-chain.org/t/fast-verification-of-multiple-bls-signatures/5407/14
   ##
   ## An optional accumulator separation tag can be added
   ## so that from a single source of randomness
@@ -371,7 +371,7 @@ func update*[Pubkey, Sig: EC_ShortW_Aff](
   # We assume that the attacker cannot resubmit 2^64 times
   # forged public keys and signatures.
   #
-  # Discussion https://ethresear.ch/t/fast-verification-of-multiple-bls-signatures/5407
+  # Discussion https://research.sila-chain.org/t/fast-verification-of-multiple-bls-signatures/5407
   # See also
   # - Faster batch forgery identification
   #   Daniel J. Bernstein, Jeroen Doumen, Tanja Lange, and Jan-Jaap Oosterwijk, 2012

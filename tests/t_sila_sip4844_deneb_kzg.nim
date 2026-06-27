@@ -14,7 +14,7 @@ import
   constantine/serialization/codecs,
   constantine/sila_sip4844_kzg,
   # Test utilities
-  ./testutils/eth_consensus_utils
+  ./testutils/sila_consensus_utils
 
 # Organization
 #
@@ -160,7 +160,7 @@ TestVectorsDir.testGen(verify_blob_kzg_proof_batch, "kzg-mainnet", testVector):
     doAssert testVector["output"].content == "null"
 
 block:
-  suite "Ethereum Deneb Hardfork / SIP-4844 / Proto-Danksharding / KZG Polynomial Commitments":
+  suite "Sila Deneb-compatible hardfork / SIP-4844 / Proto-Danksharding / KZG Polynomial Commitments":
     let ctx = getTrustedSetup()
 
     test "blob_to_kzg_commitment(dst: var array[BYTES_PER_COMMITMENT, byte], blob: ptr array[4096, byte])":
