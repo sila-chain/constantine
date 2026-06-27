@@ -10,8 +10,8 @@
 # Refactor: https://github.com/mratsim/constantine/issues/396
 
 import
-  ./t_ethereum_verkle_ipa_test_helper,
-  constantine/ethereum_verkle_ipa,
+  ./t_sila_verkle_ipa_test_helper,
+  constantine/sila_verkle_ipa,
   constantine/hashes,
   std/unittest,
   constantine/serialization/[codecs, codecs_banderwagon, codecs_status_codes],
@@ -23,8 +23,8 @@ import
   constantine/named/zoo_generators,
   constantine/commitments/[
     pedersen_commitments,
-    eth_verkle_ipa,
-    eth_verkle_transcripts,
+    sila_verkle_ipa,
+    sila_verkle_transcripts,
     protocol_quotient_check],
   ../tests/math_elliptic_curves/t_ec_template,
   constantine/platforms/abstractions
@@ -135,8 +135,8 @@ suite "Barycentric Form Tests":
           result.prod(tmpa, tmpb)
           result *= tmpc
 
-        var points: array[EthVerkleDomain, Coord]
-        for k in 0 ..< EthVerkleDomain:
+        var points: array[SilaVerkleDomain, Coord]
+        for k in 0 ..< SilaVerkleDomain:
           var x: Fr[Banderwagon]
           x.fromInt(k)
 
@@ -146,11 +146,11 @@ suite "Barycentric Form Tests":
         var lindom: PolyEvalLinearDomain[256, Fr[Banderwagon]]
         lindom.setupLinearEvaluationDomain()
 
-        var evaluations: PolynomialEval[EthVerkleDomain, Fr[Banderwagon], kNaturalOrder]
-        for i in 0 ..< EthVerkleDomain:
+        var evaluations: PolynomialEval[SilaVerkleDomain, Fr[Banderwagon], kNaturalOrder]
+        for i in 0 ..< SilaVerkleDomain:
           evaluations.evals[i] = points[i].y
 
-        var quotient: PolynomialEval[EthVerkleDomain, Fr[Banderwagon], kNaturalOrder]
+        var quotient: PolynomialEval[SilaVerkleDomain, Fr[Banderwagon], kNaturalOrder]
         lindom.getQuotientPolyInDomain(quotient, evaluations, zIndex = 1)
 
         doAssert quotient.evals[255].toHex(littleEndian) == "0x616b0e203a877177e2090013a77ce4ea8726941aac613b532002f3653d54250b", "Issue with Divide on Domain using Barycentric Precomputes!"
@@ -424,16 +424,16 @@ suite "IPA proof tests":
       var evaluationResultFr: Fr[Banderwagon]
       evaluationResultFr.fromHex(IPAEvaluationResultFr)
 
-      var proof_bytes: EthVerkleIpaProofBytes
+      var proof_bytes: SilaVerkleIpaProofBytes
       proof_bytes.fromHex(IPASerializedProofVec)
       var proof {.noInit.}: IpaProof[8, EC_TwEdw_Aff[Fp[Banderwagon]], Fr[Banderwagon]]
       let status = proof.deserialize(proof_bytes)
-      doAssert status == cttEthVerkleIpa_Success
+      doAssert status == cttSilaVerkleIpa_Success
 
-      var CRS: PolynomialEval[EthVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
+      var CRS: PolynomialEval[SilaVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
       CRS.evals.generate_random_points()
 
-      var domain: PolyEvalLinearDomain[EthVerkleDomain, Fr[Banderwagon]]
+      var domain: PolyEvalLinearDomain[SilaVerkleDomain, Fr[Banderwagon]]
       domain.setupLinearEvaluationDomain()
 
       var tr {.noInit.}: sha256
@@ -454,16 +454,16 @@ suite "IPA proof tests":
     proc testIPAProofSerDe() =
 
       ## Pull a valid IPAProof from a valid hex test vector as used in Go-IPA https://github.com/crate-crypto/go-ipa/blob/b1e8a79/ipa/ipa_test.go#L128
-      var validIPAProof_bytes {.noInit.}: EthVerkleIpaProofBytes
+      var validIPAProof_bytes {.noInit.}: SilaVerkleIpaProofBytes
       validIPAProof_bytes.fromHex(validIPAProof)
 
       # Deserialize it into the IPAProof type
       var ipa_proof {.noInit.}: IpaProof[8, EC_TwEdw_Aff[Fp[Banderwagon]], Fr[Banderwagon]]
       let s1 = ipa_proof.deserialize(validIPAProof_bytes)
-      doAssert s1 == cttEthVerkleIpa_Success, "Failed to deserialize IPA Proof"
+      doAssert s1 == cttSilaVerkleIpa_Success, "Failed to deserialize IPA Proof"
 
       ## Serialize the IPAProof type in to a serialize IPAProof byte array
-      var validIPAproof_bytes2 {.noInit} : EthVerkleIpaProofBytes
+      var validIPAproof_bytes2 {.noInit} : SilaVerkleIpaProofBytes
       validIPAproof_bytes2.serialize(ipa_proof)
       doAssert validIPAproof_bytes2.toHex() == validIPAProof, "Error in the IPAProof serialization!\n" & (block:
         "  expected: " & validIPAProof & "\n" &
@@ -477,10 +477,10 @@ suite "IPA proof tests":
       var opening_challenge: Fr[Banderwagon]
       opening_challenge.fromInt(2101)
 
-      var CRS: PolynomialEval[EthVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
+      var CRS: PolynomialEval[SilaVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
       CRS.evals.generate_random_points()
 
-      var domain: PolyEvalLinearDomain[EthVerkleDomain, Fr[Banderwagon]]
+      var domain: PolyEvalLinearDomain[SilaVerkleDomain, Fr[Banderwagon]]
       domain.setupLinearEvaluationDomain()
 
       # Committer's side
@@ -543,10 +543,10 @@ suite "IPA proof tests":
       var opening_challenge: Fr[Banderwagon]
       opening_challenge.fromInt(2101)
 
-      var CRS: PolynomialEval[EthVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
+      var CRS: PolynomialEval[SilaVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
       CRS.evals.generate_random_points()
 
-      var domain: PolyEvalLinearDomain[EthVerkleDomain, Fr[Banderwagon]]
+      var domain: PolyEvalLinearDomain[SilaVerkleDomain, Fr[Banderwagon]]
       domain.setupLinearEvaluationDomain()
 
       # Committer's side
@@ -608,10 +608,10 @@ suite "Multiproof Tests":
       opening_challenges_in_domain[0] = 0'u8
       opening_challenges_in_domain[1] = 0'u8
 
-      var CRS: PolynomialEval[EthVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
+      var CRS: PolynomialEval[SilaVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
       CRS.evals.generate_random_points()
 
-      var domain: PolyEvalLinearDomain[EthVerkleDomain, Fr[Banderwagon]]
+      var domain: PolyEvalLinearDomain[SilaVerkleDomain, Fr[Banderwagon]]
       domain.setupLinearEvaluationDomain()
 
       # Committer's side
@@ -671,10 +671,10 @@ suite "Multiproof Tests":
   test "Multiproof Creation and Verification":
     proc testMultiproofCreationAndVerification()=
 
-      var CRS: PolynomialEval[EthVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
+      var CRS: PolynomialEval[SilaVerkleDomain, EC_TwEdw_Aff[Fp[Banderwagon]], kNaturalOrder]
       CRS.evals.generate_random_points()
 
-      var domain: PolyEvalLinearDomain[EthVerkleDomain, Fr[Banderwagon]]
+      var domain: PolyEvalLinearDomain[SilaVerkleDomain, Fr[Banderwagon]]
       domain.setupLinearEvaluationDomain()
 
       var testVals: array[14, int] = [1,1,1,4,5,6,7,8,9,10,11,12,13,14]
@@ -732,14 +732,14 @@ suite "Multiproof Tests":
   #     var ipaConfig {.noInit.}: IPASettings
   #     ipaConfig.genIPAConfig()
 
-  #     var Cs: array[EthVerkleDomain, EC_P]
-  #     var Zs: array[EthVerkleDomain, int]
-  #     var Ys: array[EthVerkleDomain, Fr[Banderwagon]]
+  #     var Cs: array[SilaVerkleDomain, EC_P]
+  #     var Zs: array[SilaVerkleDomain, int]
+  #     var Ys: array[SilaVerkleDomain, Fr[Banderwagon]]
 
   #     Cs[0] = commitment
   #     Ys[0] = evaluationResultFr
 
-  #     for i in 0 ..< EthVerkleDomain:
+  #     for i in 0 ..< SilaVerkleDomain:
   #       var tr {.noInit.}: sha256
   #       tr.initTranscript("multiproof")
   #       Zs[0] = i
@@ -755,16 +755,16 @@ suite "Multiproof Tests":
     proc testMultiproofSerDe() =
 
       ## Pull a valid Multiproof from a valid hex test vector as used in Go-IPA https://github.com/crate-crypto/go-ipa/blob/master/multiproof_test.go#L120-L121
-      var validMultiproof_bytes {.noInit.}: EthVerkleIpaMultiProofBytes
+      var validMultiproof_bytes {.noInit.}: SilaVerkleIpaMultiProofBytes
       validMultiproof_bytes.fromHex(validMultiproof)
 
       ## Deserialize it into the Multiproof type
       var multiproof {.noInit.}: IpaMultiProof[8, EC_TwEdw_Aff[Fp[Banderwagon]], Fr[Banderwagon]]
       let s1 = multiproof.deserialize(validMultiproof_bytes)
-      doAssert s1 == cttEthVerkleIpa_Success, "Failed to deserialize Multiproof"
+      doAssert s1 == cttSilaVerkleIpa_Success, "Failed to deserialize Multiproof"
 
       ## Serialize the Multiproof type in to a serialize Multiproof byte array
-      var validMultiproof_bytes2 {.noInit} : EthVerkleIpaMultiProofBytes
+      var validMultiproof_bytes2 {.noInit} : SilaVerkleIpaMultiProofBytes
       validMultiproof_bytes2.serialize(multiproof)
       doAssert validMultiproof_bytes2.toHex() == validMultiproof, "Error in the multiproof serialization!\n" & (block:
         "  expected: " & validMultiproof & "\n" &

@@ -55,7 +55,7 @@ We take inspiration from
 - https://github.com/zcash/halo2/blob/halo2_proofs-0.3.0/halo2_proofs/src/transcript.rs
 - https://github.com/arkworks-rs/poly-commit/blob/12f5529/poly-commit/src/ipa_pc/mod.rs#L34-L44
 
-We MUST be compatible with `verkle-trie-ref` to be used in Ethereum Verkle Tries.
+We MUST be compatible with `verkle-trie-ref` to be used in Sila Verkle Tries.
 
 In summary, a transcript acts like a Cryptographic Sponge with duplex construction that can absorb entropy and squeeze out challenges.
 

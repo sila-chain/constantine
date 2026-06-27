@@ -8,7 +8,7 @@
 
 import
   ./pedersen_commitments,
-  ./eth_verkle_transcripts,
+  ./sila_verkle_transcripts,
   ./protocol_quotient_check,
   constantine/named/algebras,
   constantine/math/polynomials/polynomials,
@@ -20,7 +20,7 @@ import
 ## ############################################################
 ##
 ##                 Inner Product Arguments
-##              Ethereum Verkle Tries flavor
+##              Sila Verkle Tries flavor
 ##
 ## ############################################################
 
@@ -67,7 +67,7 @@ import
 # so that the prover cancel out terms in the following
 # proving protocol relations without manipulating the polynomial they want to commit to
 # (which they don't control since
-#  it's the state of the Ethereum blockchain represented as a polynomial coefficients)
+#  it's the state of the Sila blockchain represented as a polynomial coefficients)
 #
 # Prover
 # ------
@@ -145,7 +145,7 @@ func ipa_commit*[N: static int, EC, F](
 func ipa_prove*[N, logN: static int, EcAff, F](
       crs: PolynomialEval[N, EcAff, kNaturalOrder],
       domain: PolyEvalLinearDomain[N, F],
-      transcript: var EthVerkleTranscript,
+      transcript: var SilaVerkleTranscript,
       eval_at_challenge: var F,
       proof: var IpaProof[logN, EcAff, F],
       poly: PolynomialEval[N, F, kNaturalOrder],
@@ -326,7 +326,7 @@ func computeChangeOfBasisFactors[F](
 func ipa_verify*[N, logN: static int, EcAff, F](
       crs: PolynomialEval[N, EcAff, kNaturalOrder],
       domain: PolyEvalLinearDomain[N, F],
-      transcript: var EthVerkleTranscript,
+      transcript: var SilaVerkleTranscript,
       commitment: EcAff,
       opening_challenge: F,
       eval_at_challenge: F,
@@ -389,7 +389,7 @@ func ipa_verify*[N, logN: static int, EcAff, F](
   transcript.squeezeChallenge("w", w)
 
   # Regenerate the challenges uᵢ and uᵢ⁻¹
-  # (named xᵢ and xᵢ⁻¹ for Ethereum Verkle Tries spec)
+  # (named xᵢ and xᵢ⁻¹ for Sila Verkle Tries spec)
   # to check ∑ᵢ[uᵢ]Lᵢ + C' + ∑ᵢ[uᵢ⁻¹]Rᵢ = [a₀]G₀ + [a₀.b₀]Q
   for i in 0 ..< logN:
     transcript.absorb("L", proof.L[i])
@@ -657,7 +657,7 @@ func sumCommitmentsAndEvalsByChallenge[N: static int, F, ECaff](
 func ipa_multi_prove*[N, logN: static int, EcAff, F](
       crs: PolynomialEval[N, EcAff, kNaturalOrder],
       domain: PolyEvalLinearDomain[N, F],
-      transcript: var EthVerkleTranscript,
+      transcript: var SilaVerkleTranscript,
       proof: var IpaMultiProof[logN, EcAff, F],
       polys: openArray[PolynomialEval[N, F, kNaturalOrder]],
       commitments: openArray[EcAff],
@@ -735,7 +735,7 @@ func ipa_multi_prove*[N, logN: static int, EcAff, F](
   transcript.squeezeChallenge("r", r)
 
   # We need linearly independent numbers for batch proof sampling.
-  # The Ethereum Verkle protocol mandates powers of r.
+  # The Sila Verkle protocol mandates powers of r.
   rpowers.computeSparsePowers_vartime(r, sparse_challenges, num_distinct_challenges)
 
   # Compute rⁱ.fᵢ(X)
@@ -834,7 +834,7 @@ func ipa_multi_prove*[N, logN: static int, EcAff, F](
 func ipa_multi_verify*[N, logN: static int, EcAff, F](
       crs: PolynomialEval[N, EcAff, kNaturalOrder],
       domain: PolyEvalLinearDomain[N, F],
-      transcript: var EthVerkleTranscript,
+      transcript: var SilaVerkleTranscript,
       commitments: openArray[EcAff],
       opening_challenges_in_domain: openArray[SomeUnsignedInt],
       evals_at_challenges: openArray[F],
@@ -903,7 +903,7 @@ func ipa_multi_verify*[N, logN: static int, EcAff, F](
   transcript.squeezeChallenge("r", r)
 
   # We need linearly independent numbers for batch proof sampling.
-  # The Ethereum Verkle protocol mandates powers of r.
+  # The Sila Verkle protocol mandates powers of r.
   rpowers.computeSparsePowers_vartime(r, sparse_challenges, num_distinct_challenges)
 
   # Add the commit to the combining polynomial g(X) to transcript

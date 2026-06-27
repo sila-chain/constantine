@@ -7,7 +7,7 @@
 # at your option. This file may not be copied, modified, or distributed except according to those terms.
 
 import
-  ./commitments/eth_verkle_ipa,
+  ./commitments/sila_verkle_ipa,
   ./math/[arithmetic, ec_twistededwards],
   constantine/named/algebras,
   ./serialization/[codecs_status_codes, codecs_banderwagon]
@@ -20,10 +20,10 @@ import
   ./serialization/endians,
   ./math/io/[io_bigints, io_fields]
 
-const EthVerkleSeed* = "eth_verkle_oct_2021"
+const SilaVerkleSeed* = "sila_verkle_oct_2021"
 
 func generate_random_points*(r: var openArray[EC_TwEdw_Aff[Fp[Banderwagon]]]) =
-  ## generate_random_points generates random points on the curve with the hardcoded EthVerkleSeed
+  ## generate_random_points generates random points on the curve with the hardcoded SilaVerkleSeed
   let points = allocHeapArrayAligned(EC_TwEdw_Aff[Fp[Banderwagon]], r.len, alignment = 64)
 
   var points_found: seq[EC_TwEdw_Aff[Fp[Banderwagon]]]
@@ -32,7 +32,7 @@ func generate_random_points*(r: var openArray[EC_TwEdw_Aff[Fp[Banderwagon]]]) =
   while true:
     var ctx {.noInit.}: sha256
     ctx.init()
-    ctx.update(EthVerkleSeed)
+    ctx.update(SilaVerkleSeed)
     ctx.update(incrementer.toBytes(bigEndian))
     var hash : array[32, byte]
     ctx.finish(hash)
@@ -65,7 +65,7 @@ func generate_random_points*(r: var openArray[EC_TwEdw_Aff[Fp[Banderwagon]]]) =
 
 # ------------------------------------------------------------
 
-# Ethereum Verkle IPA public API
+# Sila Verkle IPA public API
 # ------------------------------------------------------------
 #
 # We use a simple goto state machine to handle errors and cleanup (if allocs were done)
@@ -73,19 +73,19 @@ func generate_random_points*(r: var openArray[EC_TwEdw_Aff[Fp[Banderwagon]]]) =
 # - Either we are in "HappyPath" section that shortcuts to resource cleanup on error
 # - or there are no resources to clean and we can early return from a function.
 
-const EthVerkleDomain* = 256
+const SilaVerkleDomain* = 256
 
 type
-  cttEthVerkleIpaStatus* = enum
-    cttEthVerkleIpa_Success
-    cttEthVerkleIpa_VerificationFailure
-    cttEthVerkleIpa_InputsLengthsMismatch
-    cttEthVerkleIpa_ScalarZero
-    cttEthVerkleIpa_ScalarLargerThanCurveOrder
-    cttEthVerkleIpa_EccInvalidEncoding
-    cttEthVerkleIpa_EccCoordinateGreaterThanOrEqualModulus
-    cttEthVerkleIpa_EccPointNotOnCurve
-    cttEthVerkleIpa_EccPointNotInSubGroup
+  cttSilaVerkleIpaStatus* = enum
+    cttSilaVerkleIpa_Success
+    cttSilaVerkleIpa_VerificationFailure
+    cttSilaVerkleIpa_InputsLengthsMismatch
+    cttSilaVerkleIpa_ScalarZero
+    cttSilaVerkleIpa_ScalarLargerThanCurveOrder
+    cttSilaVerkleIpa_EccInvalidEncoding
+    cttSilaVerkleIpa_EccCoordinateGreaterThanOrEqualModulus
+    cttSilaVerkleIpa_EccPointNotOnCurve
+    cttSilaVerkleIpa_EccPointNotInSubGroup
 
 template checkReturn(evalExpr: CttCodecScalarStatus): untyped {.dirty.} =
   # Translate codec status code to KZG status code
@@ -95,7 +95,7 @@ template checkReturn(evalExpr: CttCodecScalarStatus): untyped {.dirty.} =
     case status
     of cttCodecScalar_Success:                          discard
     of cttCodecScalar_Zero:                             discard
-    of cttCodecScalar_ScalarLargerThanCurveOrder:       return cttEthVerkleIpa_ScalarLargerThanCurveOrder
+    of cttCodecScalar_ScalarLargerThanCurveOrder:       return cttSilaVerkleIpa_ScalarLargerThanCurveOrder
 
 template checkReturn(evalExpr: CttCodecEccStatus): untyped {.dirty.} =
   # Translate codec status code to KZG status code
@@ -104,10 +104,10 @@ template checkReturn(evalExpr: CttCodecEccStatus): untyped {.dirty.} =
     let status = evalExpr # Ensure single evaluation
     case status
     of cttCodecEcc_Success:                             discard
-    of cttCodecEcc_InvalidEncoding:                     return cttEthVerkleIpa_EccInvalidEncoding
-    of cttCodecEcc_CoordinateGreaterThanOrEqualModulus: return cttEthVerkleIpa_EccCoordinateGreaterThanOrEqualModulus
-    of cttCodecEcc_PointNotOnCurve:                     return cttEthVerkleIpa_EccPointNotOnCurve
-    of cttCodecEcc_PointNotInSubgroup:                  return cttEthVerkleIpa_EccPointNotInSubGroup
+    of cttCodecEcc_InvalidEncoding:                     return cttSilaVerkleIpa_EccInvalidEncoding
+    of cttCodecEcc_CoordinateGreaterThanOrEqualModulus: return cttSilaVerkleIpa_EccCoordinateGreaterThanOrEqualModulus
+    of cttCodecEcc_PointNotOnCurve:                     return cttSilaVerkleIpa_EccPointNotOnCurve
+    of cttCodecEcc_PointNotInSubgroup:                  return cttSilaVerkleIpa_EccPointNotInSubGroup
     of cttCodecEcc_PointAtInfinity:                     discard
 
 template check(Section: untyped, evalExpr: CttCodecScalarStatus): untyped {.dirty, used.} =
@@ -118,7 +118,7 @@ template check(Section: untyped, evalExpr: CttCodecScalarStatus): untyped {.dirt
     case status
     of cttCodecScalar_Success:                          discard
     of cttCodecScalar_Zero:                             discard
-    of cttCodecScalar_ScalarLargerThanCurveOrder:       result = cttEthVerkleIpa_ScalarLargerThanCurveOrder; break Section
+    of cttCodecScalar_ScalarLargerThanCurveOrder:       result = cttSilaVerkleIpa_ScalarLargerThanCurveOrder; break Section
 
 template check(Section: untyped, evalExpr: CttCodecEccStatus): untyped {.dirty, used.} =
   # Translate codec status code to KZG status code
@@ -127,29 +127,29 @@ template check(Section: untyped, evalExpr: CttCodecEccStatus): untyped {.dirty, 
     let status = evalExpr # Ensure single evaluation
     case status
     of cttCodecEcc_Success:                             discard
-    of cttCodecEcc_InvalidEncoding:                     result = cttEthVerkleIpa_EccInvalidEncoding; break Section
-    of cttCodecEcc_CoordinateGreaterThanOrEqualModulus: result = cttEthVerkleIpa_EccCoordinateGreaterThanOrEqualModulus; break Section
-    of cttCodecEcc_PointNotOnCurve:                     result = cttEthVerkleIpa_EccPointNotOnCurve; break Section
-    of cttCodecEcc_PointNotInSubgroup:                  result = cttEthVerkleIpa_EccPointNotInSubGroup; break Section
+    of cttCodecEcc_InvalidEncoding:                     result = cttSilaVerkleIpa_EccInvalidEncoding; break Section
+    of cttCodecEcc_CoordinateGreaterThanOrEqualModulus: result = cttSilaVerkleIpa_EccCoordinateGreaterThanOrEqualModulus; break Section
+    of cttCodecEcc_PointNotOnCurve:                     result = cttSilaVerkleIpa_EccPointNotOnCurve; break Section
+    of cttCodecEcc_PointNotInSubgroup:                  result = cttSilaVerkleIpa_EccPointNotInSubGroup; break Section
     of cttCodecEcc_PointAtInfinity:                     discard
 
 # Serialization
 # ------------------------------------------------------------------------------------
 
 type
-  EthVerkleIpaProofBytes* = array[544, byte]
-  EthVerkleIpaMultiProofBytes* = array[576, byte]
-  EthVerkleIpaProof* = IpaProof[8, EC_TwEdw[Fp[Banderwagon]], Fr[Banderwagon]]
-  EthVerkleIpaMultiProof* = IpaMultiProof[8, EC_TwEdw[Fp[Banderwagon]], Fr[Banderwagon]]
+  SilaVerkleIpaProofBytes* = array[544, byte]
+  SilaVerkleIpaMultiProofBytes* = array[576, byte]
+  SilaVerkleIpaProof* = IpaProof[8, EC_TwEdw[Fp[Banderwagon]], Fr[Banderwagon]]
+  SilaVerkleIpaMultiProof* = IpaMultiProof[8, EC_TwEdw[Fp[Banderwagon]], Fr[Banderwagon]]
 
   # The aliases may throw strange errors like:
-  # - Error: invalid type: 'EthVerkleIpaProof' for var
+  # - Error: invalid type: 'SilaVerkleIpaProof' for var
   # - Error: cannot instantiate: 'src:type'
   # as of Nim v2.0.4
 
-func serialize*(dst: var EthVerkleIpaProofBytes,
+func serialize*(dst: var SilaVerkleIpaProofBytes,
                 src: IpaProof[8, EC_TwEdw[Fp[Banderwagon]], Fr[Banderwagon]]
-                ): cttEthVerkleIpaStatus {.discardable.} =
+                ): cttSilaVerkleIpaStatus {.discardable.} =
   # Note: We store 1 out of 2 coordinates of an EC point, so size(Fp[Banderwagon])
   const fpb = sizeof(Fp[Banderwagon])
   const frb = sizeof(Fr[Banderwagon])
@@ -165,10 +165,10 @@ func serialize*(dst: var EthVerkleIpaProofBytes,
     R[i].serialize(src.R[i])
 
   a0[].serialize_fr(src.a0, littleEndian)
-  return cttEthVerkleIpa_Success
+  return cttSilaVerkleIpa_Success
 
-func deserialize*(dst: var EthVerkleIpaProof,
-                  src: EthVerkleIpaProofBytes): cttEthVerkleIpaStatus =
+func deserialize*(dst: var SilaVerkleIpaProof,
+                  src: SilaVerkleIpaProofBytes): cttSilaVerkleIpaStatus =
 
   const fpb = sizeof(Fp[Banderwagon])
   const frb = sizeof(Fr[Banderwagon])
@@ -184,27 +184,27 @@ func deserialize*(dst: var EthVerkleIpaProof,
     checkReturn dst.R[i].deserialize_vartime(R[i])
 
   checkReturn dst.a0.deserialize_fr(a0[], littleEndian)
-  return cttEthVerkleIpa_Success
+  return cttSilaVerkleIpa_Success
 
-func serialize*(dst: var EthVerkleIpaMultiProofBytes,
+func serialize*(dst: var SilaVerkleIpaMultiProofBytes,
                 src: IpaMultiProof[8, EC_TwEdw[Fp[Banderwagon]], Fr[Banderwagon]]
-                ): cttEthVerkleIpaStatus {.discardable.} =
+                ): cttSilaVerkleIpaStatus {.discardable.} =
 
   const frb = sizeof(Fr[Banderwagon])
   let D = cast[ptr array[frb, byte]](dst.addr)
-  let g2Proof = cast[ptr EthVerkleIpaProofBytes](dst[frb].addr)
+  let g2Proof = cast[ptr SilaVerkleIpaProofBytes](dst[frb].addr)
 
   D[].serialize(src.D)
   g2Proof[].serialize(src.g2_proof)
-  return cttEthVerkleIpa_Success
+  return cttSilaVerkleIpa_Success
 
-func deserialize*(dst: var EthVerkleIpaMultiProof,
-                  src: EthVerkleIpaMultiProofBytes
-                  ): cttEthVerkleIpaStatus =
+func deserialize*(dst: var SilaVerkleIpaMultiProof,
+                  src: SilaVerkleIpaMultiProofBytes
+                  ): cttSilaVerkleIpaStatus =
 
   const frb = sizeof(Fr[Banderwagon])
   let D = cast[ptr array[frb, byte]](src.unsafeAddr)
-  let g2Proof = cast[ptr EthVerkleIpaProofBytes](src[frb].unsafeAddr)
+  let g2Proof = cast[ptr SilaVerkleIpaProofBytes](src[frb].unsafeAddr)
 
   checkReturn dst.D.deserialize_vartime(D[])
   return dst.g2_proof.deserialize(g2Proof[])
@@ -282,11 +282,11 @@ func batchMapToScalarField*(
 
 # Inner Product Argument
 # ------------------------------------------------------------------------------------
-# TODO: proper IPA wrapper for https://github.com/status-im/nim-eth-verkle
+# TODO: proper IPA wrapper for https://github.com/status-im/nim-sila-verkle
 #
 # For now we reexport
-# - eth_verkle_ipa
+# - sila_verkle_ipa
 # - sha256 for transcripts
 
-export eth_verkle_ipa
+export sila_verkle_ipa
 export hashes

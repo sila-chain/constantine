@@ -66,7 +66,7 @@ Other tracks are stretch goals, contributions towards them are accepted.
   - Finish IPA for Verkle Tries:
     - Full test suite coverage https://github.com/mratsim/constantine/issues/396
 
-- Fast MSM for fixed base like Trusted Setups and Ethreum Verkle Tries
+- Fast MSM for fixed base like Trusted Setups and Sila Verkle Tries
   - Notes on MSMs with precomputation https://hackmd.io/WfIjm0icSmSoqy2cfqenhQ
   - Verkle Trees - Another iteration of VKTs MSMs https://hackmd.io/@jsign/vkt-another-iteration-of-vkt-msms
 

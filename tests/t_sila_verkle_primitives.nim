@@ -11,7 +11,7 @@
 
 # ############################################################
 #
-#             Ethereum Verkle Primitves Tests
+#             Sila Verkle Primitves Tests
 #
 # ############################################################
 
@@ -26,7 +26,7 @@ import
     codecs
   ],
   constantine/math/arithmetic,
-  constantine/ethereum_verkle_ipa
+  constantine/sila_verkle_ipa
 
 # serialized points which lie on Banderwagon
 const expected_bit_strings: array[16, string] = [

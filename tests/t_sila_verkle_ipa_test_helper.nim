@@ -28,7 +28,7 @@ import
 
 # ############################################################
 #
-#       Inner Product Argument for Ethereum Verkle Tries
+#       Inner Product Argument for Sila Verkle Tries
 #                     Support functions
 #
 # ############################################################

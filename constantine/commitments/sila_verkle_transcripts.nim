@@ -21,7 +21,7 @@ import
 #
 # ############################################################
 
-# The implementation of the Ethereum Verkle Transcripts
+# The implementation of the Sila Verkle Transcripts
 # is akin to a cryptographic sponge with a duplex construction.
 #
 #  - https://github.com/crate-crypto/verkle-trie-ref/blob/master/ipa/transcript.py
@@ -42,7 +42,7 @@ import
 #
 # Unfortunately, while the cryptographic sponge-like API to absorb_entropy / squeeze_challenge
 # is shared, the actual usage differs significantly:
-# - Ethereum verkle trie uses polynomial labels for domain separation
+# - Sila verkle trie uses polynomial labels for domain separation
 # - Halo2 has no labels
 # - arkworks has no labels and does not absorb commitments
 #   https://github.com/arkworks-rs/poly-commit/issues/140
@@ -51,42 +51,42 @@ import
 # Weak-Fiat Shamir attacks are described in depth in
 # - https://eprint.iacr.org/2023/691
 
-type EthVerkleTranscript* = CryptoHash
+type SilaVerkleTranscript* = CryptoHash
 
-func initTranscript*(ctx: var EthVerkleTranscript, label: openArray[char]) =
+func initTranscript*(ctx: var SilaVerkleTranscript, label: openArray[char]) =
   ctx.init()
   ctx.update(label)
 
-func domainSeparator*(ctx: var EthVerkleTranscript, label: openArray[char]) =
+func domainSeparator*(ctx: var SilaVerkleTranscript, label: openArray[char]) =
   # A domain separator is used to:
   # - Separate between adding elements to the transcript and squeezing elements out
   # - Separate sub-protocols
   ctx.update(label)
 
-func absorb*(ctx: var EthVerkleTranscript, label: openArray[char], message: openArray[byte]) =
+func absorb*(ctx: var SilaVerkleTranscript, label: openArray[char], message: openArray[byte]) =
   ctx.update(label)
   ctx.update(message)
 
-func absorb*(ctx: var EthVerkleTranscript, label: openArray[char], v: uint64) =
+func absorb*(ctx: var SilaVerkleTranscript, label: openArray[char], v: uint64) =
   ctx.update(label)
   ctx.update(v.toBytes(bigEndian))
 
-func absorb*(ctx: var EthVerkleTranscript, label: openArray[char], point: EC_TwEdw[Fp[Banderwagon]]) =
+func absorb*(ctx: var SilaVerkleTranscript, label: openArray[char], point: EC_TwEdw[Fp[Banderwagon]]) =
   var bytes {.noInit.}: array[32, byte]
   bytes.serialize(point)
   ctx.absorb(label, bytes)
 
-func absorb*(ctx: var EthVerkleTranscript, label: openArray[char], scalar: Fr[Banderwagon]) =
+func absorb*(ctx: var SilaVerkleTranscript, label: openArray[char], scalar: Fr[Banderwagon]) =
   var bytes {.noInit.}: array[32, byte]
   bytes.serialize_fr(scalar, littleEndian)
   ctx.absorb(label, bytes)
 
-func absorb(ctx: var EthVerkleTranscript, label: openArray[char], scalar: Fr[Banderwagon].getBigInt()) =
+func absorb(ctx: var SilaVerkleTranscript, label: openArray[char], scalar: Fr[Banderwagon].getBigInt()) =
   var bytes {.noInit.}: array[32, byte]
   bytes.serialize_scalar(scalar, littleEndian)
   ctx.absorb(label, bytes)
 
-func squeezeChallenge*(ctx: var EthVerkleTranscript, label: openArray[char], challenge: var Fr[Banderwagon].getBigInt()) =
+func squeezeChallenge*(ctx: var SilaVerkleTranscript, label: openArray[char], challenge: var Fr[Banderwagon].getBigInt()) =
   ## Generating a challenge based on the Fiat-Shamir transform
   ctx.domainSeparator(label)
 
@@ -102,7 +102,7 @@ func squeezeChallenge*(ctx: var EthVerkleTranscript, label: openArray[char], cha
   ctx.init()
   ctx.absorb(label, challenge)
 
-func squeezeChallenge*(ctx: var EthVerkleTranscript, label: openArray[char], challenge: var Fr[Banderwagon]) =
+func squeezeChallenge*(ctx: var SilaVerkleTranscript, label: openArray[char], challenge: var Fr[Banderwagon]) =
   ## Generating a challenge based on the Fiat-Shamir transform
   var big {.noInit.}: Fr[Banderwagon].getBigInt()
   ctx.squeezeChallenge(label, big)
